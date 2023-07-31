@@ -1,26 +1,26 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+   <nav class="main">
+    <router-view />
+  </nav>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import CSS from "../src/assets/css/reset.css"
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    CSS
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  a {
+    cursor: pointer;
+    text-decoration: none;
+  }
+  input[type=submit] {
+    cursor: pointer;
+  }
 </style>
