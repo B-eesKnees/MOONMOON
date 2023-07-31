@@ -30,12 +30,13 @@ app.use(
 );
 
 // 첫번째 처럼 각자 맡은 페이지 라우터 써서 작성 ㄱㄱ
+//
 // 
 // 
 // 
 // 
-// 
-// 
+const cartRouter = require("./routes/cart");
+app.use('/cart', cartRouter); 
 
 app.listen(app.get("port"), () => {
   //서버 연결
