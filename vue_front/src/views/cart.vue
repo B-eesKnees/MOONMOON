@@ -5,6 +5,7 @@
         <input type="checkbox" v-model="selectAll" @change="selectAllItems" />
         <h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;장바구니</h3>
       </div>
+      
       <div class="cart_inside">
         <ol class="cart_list">
           <span v-if="cart.length == 0"><p>없음</p></span>
@@ -14,14 +15,20 @@
                 type="checkbox"
                 v-model="book.checked"
                 @change="insertOrRemove(book)"
+                class="book_checkbox"
               />
               <img class="cart_img" :src="book.img" />
-              <span>{{ book.title }}</span>
-              <span>가격: {{ getPrice(book) }}</span>
-              <span>마일리지: {{ getPoint(book) }}</span>
-              <button @click="decreaseQuantity(book)">-</button>
-              <span>수량: {{ book.quantity }}</span>
-              <button @click="increaseQuantity(book)">+</button>
+              <span class="book_name">{{ book.title }}</span>&nbsp;
+              <span class="book_price">{{ book.price }} 원</span>
+              <span class="book_point">적립포인트 &nbsp;&nbsp;&nbsp;{{ getPoint(book) }}</span>
+              <div class="changeQua">
+                <div class="button">
+                  <button @click="decreaseQuantity(book)">-</button>
+                  <span>{{ book.quantity }}</span>
+                  <button @click="increaseQuantity(book)">+</button>
+                </div>
+                <p>{{ getPrice(book) }} 원</p>
+              </div>
               <p></p>
             </li>
           </span>
@@ -29,17 +36,19 @@
         <div class="footer"></div>
       </div>
     </div>
-
+    
     <div class="payment_area">
-      <div class="payment_value">{{ getTotalPrice }}</div>
-      <div class="payment_pee">{{ pee }}</div>
+      <div class="payment_value">상품금액 <span class="getTotalPrice">{{ getTotalPrice }} <span class="unit">원</span></span></div>
+      <div class="payment_pee">배송비 <span class=fee>{{ fee }} <span class="unit">원</span></span></div>
+      <br><br><br><br><br><br><br><br>
       <hr />
-      <div class="payment_total">{{ getFinalPrice }}</div>
-      <div class="payment_point">{{ totalPoint }}</div>
+      <div class="payment_total">결제금액 {{ getFinalPrice }}</div>
+      <div class="payment_point">총 적립 포인트{{ totalPoint }}</div>
       <button @click="choosePay">선택 결제</button>
       <button @click="allPay">전체 결제</button>
     </div>
   </div>
+  <div class="progress"><span class="first">장바구니</span> <span class="right">> 주문/결제> 완료</span></div>
 </template>
 
 <script>
@@ -52,7 +61,7 @@ export default {
         //책 데이터 예시
         {
           img: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9791192512365.jpg",
-          title: "Book 1",
+          title: "엄청나게 긴 책 제목 테스트입니다 아무튼간에",
           price: 9900,
           point: 50,
           quantity: 1,
@@ -66,6 +75,39 @@ export default {
           quantity: 1,
           book_no: 2,
         },
+        {
+          img: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9791192512365.jpg",
+          title: "Book 2",
+          price: 24000,
+          point: 30,
+          quantity: 1,
+          book_no: 3,
+        },
+        {
+          img: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9791192512365.jpg",
+          title: "Book 2",
+          price: 24000,
+          point: 30,
+          quantity: 1,
+          book_no: 4,
+        },
+        {
+          img: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9791192512365.jpg",
+          title: "Book 2",
+          price: 24000,
+          point: 30,
+          quantity: 1,
+          book_no: 5,
+        },
+        {
+          img: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9791192512365.jpg",
+          title: "Book 2",
+          price: 24000,
+          point: 30,
+          quantity: 1,
+          book_no: 6,
+        }
+        
       ],
       select: [],
       selectAll: false,
@@ -78,8 +120,6 @@ export default {
       book.quantity++;
     },
     choosePay() {
-      console.log("선택된 상품들의 결제 정보:");
-
       // 선택된 상품들만 필터링하여 가져옵니다.
       const selectedBooks = this.cart.filter((book) =>
         this.select.includes(book.book_no)
@@ -87,67 +127,100 @@ export default {
 
       let TP = 0; //총 결제 금액
       let TP2 = 0; //총 포인트
+      let thisFee = 0;
 
-      // 선택된 상품들에 대한 결제 정보를 콘솔로 출력합니다.
+      let bookData = [];
+
       selectedBooks.forEach((book) => {
-        console.log("--------------");
-        console.log("책 제목:", book.title);
-        console.log("가격:", this.getPrice(book)); // 함수로 호출하여 계산 결과를 출력합니다.
-        console.log("마일리지:", this.getPoint(book)); // 함수로 호출하여 계산 결과를 출력합니다.
-        console.log("수량:", book.quantity);
-
         TP += this.getPrice(book);
         TP2 += this.getPoint(book);
+
+        bookData.push({
+          ORDERITEM_BOOKID: book.book_no,
+          ORDERITEM_CNT: book.quantity,
+          ORDERITEM_PRICE: book.price,
+          ORDERITEM_POINT: this.getPoint(book),
+        });
       });
 
-      console.log("--------------");
-      console.log("선택된 상품들의 총 결제 금액:", TP); // 함수로 호출하여 계산 결과를 출력합니다.
-      console.log("선택된 상품들의 총 포인트:", TP2); // 함수로 호출하여 계산 결과를 출력합니다.
-      console.log("==============");
+      
+
+        if(TP>=15000) { //결제금액이 15000원이상이면 배송료 0원으로 설정
+        thisFee = 0;
+      } else if(TP<15000) {
+        thisFee = 2500;
+      }
+
+      axios({
+        url: "http://localhost:3000/cart",
+        method: "POST",
+        data: {
+          "email": "bj3757@naver.com",
+          "total_pay": TP,
+          "total_point": TP2,
+          "fee": thisFee,
+          "books_info": bookData,
+        },
+      }).then((res=>{
+        if(res.status == 401) {
+          console.log("에러 발생: "+res.data.error);
+        } else if(res.status == 200) {
+          const orderId = res.data.orderID;
+          alert('결제페이지로 이동합니다');
+          window.location.href = `/pay/${orderId}`;
+        } 
+      })).catch(error=>{
+        console.log(error);
+      });
     },
     allPay() {
-      this.selectAllItems();
-
-      console.log("전체 상품들의 결제 정보:");
-
-      // 모든 상품에 대한 결제 정보를 가져옵니다.
-      const allBooks = this.cart;
+      const allBooks = this.cart; //장바구니에 담긴 책 정보 전부 담아오기
 
       let TP = 0; //총 결제 금액
       let TP2 = 0; //총 포인트
+      let thisFee = 0;
 
       let bookData = [];
 
       // 모든 상품에 대한 결제 정보를 콘솔로 출력합니다.
       allBooks.forEach((book) => {
-        console.log("--------------");
-        console.log("책 제목:", book.title);
-        console.log("가격:", this.getPrice(book)); // 함수로 호출하여 계산 결과를 출력합니다.
-        console.log("마일리지:", this.getPoint(book)); // 함수로 호출하여 계산 결과를 출력합니다.
-        console.log("수량:", book.quantity);
-
         TP += this.getPrice(book);
         TP2 += this.getPoint(book);
 
         bookData.push({
-          book_no: book.book_no,
-          quantity: book.quantity,
+          ORDERITEM_BOOKID: book.book_no,
+          ORDERITEM_CNT: book.quantity,
+          ORDERITEM_PRICE: book.price,
+          ORDERITEM_POINT: this.getPoint(book),
         });
       });
-
-      console.log("--------------");
-      console.log("총 결제 금액:", TP); // 함수로 호출하여 계산 결과를 출력합니다.
-      console.log("포인트:", TP2); // 함수로 호출하여 계산 결과를 출력합니다.
-      console.log("==============");
+      
+      if(TP>=15000) { //결제금액이 15000원이상이면 배송료 0원으로 설정
+        thisFee = 0;
+      } else if(TP<15000) {
+        thisFee = 2500;
+      }
 
       axios({
-        url: "http://localhost:3000/test",
+        url: "http://localhost:3000/cart",
         method: "POST",
         data: {
-          "총 결제 금액": TP,
-          "총 포인트": TP2,
-          "상품 정보": bookData,
+          "email": "bj3757@naver.com",
+          "total_pay": TP,
+          "total_point": TP2,
+          "fee": thisFee,
+          "books_info": bookData,
         },
+      }).then((res=>{
+        if(res.status == 401) {
+          console.log("에러 발생: "+res.data.error);
+        } else if(res.status == 200) {
+          const orderId = res.data.orderID;
+          alert('결제페이지로 이동합니다');
+          window.location.href = `/pay/${orderId}`;
+        } 
+      })).catch(error=>{
+        console.log(error);
       });
     },
     decreaseQuantity(book) {
@@ -209,7 +282,7 @@ export default {
 
       return totalPrice; //리턴
     },
-    pee() {
+    fee() {
       if (this.getTotalPrice > 15000) {
         return 0;
       } else {
@@ -218,7 +291,7 @@ export default {
     },
     getFinalPrice() {
       //최종 결제 가격 함수
-      return this.getTotalPrice + this.pee;
+      return this.getTotalPrice + this.fee;
     },
     totalPoint() {
       //결제 시 얻는 포인트
@@ -250,49 +323,142 @@ export default {
 <style scoped>
 .cart_img {
   text-align: center;
-  max-height: 230px;
-  margin-top: auto;
+  max-height: 200px;
+  margin-top: 20px;
 }
 .footer {
   padding-bottom: 100px;
 }
 .cart_header {
-  padding: 20px 36px 20px 0;
-  border-top: 1px solid #000;
-  border-bottom: 1px solid #d5d5d5;
+  padding: 20px 36px 1px 0;
+  font-size: 1.4em;
+  border-bottom: 5px double #000000;
 }
 .container {
   margin-bottom: 20px;
 }
 .cart_wrap {
   position: relative;
-  margin-top: 13%;
-  margin-left: 5%;
+  margin-top: 8.65%;
+  margin-left: 11%;
   padding-bottom: 5%;
-  width: 65%;
+  width: 50%;
   max-height: 200px;
 }
 .cart_list li {
-  /* margin: auto; */
-
   width: 100%;
   height: 250px;
-  border-bottom: 1px solid #d5d5d5;
-  border-right: 1px solid #d5d5d5;
-  padding: 1%;
+  border-bottom: 2px solid #000000;
+  list-style:none;
 }
 .payment_area {
   width: 450px;
   height: 600px;
   background-color: #ffffff;
   margin-left: 20px;
-  margin-top: 2%;
+  margin-top: 8.9%;
   padding: 10px;
   box-sizing: border-box;
-  border: 1px solid #050505;
   border-radius: 5%;
   position: fixed;
-  right: 10%;
+  right: 12%;
   top: 13%;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+}
+.book_checkbox {
+  margin-right: 3%;
+  position: absolute;
+  left: 5px;
+  border: none;
+  margin-top: 20px;
+  background-color: #eee;
+}
+.book_name {
+  position: absolute;
+  margin-left: 15px;
+  margin-top: 20px;
+  font-weight: 700;
+  font-size: larger;
+}
+.book_price {
+  position: absolute;
+  margin-left: 5px;
+  margin-top: 45px;
+}
+.book_point {
+  margin-left: 5px;
+}
+.changeQua {
+  float: right;
+  text-align: center;
+  width: 300px;
+  height: 249px;
+  border-left: 2px solid #050505;
+  margin: auto;
+}
+.changeQua .button {
+ 
+  margin-top: 100px;
+  margin-left: 80px;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  width: 120px;
+  height: 30px;
+  border: 1px solid #050505;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.changeQua .button button {
+  border: none;
+  background-color: white;
+  cursor: pointer;
+  font-size: larger;
+  margin-left: 10px;
+  margin-right: 10px;
+  width: 30px;
+  height: 30px;
+}
+.progress{
+  position: absolute;
+  top: 240px;
+  right: 170px;
+  font-size: 1.4em;
+  font-weight: bolder;
+}
+.first {
+  color: #4E4EFF;
+}
+.right {
+  color: rgb(158, 158, 158);
+}
+.payment_value {
+  margin-top: 20%;
+  margin-left: 10%;
+  
+  white-space: nowrap;
+}
+.getTotalPrice {
+  margin-left: 60%;
+  
+}
+.payment_pee {
+  margin-top: 5%;
+  margin-left: 10%;
+  
+  white-space: nowrap;
+}
+.fee {
+  margin-left: 60%;
+  
+}
+.unit {
+  margin-right: 10%;
+  font-size: 14px;
+  line-height: 22px;
+  letter-spacing: -0.01em;
+  vertical-align: 1px;
+
 }
 </style>

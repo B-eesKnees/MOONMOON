@@ -35,7 +35,8 @@ app.use("/qna", qnaRouter);  // qna
 // 
 // 
 // 
-// 
+const cartRouter = require("./routes/cart");
+app.use('/cart', cartRouter); 
 
 app.listen(app.get("port"), () => {
   //서버 연결

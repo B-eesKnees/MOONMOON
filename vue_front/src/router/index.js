@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 import booktestPage from "../views/bookTest.vue";
+import cart from "../views/cart.vue";
 
 
 const routes = [
@@ -8,7 +9,12 @@ const routes = [
         path: "/test",
         name: "testAPIPage",
         component: booktestPage
-    }
+    },
+    {
+      path: "/cart",
+      name: "cartPage",
+      component: cart
+    },
 ]
 
 const router = createRouter({
