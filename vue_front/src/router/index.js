@@ -7,6 +7,8 @@ import booktestPage from "../views/bookTest.vue";
 import cart from "../views/cart.vue";
 import resultpage from "../views/paymentResult.vue";
 
+import qnaList from "../views/qnaList.vue";
+
 const routes = [
     {
         path: "/",
