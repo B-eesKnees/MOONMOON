@@ -20,6 +20,9 @@ export default {
     cursor: pointer;
     text-decoration: none;
   }
+  button {
+    cursor: pointer;
+  }
   input[type=submit] {
     cursor: pointer;
   }

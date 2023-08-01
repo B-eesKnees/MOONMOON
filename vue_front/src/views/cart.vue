@@ -391,11 +391,9 @@ export default {
   max-height: 200px;
   margin-top: 20px;
 }
-
 .footer {
   padding-bottom: 100px;
 }
-
 .cart_header {
   width: 50%;
   font-size: 1.4em;
@@ -416,15 +414,15 @@ export default {
 .container {
   width: 100%;
 }
-
 .cart_wrap {
   width: 100%;
 
   margin-top: 8.65%;
   margin-left: 11%;
   padding-bottom: 5%;
+  width: 50%;
+  max-height: 200px;
 }
-
 .cart_list li {
   width: 100%;
   height: 250px;
@@ -432,7 +430,28 @@ export default {
   list-style: none;
   background-color: white;
 }
-
+.payment_area {
+  width: 450px;
+  height: 600px;
+  background-color: #ffffff;
+  margin-left: 20px;
+  margin-top: 8.9%;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 5%;
+  position: fixed;
+  right: 12%;
+  top: 13%;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+}
+.book_checkbox {
+  margin-right: 3%;
+  position: absolute;
+  left: 5px;
+  border: none;
+  margin-top: 20px;
+  background-color: #eee;
+}
 .book_name {
   position: absolute;
   margin-left: 15px;
@@ -442,18 +461,15 @@ export default {
   width: 450px;
   line-height: 20px;
 }
-
 .book_price {
   position: absolute;
   display: inline-block;
   margin-left: 5px;
   margin-top: 170px;
 }
-
 .book_point {
   margin-left: 5px;
 }
-
 .changeQua {
   float: right;
   text-align: center;
@@ -461,7 +477,6 @@ export default {
   height: 249px;
   border-left: 2px solid #ccc;
 }
-
 .changeQua .button {
   margin-top: 100px;
   margin-left: 80px;
@@ -489,7 +504,6 @@ export default {
 .changeQua span {
   text-align: center;
 }
-
 .progress {
   position: absolute;
   top: 17%;
@@ -497,11 +511,9 @@ export default {
   font-size: 1.4em;
   font-weight: bolder;
 }
-
 .first {
   color: #4e4eff;
 }
-
 .right {
   color: rgb(158, 158, 158);
 }
