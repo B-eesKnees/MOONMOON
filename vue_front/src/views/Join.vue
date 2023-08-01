@@ -1,22 +1,25 @@
 <template>
-    <!-- <gnbBar /> -->
     <div class="join">
         <div class="title-bar">
             <h5>회원가입</h5>
         </div>
+
+        <!-- 소셜로그인 -->
         <div class="wrap2">
             <form method="post">
                 <div class="user_social_btns">
                     <div class="user_social_btns_p">
                         <p>소셜로 간편하게 로그인하세요</p>
                     </div>
-                    <a class="social_btn naver" href="/naverlogin"><img class="social_btn_naver"
-                            src="../assets/img/naver.png" alt=""></a>
-                    <a class="social_btn kakao" @click="kakaoLogin"><img class="social_btn_kakao"
-                            src="../assets/img/kakao.png" alt=""></a>
+                    <a class="social_btn" href="/naverlogin"><img class="social_btn_naver" src="../assets/img/naver.png"
+                            alt=""></a>
+                    <a class="social_btn" @click="kakaoLogin"><img class="social_btn_kakao" src="../assets/img/kakao.png"
+                            alt=""></a>
                 </div>
             </form>
         </div>
+
+        <!-- 로컬회원가입 -->
         <div class="wrap">
             <form @submit.prevent="joinForm">
                 <label for="name">이름</label>
@@ -32,7 +35,13 @@
                     <option value="">@nate.com</option>
                     <option value="">@hotmail.com</option>
                 </select>
-                <a class="email_auth" href="#">인증하기</a>
+                <button @click="sendEmail(), startCountdown()" class="email_auth">인증메일 전송</button>
+                <div v-if="clickSendEmail" class="email_auth_complete">
+                    <input type="text" maxlength="6">
+                    <span>{{ formattedTime }}</span>
+                    <button @click="completeAuthEmail">인증완료</button>
+
+                </div>
                 <form @submit.prevent="emailCheckForm">
                     <a href="/auth/checkemail"><button type="submit" id="email_check"
                             class="username_submit">중복확인</button></a>
@@ -85,6 +94,7 @@
                 <input ref="epostAdress" type="text" id="epostAdress" placeholder="주소 입력"><br />
                 <label for="epostDetailAdress">상세주소</label>
                 <input ref="epostDetailAdress" type="text" id="epostDetailAdress" placeholder="상세주소 입력"><br />
+                <!-- 가입하기버튼 -->
                 <a href="/auth/join"><input type="submit" :class="{ 'error_submit': allcheck, 'submit': !allcheck }"
                         :disabled="allcheck" id="login" value="가입하기"></a>
             </form>
@@ -94,7 +104,6 @@
 </template>
 
 <script>
-// import gnbBar from '../components/gnbBar.vue'
 // import Footer from '../components/footer.vue'
 
 import axios from 'axios'
@@ -123,10 +132,15 @@ export default {
             phone_check: false,
             error_border_check: false,
 
+            //이메일 인증하기
+            clickSendEmail: false,
+            countdown: 180,
+            interval: null,
+
             //주소 데이터
-            epostNum : "",
-            epostAdress : "",
-            epostDetailAdress : "",
+            epostNum: "",
+            epostAdress: "",
+            epostDetailAdress: "",
             epostreference: "",
 
             allcheck: true,
@@ -171,6 +185,13 @@ export default {
             this.funcWatch()
         }
 
+    },
+    computed: {
+        formattedTime() {
+          const minutes = Math.floor(this.countdown / 60);
+          const seconds = this.countdown % 60;
+          return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        },
     },
     methods: {
         funcWatch() {
@@ -275,6 +296,28 @@ export default {
                 this.allcheck = false;
             }
         },
+        sendEmail() {
+            this.clickSendEmail = true;
+        },
+        startCountdown() {
+          this.interval = setInterval(() => {
+            if (this.countdown > 0) {
+              this.countdown--;
+            } else {
+                clearInterval(this.interval); // 컴포넌트가 제거되기 전에 interval을 정리해야합니다.
+              alert('인증에 실패하였습니다.');
+              this.clickSendEmail = false;
+              this.countdown = 180;
+            }
+          }, 1000);
+        },
+        completeAuthEmail() {
+            if(인증번호일치할시) {
+                alert("인증이 완료되었습니다.");
+            } else {
+                alert("인증번호가 일치하지 않습니다.");
+            }
+        },
         emailCheckForm() {
             axios({
                 url: "http://localhost:3000/auth/checkemail",
@@ -318,7 +361,7 @@ export default {
                 alert(error);
             })
         },
-        sample6_execDaumPostcode() {
+        sample6_execDaumPostcode() { // 다음 지도API
             new daum.Postcode({
                 oncomplete: function (data) {
                     // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
@@ -350,13 +393,13 @@ export default {
                         if (extraAddr !== '') {
                             extraAddr = ' (' + extraAddr + ')';
                         }
-            }
+                    }
 
-            // 우편번호와 주소 정보를 해당 필드에 넣는다.
-            document.getElementById('epostNum').value = data.zonecode;
-            document.getElementById("epostAdress").value = addr;
-            // 커서를 상세주소 필드로 이동한다.
-            document.getElementById("epostDetailAdress").focus();
+                    // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                    document.getElementById('epostNum').value = data.zonecode;
+                    document.getElementById("epostAdress").value = addr;
+                    // 커서를 상세주소 필드로 이동한다.
+                    document.getElementById("epostDetailAdress").focus();
                 }
             }).open();
         },
@@ -398,11 +441,12 @@ export default {
                 alert(error);
             });
         },
-    }
+    },
 }
 </script> 
 
 <style scoped>
+/* 회원가입 */
 .join {
     padding-top: 5%;
     width: 100%;
@@ -432,6 +476,8 @@ export default {
     font-weight: bold;
 }
 
+
+/* 소셜로그인 */
 .wrap2 {
     background-color: #ffffff;
     padding: 0 2%;
@@ -462,6 +508,8 @@ export default {
     width: 15%;
 }
 
+
+/* 로컬회원가입 */
 .wrap {
     background-color: #ffffff;
     padding: 1%;
@@ -473,13 +521,42 @@ export default {
 }
 
 .email_auth {
-    text-decoration: none;
-    padding: 2%;
+    width: 17%;
+    padding: 1% 2%;
     border: 1px solid #4E4EFF;
     border-radius: 4px;
     color: white;
     background-color: #4E4EFF;
-    margin-left: 4%;
+    margin-left: 2%;
+}
+
+.email_auth_complete {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+}
+.email_auth_complete span {
+    position: absolute;
+    top: 18%;
+    right: 20%;
+    color: red;
+    padding: 1%;
+}
+.email_auth_complete input {
+    width: 20%;
+}
+
+.email_auth_complete button {
+    width: 17%;
+    padding: 1% 2%;
+    border: 1px solid #4E4EFF;
+    border-radius: 4px;
+    color: white;
+    background-color: #4E4EFF;
+    margin-left: 2%;
+    margin-right: 0.5%;
 }
 
 .email_list {
@@ -614,5 +691,4 @@ input.submit:hover {
     margin-left: 20%;
     margin-top: 25px;
     transition: all .2s ease-in-out;
-}
-</style>
+}</style>

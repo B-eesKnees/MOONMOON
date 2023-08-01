@@ -5,48 +5,68 @@
         <input type="checkbox" v-model="selectAll" @change="selectAllItems" />
         <h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;장바구니</h3>
       </div>
-      
-      <div class="cart_inside">
-        <ol class="cart_list">
-          <span v-if="cart.length == 0"><p>없음</p></span>
-          <span v-else-if="cart.length >= 1">
-            <li v-for="book in cart">
-              <input
-                type="checkbox"
-                v-model="book.checked"
-                @change="insertOrRemove(book)"
-                class="book_checkbox"
-              />
-              <img class="cart_img" :src="book.img" />
-              <span class="book_name">{{ book.title }}</span>&nbsp;
-              <span class="book_price">{{ book.price }} 원</span>
-              <span class="book_point">적립포인트 &nbsp;&nbsp;&nbsp;{{ getPoint(book) }}</span>
-              <div class="changeQua">
-                <div class="button">
-                  <button @click="decreaseQuantity(book)">-</button>
-                  <span>{{ book.quantity }}</span>
-                  <button @click="increaseQuantity(book)">+</button>
+      <div class="cart_float">
+        <div class="cart_inside">
+          <ol class="cart_list">
+            <span v-if="cart.length == 0">
+              <p>없음</p>
+            </span>
+            <span v-else-if="cart.length >= 1">
+              <li v-for="book in cart">
+                <input type="checkbox" v-model="book.checked" @change="insertOrRemove(book)" class="book_checkbox" />
+                <img class="cart_img" :src="book.img" />
+                <span class="book_name">{{ book.title }}</span>&nbsp;
+                <span class="book_price">{{ book.price }} 원</span>
+                <span class="book_point">적립포인트 &nbsp;&nbsp;&nbsp;{{ getPoint(book) }}</span>
+                <div class="changeQua">
+                  <div class="button">
+                    <button @click="decreaseQuantity(book)">-</button>
+                    <span>{{ book.quantity }}</span>
+                    <button @click="increaseQuantity(book)">+</button>
+                  </div>
+                  <p>{{ getPrice(book) }} 원</p>
                 </div>
-                <p>{{ getPrice(book) }} 원</p>
-              </div>
-              <p></p>
-            </li>
-          </span>
-        </ol>
-        <div class="footer"></div>
+                <p></p>
+              </li>
+            </span>
+          </ol>
+          <div class="footer"></div>
+        </div>
+
+        <!-- CSS작업시 컨텐츠를 박스라고 생각하면 이해가 쉬움 
+             payment_area라는 최상위 부모박스 > 형제박스(pay_wrap 자식박스, pay_wrap 자식박스)
+        -->
+        <div class="payment_area">
+          <div class="pay_wrap">
+            <p class="payment_value">상품금액</p>
+            <span class="getTotalPrice">{{ getTotalPrice }} </span>
+            <span class="unit">원</span>
+          </div>
+
+          <div class="pay_wrap">
+            <div class="payment_value">배송비</div>
+            <span class=getTotalPrice>{{ fee }} </span>
+            <span class="unit">원</span>
+          </div>
+
+          <br><br><br><br><br><br><br><br>
+          <hr />
+          <div class="pay_wrap">
+            <div class="payment_total">결제금액 : {{ getFinalPrice }}</div>
+            <span class="unit">원</span>
+          </div>
+          <div class="pay_wrap">
+            <div class="payment_point">총 적립 포인트{{ totalPoint }}</div>
+            <span class="unit">원</span>
+          </div>
+          <button @click="choosePay">선택 결제</button>
+          <button @click="allPay">전체 결제</button>
+        </div>
       </div>
+
     </div>
-    
-    <div class="payment_area">
-      <div class="payment_value">상품금액 <span class="getTotalPrice">{{ getTotalPrice }} <span class="unit">원</span></span></div>
-      <div class="payment_pee">배송비 <span class=fee>{{ fee }} <span class="unit">원</span></span></div>
-      <br><br><br><br><br><br><br><br>
-      <hr />
-      <div class="payment_total">결제금액 {{ getFinalPrice }}</div>
-      <div class="payment_point">총 적립 포인트{{ totalPoint }}</div>
-      <button @click="choosePay">선택 결제</button>
-      <button @click="allPay">전체 결제</button>
-    </div>
+
+
   </div>
   <div class="progress"><span class="first">장바구니</span> <span class="right">> 주문/결제> 완료</span></div>
 </template>
@@ -107,7 +127,7 @@ export default {
           quantity: 1,
           book_no: 6,
         }
-        
+
       ],
       select: [],
       selectAll: false,
@@ -143,11 +163,11 @@ export default {
         });
       });
 
-      
 
-        if(TP>=15000) { //결제금액이 15000원이상이면 배송료 0원으로 설정
+
+      if (TP >= 15000) { //결제금액이 15000원이상이면 배송료 0원으로 설정
         thisFee = 0;
-      } else if(TP<15000) {
+      } else if (TP < 15000) {
         thisFee = 2500;
       }
 
@@ -161,15 +181,15 @@ export default {
           "fee": thisFee,
           "books_info": bookData,
         },
-      }).then((res=>{
-        if(res.status == 401) {
-          console.log("에러 발생: "+res.data.error);
-        } else if(res.status == 200) {
+      }).then((res => {
+        if (res.status == 401) {
+          console.log("에러 발생: " + res.data.error);
+        } else if (res.status == 200) {
           const orderId = res.data.orderID;
           alert('결제페이지로 이동합니다');
           window.location.href = `/pay/${orderId}`;
-        } 
-      })).catch(error=>{
+        }
+      })).catch(error => {
         console.log(error);
       });
     },
@@ -194,10 +214,10 @@ export default {
           ORDERITEM_POINT: this.getPoint(book),
         });
       });
-      
-      if(TP>=15000) { //결제금액이 15000원이상이면 배송료 0원으로 설정
+
+      if (TP >= 15000) { //결제금액이 15000원이상이면 배송료 0원으로 설정
         thisFee = 0;
-      } else if(TP<15000) {
+      } else if (TP < 15000) {
         thisFee = 2500;
       }
 
@@ -211,15 +231,15 @@ export default {
           "fee": thisFee,
           "books_info": bookData,
         },
-      }).then((res=>{
-        if(res.status == 401) {
-          console.log("에러 발생: "+res.data.error);
-        } else if(res.status == 200) {
+      }).then((res => {
+        if (res.status == 401) {
+          console.log("에러 발생: " + res.data.error);
+        } else if (res.status == 200) {
           const orderId = res.data.orderID;
           alert('결제페이지로 이동합니다');
           window.location.href = `/pay/${orderId}`;
-        } 
-      })).catch(error=>{
+        }
+      })).catch(error => {
         console.log(error);
       });
     },
@@ -307,7 +327,7 @@ export default {
       return totalPoint;
     },
   },
-  mounted() {},
+  mounted() { },
   watch: {
     // 자식 체크박스 상태 변경 감지
     cart: {
@@ -326,53 +346,36 @@ export default {
   max-height: 200px;
   margin-top: 20px;
 }
+
 .footer {
   padding-bottom: 100px;
 }
+
 .cart_header {
-  padding: 20px 36px 1px 0;
+  width: 50%;
   font-size: 1.4em;
   border-bottom: 5px double #000000;
 }
+
 .container {
-  margin-bottom: 20px;
+  width: 100%;
 }
+
 .cart_wrap {
-  position: relative;
+  width: 100%;
+
   margin-top: 8.65%;
   margin-left: 11%;
   padding-bottom: 5%;
-  width: 50%;
-  max-height: 200px;
 }
+
 .cart_list li {
   width: 100%;
   height: 250px;
   border-bottom: 2px solid #000000;
-  list-style:none;
+  list-style: none;
 }
-.payment_area {
-  width: 450px;
-  height: 600px;
-  background-color: #ffffff;
-  margin-left: 20px;
-  margin-top: 8.9%;
-  padding: 10px;
-  box-sizing: border-box;
-  border-radius: 5%;
-  position: fixed;
-  right: 12%;
-  top: 13%;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
-}
-.book_checkbox {
-  margin-right: 3%;
-  position: absolute;
-  left: 5px;
-  border: none;
-  margin-top: 20px;
-  background-color: #eee;
-}
+
 .book_name {
   position: absolute;
   margin-left: 15px;
@@ -380,14 +383,17 @@ export default {
   font-weight: 700;
   font-size: larger;
 }
+
 .book_price {
   position: absolute;
   margin-left: 5px;
   margin-top: 45px;
 }
+
 .book_point {
   margin-left: 5px;
 }
+
 .changeQua {
   float: right;
   text-align: center;
@@ -396,14 +402,14 @@ export default {
   border-left: 2px solid #050505;
   margin: auto;
 }
+
 .changeQua .button {
- 
   margin-top: 100px;
   margin-left: 80px;
   border: none;
   padding: 5px 10px;
   border-radius: 4px;
-  width: 120px;
+  width: 150px;
   height: 30px;
   border: 1px solid #050505;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -420,45 +426,62 @@ export default {
   width: 30px;
   height: 30px;
 }
-.progress{
+
+.progress {
   position: absolute;
-  top: 240px;
-  right: 170px;
+  top: 30%;
+  right: 10%;
   font-size: 1.4em;
   font-weight: bolder;
 }
+
 .first {
   color: #4E4EFF;
 }
+
 .right {
   color: rgb(158, 158, 158);
 }
-.payment_value {
-  margin-top: 20%;
-  margin-left: 10%;
-  
-  white-space: nowrap;
-}
-.getTotalPrice {
-  margin-left: 60%;
-  
-}
-.payment_pee {
-  margin-top: 5%;
-  margin-left: 10%;
-  
-  white-space: nowrap;
-}
-.fee {
-  margin-left: 60%;
-  
-}
-.unit {
-  margin-right: 10%;
-  font-size: 14px;
-  line-height: 22px;
-  letter-spacing: -0.01em;
-  vertical-align: 1px;
 
+.cart_float {
+  width: 100%; /* 가로100% 공간 사용 */
+}
+
+.cart_inside {
+  float: left; /* 화면 왼쪽 배치 */
+  width: 50%; /* 가로50% 공간 사용 */
+}
+
+.payment_area {
+  float: right; /* 화면 오른쪽 배치 */
+  width: 20%; /* 가로20% 공간 사용 */
+  height: 400px;
+  margin-top: 5%;
+  margin-right: 18%; /* 박스를 오른쪽으로 18%만큼 떨어뜨림(밀어냄) */
+  padding: 1% 10px; /* 위아래 1% 양옆 10px*/
+  border-radius: 5%;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 상품금액,배송비 */
+.pay_wrap {
+  margin-top: 5%;
+  display: flex; /* 세로배치를 가로배치로 */
+  width: 100%; /* 장바구니박스 가로100% 공간 사용 */
+}
+/* 금액(숫자) */
+.payment_value {
+  width: 70%; /* 그중에 70% 사용 */
+}
+/* 원 */
+.getTotalPrice {
+  width: 20%; /* 그중에 20% 사용 */
+  text-align: right; /* 텍스트 오른쪽 정렬(텍스트 길이가 길어지면 왼쪽으로 늘어남) */
+}
+
+.unit {
+  width: 10%;
+  font-size: 14px;
+  padding-left: 1%;
 }
 </style>
