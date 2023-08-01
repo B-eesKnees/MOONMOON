@@ -1,127 +1,153 @@
 <template>
-    <!-- nav구역 -->
-    <div class="nav">
-        <div class="nav_btn_wrap">
-            <button class="nav_btn">☰</button>
+    <GnbBar />
+    <div class="main">
+        <!-- nav-->
+        <div class="nav">
+            <div class="nav_btn_wrap">
+                <button class="nav_btn">☰</button>
+            </div>
+            <ul class="nav_category">
+                <a class="nav_category_link" href="">
+                    <li>추천</li>
+                </a>
+                <a class="nav_category_link" href="">
+                    <li>베스트</li>
+                </a>
+                <a class="nav_category_link" href="">
+                    <li>신상품</li>
+                </a>
+                <a class="nav_category_link" href="">
+                    <li>이벤트</li>
+                </a>
+                <a class="nav_category_link" href="">
+                    <li>굿즈</li>
+                </a>
+            </ul>
+            <div class="nav_sub">
+                <a class="nav_sub_link" href="">마일리지</a>
+                •
+                <a class="nav_sub_link" href="">출석체크</a>
+            </div>
         </div>
-        <ul class="nav_category">
-            <a class="nav_category_link" href="">
-                <li>추천</li>
-            </a>
-            <a class="nav_category_link" href="">
-                <li>베스트</li>
-            </a>
-            <a class="nav_category_link" href="">
-                <li>신상품</li>
-            </a>
-            <a class="nav_category_link" href="">
-                <li>이벤트</li>
-            </a>
-            <a class="nav_category_link" href="">
-                <li>굿즈</li>
-            </a>
-        </ul>
-        <div class="nav_sub">
-            <a class="nav_sub_link" href="">마일리지</a>
-            •
-            <a class="nav_sub_link" href="">출석체크</a>
-        </div>
-    </div>
 
-    <!-- 이미지슬라이더 -->
-    <div class="image-slider">
-        <div class="slider-wrapper" v-if="slidesReady">
-            <div class="slider"
-                :style="{ transform: `translateX(-${currentIndex * 100}%)`, transition: transitionDuration }">
-                <div v-for="(image, index) in images" :key="index" class="slide">
-                    <img :src="image" alt="Slide Image" />
+        <!-- 이미지슬라이더 -->
+        <div class="image-slider">
+            <div class="slider-wrapper" v-if="slidesReady">
+                <div class="slider"
+                    :style="{ transform: `translateX(-${currentIndex * 100}%)`, transition: transitionDuration }">
+                    <div v-for="(image, index) in images" :key="index" class="slide">
+                        <img :src="image" alt="Slide Image" />
+                    </div>
                 </div>
-            </div>
-            <div class="controls">
-                <button @click="prevSlide" class="prev-btn">&lt;</button>
-                <button @click="nextSlide" class="next-btn">&gt;</button>
-            </div>
-            <div class="dots">
-                <span v-for="(image, index) in images" :key="index" @click="goToSlide(index)"
-                    :class="{ active: index === currentIndex }" class="dot"></span>
-            </div>
-        </div>
-    </div>
-    <!-- 책추천 구역 -->
-    <div class="container">
-        <h2 class="recommend_title"><span class="recommend_username">ㅇㅇㅇ</span>님에게 추천하는 책이예요</h2>
-        <div class="main_item_wrap">
-            <div class="recommend_item" v-for="i in 8">
-                <img class="main_item_img" src="../assets/img/book4.jpg" alt="">
-                <div class="main_item_info">
-                    <h5 class="main_item_title">제목제목</h5>
-                    <span class="main_item_writer">글쓴이</span>
-                    •
-                    <span class="main_item_publisher">출판사</span>
+                <div class="controls">
+                    <button @click="prevSlide" class="prev-btn">&lt;</button>
+                    <button @click="nextSlide" class="next-btn">&gt;</button>
+                </div>
+                <div class="dots">
+                    <span v-for="(image, index) in images" :key="index" @click="goToSlide(index)"
+                        :class="{ active: index === currentIndex }" class="dot"></span>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- 베스트추천 구역 -->
-    <div class="container">
-        <div class="best_header">
-            <h2 class="main_title">베스트</h2>
-            <a href="">더보기 ＋</a>
+        <!-- 책추천-->
+        <div v-if="!login" class="container_blur">
+            <h2>로그인하시면 취향에 맞는 책을 보여드려요</h2>
+            <a href="/login">로그인하고 책 추천받기</a>
         </div>
-        <div class="main_item_wrap">
-            <div class="best_item" v-for="i in 5">
-                <img class="main_item_img" src="../assets/img/book4.jpg" alt="">
-                <div class="main_item_info">
-                    <h5 class="main_item_title">제목제목</h5>
-                    <span class="main_item_writer">글쓴이</span>
-                    •
-                    <span class="main_item_publisher">출판사</span>
+        <div class="container ">
+            <h2 class="recommend_title"><span class="recommend_username">ㅇㅇㅇ</span>님에게 추천하는 책이예요</h2>
+            <div class="main_item_wrap blur">
+                <div class="recommend_item" v-for="i in 8">
+                    <img class="main_item_img" src="../assets/img/book4.jpg" alt="">
+                    <div class="main_item_info">
+                        <h5 class="main_item_title">제목제목</h5>
+                        <span class="main_item_writer">글쓴이</span>
+                        •
+                        <span class="main_item_publisher">출판사</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- 신상품추천 구역 -->
-    <div>
-        <h2>신상품</h2>
-        <a href="#">더보기 +</a>
-        <div>
-            <div>
-                <img src="" alt="">
-                <div>
-                    <h5>제목제목</h5>
-                    <span>글쓴이</span>
-                    •
-                    <span>출판사</span>
+        <!-- 베스트추천-->
+        <div class="container">
+            <div class="best_header">
+                <h2 class="main_title">베스트</h2>
+                <a href="">더보기 ＋</a>
+            </div>
+            <div class="main_item_wrap">
+                <div class="best_item" v-for="i in 5">
+                    <img class="main_item_img" src="../assets/img/book4.jpg" alt="">
+                    <div class="main_item_info">
+                        <h5 class="main_item_title">제목제목</h5>
+                        <span class="main_item_writer">글쓴이</span>
+                        •
+                        <span class="main_item_publisher">출판사</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- 이벤트배너 구역 -->
-    <div>
-        <h3>이벤트입니다이벤트야</h3>
-        <p>2023.07.24 - 2023.08.31</p>
-    </div>
+        <!-- 신상품추천-->
+        <div class="container">
+            <div class="best_header">
+                <h2 class="main_title">신상품</h2>
+                <a href="">더보기 ＋</a>
+            </div>
+            <div class="main_item_wrap">
+                <div class="best_item" v-for="i in 5">
+                    <img class="main_item_img" src="../assets/img/book4.jpg" alt="">
+                    <div class="main_item_info">
+                        <h5 class="main_item_title">제목제목</h5>
+                        <span class="main_item_writer">글쓴이</span>
+                        •
+                        <span class="main_item_publisher">출판사</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <!-- 굿즈 구역 -->
-    <div>
-        <h2>굿즈</h2>
-        <div>
-            <img src="" alt="">
-            <div></div>
+        <!-- 이벤트배너-->
+        <div class="main_event">
+            <img class="main_event_img" src="../assets/img/event1.jpg" alt="">
+        </div>
+
+        <!-- 굿즈-->
+        <div class="container">
+            <div class="best_header">
+                <h2 class="main_title">굿즈</h2>
+                <a href="">더보기 ＋</a>
+            </div>
+            <div class="main_item_wrap">
+                <div class="recommend_item" v-for="i in 4">
+                    <img class="goods_img" src="../assets/img/goods1.png" alt="">
+                    <div class="goods_ball">여긴뭘까</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 플로팅-->
+        <div @click="openFloating" class="floating_btn">
+            <img src="../assets/img/floating.png" alt="">
+            <span class="floating_num">0</span>
+        </div>
+        <div class="floating_modal">
+
         </div>
     </div>
 </template>
 
 <script>
+import GnbBar from '../components/gnbBar.vue'
+
 export default {
+    components: { GnbBar },
     data() {
         return {
             images: [
-                require('../assets/img/book1.jpg'),
                 require('../assets/img/book2.jpg'),
+                require('../assets/img/book1.jpg'),
                 require('../assets/img/book3.jpg'),
             ],
             currentIndex: 0,
@@ -160,6 +186,9 @@ export default {
             this.currentIndex = index;
             this.transitionDuration = '0.3s';
         },
+        openFloating(){
+
+        },
     },
 };
 </script>
@@ -168,7 +197,7 @@ export default {
 /* 메인 공용 스타일 */
 .container {
     width: 80%;
-    margin: 5% auto 0 auto;
+    margin: 5% auto 5% auto;
 }
 
 .main_title {
@@ -214,6 +243,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     text-align: center;
+    box-shadow: inset 0 5px 5px -5px #ccc;
 }
 
 .nav_btn_wrap {
@@ -345,6 +375,38 @@ export default {
     justify-content: center;
 }
 
+/* 책추천 비로그인시 블러 */
+.blur {
+    filter: blur(10px);
+}
+
+.container_blur {
+    position: absolute;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 140%;
+}
+.container_blur h2 {
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+.container_blur a {
+    margin-top: 1%;
+    border: 2px solid #4E4EFF;
+    border-radius: 32px;
+    background-color: aliceblue;
+    color: #4E4EFF;
+    font-weight: bold;
+    font-size: x-large;
+    padding: 1% 10%;
+}
+.container_blur a:hover {
+    background-color: #4E4EFF;
+    color: white;
+}
 
 /* 책추천 */
 .recommend_title {
@@ -359,7 +421,9 @@ export default {
 .recommend_item {
     width: 21%;
     margin: 2% 0 0 0;
+    position: relative;
 }
+
 
 /* 베스트 */
 .best_header {
@@ -367,12 +431,81 @@ export default {
     justify-content: space-between;
     align-items: center;
 }
+
 .best_header a {
     font-size: large;
     font-weight: bold;
 }
+
 .best_item {
     width: 15%;
     margin: 2% 0 0 0;
+}
+
+
+/* 이벤트배너 */
+.main_event {
+    width: 100%;
+    margin-top: 5%;
+    text-align: center;
+}
+
+.main_event_img {
+    width: 100%;
+    height: 300px;
+}
+
+
+/* 굿즈 */
+.goods_img {
+    width: 90%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.goods_ball {
+    width: 40%;
+    height: 40%;
+    border-radius: 50%;
+    background-color: #4E4EFF;
+    position: absolute;
+    left: 65%;
+    top: 65%;
+    text-align: center;
+    font-size: xx-large;
+    color: white;
+    padding: 10% 0;
+}
+
+
+/* 플로팅 */
+.floating_btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: fixed;
+    right: 2%;
+    bottom: 10%;
+    background-color: #F2F2F2;
+    padding: 0.7%;
+    border-radius:100%;
+    cursor: pointer;
+    z-index: 50;
+}
+.floating_btn img {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+.floating_num {
+    position: absolute;
+    font-size: small;
+    left: 60%;
+    top: -15%;
+    color: white;
+    background-color: #4E4EFF;
+    padding: 6% 15% 9% 15%;
+    border-radius: 100px;
 }
 </style>
