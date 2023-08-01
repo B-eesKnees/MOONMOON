@@ -6,6 +6,9 @@ import Join from "../views/Join.vue"
 import booktestPage from "../views/bookTest.vue";
 import cart from "../views/cart.vue";
 
+import qnaList from "../views/qnaList.vue";
+
+
 const routes = [
     {
         path: "/",
@@ -31,6 +34,11 @@ const routes = [
       path: "/cart",
       name: "cartPage",
       component: cart
+    },
+    {
+      path: "/qna",
+      name: "qnaList",
+      component: qnaList
     }
 ];
 

@@ -31,6 +31,10 @@ router.post('/qnaView', async (req, res) => {
   });
 });
 
+// 문의 내용 수정
+
+// 문의 삭제
+
 // 문의글 작성
 router.post('/qnaWrite', async (req, res) => {
   const name = req.body.email;
