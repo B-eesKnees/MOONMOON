@@ -97,7 +97,7 @@ router.delete("/delrecentbook/:id", (req, res) => {
   });
 });
 
-//찜하기
+//찜하기 데이터 조회 ok
 router.get("/likebooks", (req, res) => {
   const userEmail = req.query.userEmail; // 쿼리 파라미터에서 userEmail 가져오기
 
@@ -140,10 +140,15 @@ router.post("/addlikebooks", (req, res) => {
   });
 });
 
-//찜 삭제
-router.delete("/likebooks/:id", (req, res) => {
-  const userEmail = req.query.userEmail; // 쿼리 파라미터에서 userEmail 가져오기
+//찜 삭제ok
+router.delete("/dellikebooks/:id", (req, res) => {
   const bookId = req.params.id; // URL 파라미터에서 삭제할 책의 ID 가져오기
+  const userEmail = req.query.userEmail; // 쿼리 파라미터에서 userEmail 가져오기
+
+  if (!userEmail) {
+    res.status(400).json({ error: "사용자 이메일이 필요합니다." });
+    return;
+  }
 
   const query =
     "DELETE FROM likedbook WHERE LIKE_USER_EMAIL=? AND LIKE_BOOK_ID=?";
@@ -153,15 +158,15 @@ router.delete("/likebooks/:id", (req, res) => {
       res.status(500).json({ error: "서버에러" });
     } else {
       if (result.affectedRows > 0) {
-        res.json({ message: "책이 찜 목록에서 삭제되었습니다." });
+        res.json({ message: "사용자의 좋아요가 취소되었습니다." });
       } else {
-        res.json({ message: "해당 책을 찜 목록에서 찾을 수 없습니다." });
+        res.json({ message: "해당 사용자의 좋아요를 찾을 수 없습니다." });
       }
     }
   });
 });
 
-//찜 누르면 추가 다시누르면 삭제
+//찜 누르면 추가 다시누르면 삭제 ok
 router.post("/cancellikebooks", (req, res) => {
   const userEmail = req.query.userEmail; // 쿼리 파라미터에서 userEmail 가져오기
   const bookId = req.body.bookId; // 요청 바디에서 추가할 책의 ID 가져오기
