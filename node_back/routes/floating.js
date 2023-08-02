@@ -16,7 +16,7 @@ router.use(
   })
 );
 
-//최근 본 책 데이터 가져오기
+//최근 본 책 데이터 가져오기//ok
 router.get("/recentbook", (req, res) => {
   const userEmail = req.query.userEmail; // 쿼리 파라미터에서 userEmail 가져오기
   let query;
@@ -40,7 +40,7 @@ router.get("/recentbook", (req, res) => {
   }
 });
 
-//최근 본 책 추가
+//최근 본 책 추가ok
 router.post("/addrecentbook", (req, res) => {
   const userEmail = req.query.userEmail; // 쿼리 파라미터에서 userEmail 가져오기
   const bookId = req.body.bookId; // 요청 바디에서 추가할 책의 ID 가져오기
@@ -54,7 +54,7 @@ router.post("/addrecentbook", (req, res) => {
         console.error(err);
         res.status(500).json({ error: "서버에러" });
       } else {
-        res.json({ message: "책이 최근 본 책 목록에 추가되었습니다." });
+        res.json({ message: "책이 최근 본 책 목록에 추가되었습니다ddd." });
       }
     });
   } else {
@@ -70,11 +70,11 @@ router.post("/addrecentbook", (req, res) => {
         );
       }
     }
-    res.json({ message: "책이 최근 본 책 목록에 추가되었습니다." });
+    res.json({ message: "책이 최근 본 책 목록에 추가되었습니다ttttt." });
   }
 });
 
-//최근 본 책 삭제
+//최근 본 책 삭제ok
 router.delete("/delrecentbook/:id", (req, res) => {
   //const userEmail = req.query.userEmail; // 쿼리 파라미터에서 userEmail 가져오기
   const bookId = req.params.id; // URL 파라미터에서 삭제할 책의 ID 가져오기
