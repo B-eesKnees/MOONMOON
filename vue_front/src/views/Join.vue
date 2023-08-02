@@ -57,9 +57,6 @@
                 <input v-model="password2" type="password" id="password_check" :class="{ error_border: password_check2 }"
                     placeholder="비밀번호 확인 입력"><br />
                 <p id="error" v-if="password_check2">비밀번호가 일치하지 않습니다.</p>
-                <label for="nickname">별명</label>
-                <input @input="nickname = $event.target.value" type="text" id="nickname" placeholder="활동명 입력"
-                    :class="{ error_border: nickname_check2 || nicknamecheck != 2 }" maxlength="10">
                 <form @submit.prevent="nicknameCheckForm">
                     <a href="/auth/checknick"><button type="submit" id="nickname_check"
                             class="username_submit">중복확인</button></a>

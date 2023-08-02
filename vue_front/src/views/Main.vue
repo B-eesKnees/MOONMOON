@@ -1,35 +1,7 @@
 <template>
     <GnbBar />
-    <div class="main">
-        <!-- nav-->
-        <div class="nav">
-            <div class="nav_btn_wrap">
-                <button class="nav_btn">☰</button>
-            </div>
-            <ul class="nav_category">
-                <a class="nav_category_link" href="">
-                    <li>추천</li>
-                </a>
-                <a class="nav_category_link" href="">
-                    <li>베스트</li>
-                </a>
-                <a class="nav_category_link" href="">
-                    <li>신상품</li>
-                </a>
-                <a class="nav_category_link" href="">
-                    <li>이벤트</li>
-                </a>
-                <a class="nav_category_link" href="">
-                    <li>굿즈</li>
-                </a>
-            </ul>
-            <div class="nav_sub">
-                <a class="nav_sub_link" href="">마일리지</a>
-                •
-                <a class="nav_sub_link" href="">출석체크</a>
-            </div>
-        </div>
-
+    <div ref="content" class="main content">
+        
         <!-- 이미지슬라이더 -->
         <div class="image-slider">
             <div class="slider-wrapper" v-if="slidesReady">
@@ -72,12 +44,12 @@
 
         <!-- 베스트추천-->
         <div class="container">
-            <div class="best_header">
+            <div class="main_contents_header">
                 <h2 class="main_title">베스트</h2>
-                <a href="">더보기 ＋</a>
+                <a href="/best">더보기 ＋</a>
             </div>
             <div class="main_item_wrap">
-                <div class="best_item" v-for="i in 5">
+                <div class="main_contents_item" v-for="i in 5">
                     <img class="main_item_img" src="../assets/img/book4.jpg" alt="">
                     <div class="main_item_info">
                         <h5 class="main_item_title">제목제목</h5>
@@ -91,12 +63,12 @@
 
         <!-- 신상품추천-->
         <div class="container">
-            <div class="best_header">
+            <div class="main_contents_header">
                 <h2 class="main_title">신상품</h2>
-                <a href="">더보기 ＋</a>
+                <a href="/new">더보기 ＋</a>
             </div>
             <div class="main_item_wrap">
-                <div class="best_item" v-for="i in 5">
+                <div class="main_contents_item" v-for="i in 5">
                     <img class="main_item_img" src="../assets/img/book4.jpg" alt="">
                     <div class="main_item_info">
                         <h5 class="main_item_title">제목제목</h5>
@@ -115,7 +87,7 @@
 
         <!-- 굿즈-->
         <div class="container">
-            <div class="best_header">
+            <div class="main_contents_header">
                 <h2 class="main_title">굿즈</h2>
                 <a href="">더보기 ＋</a>
             </div>
@@ -132,14 +104,54 @@
             <img src="../assets/img/floating.png" alt="">
             <span class="floating_num">0</span>
         </div>
-        <div class="floating_modal">
+        <div ref="float" class="floating_modal_wrap display_none">
+            <div class="floating_modal">
+                <div class="floating_modal_header">
+                    <h2>최근 본</h2>
+                    <span @click="closeFloating" class="cursor">✖</span>
+                </div>
+                <div class="floating_modal_list_header">
+                    <div class="floating_modal_list_header_left">
+                        <span>1</span>
+                        <span>건</span>
+                    </div>
+                    <div class="floating_modal_list_header_right cursor">
+                        <img src="../assets/img/trash.png" alt="">
+                        <span>전체삭제</span>
+                    </div>
+                </div>
+                <div class="floating_modal_list">
+                    <div v-for="i in 2" class="floating_modal_item">
+                        <a class="floating_modal_item_img" href=""><img src="../assets/img/book4.jpg" alt=""></a>
+                        <div class="floating_modal_item_info">
+                            <a href="">
+                                <h2>세이노의 가르침</h2>
+                            </a>
+                            <p>세이노(SayNo)</p>
+                            <div class="floating_modal_item_info_price">
+                                <span>10%</span>
+                                <span>16,200</span>원
+                            </div>
+                        </div>
+                        <div class="floating_modal_item_control">
+                            <img class="cursor" src="../assets/img/heart.png" alt="">
+                            <span class="cursor">✖</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <!-- toTop -->
+        <div v-show="state.showTopButton" @click="scrollToTop" class="scroll_top_btn">
+            <span>TOP</span>
         </div>
     </div>
 </template>
 
 <script>
 import GnbBar from '../components/gnbBar.vue'
+import { ref, reactive, onMounted, onUnmounted } from 'vue';
 
 export default {
     components: { GnbBar },
@@ -150,11 +162,65 @@ export default {
                 require('../assets/img/book1.jpg'),
                 require('../assets/img/book3.jpg'),
             ],
+            // 이미지슬라이드
             currentIndex: 0,
             slidesReady: false, // 슬라이드 준비 여부 상태 추가
             transitionDuration: '0.3s', // 이미지 이동 애니메이션 시간
+
         };
     },
+    setup() {
+    const state = reactive({
+      showTopButton: false,
+    });
+
+    // 스크롤 이벤트 핸들러
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+
+      // 스크롤이 일정 위치 이상으로 내려갔을 때 Top 버튼 표시
+      state.showTopButton = scrollTop >= 300;
+    };
+
+    // Top 버튼 클릭 시 스크롤을 위로 부드럽게 이동
+    Math.easeInOutQuad = function (t, b, c, d) {
+      t /= d / 2;
+      if (t < 1) return (c / 2) * t * t + b;
+      t--;
+      return (-c / 2) * (t * (t - 2) - 1) + b;
+    };
+
+    const scrollToTop = () => {
+      const startTime = performance.now();
+      const duration = 500;
+      const startTop = window.scrollY;
+
+      const scrollStep = timestamp => {
+        const currentTime = timestamp || performance.now();
+        const elapsed = currentTime - startTime;
+        const ease = Math.easeInOutQuad(elapsed, startTop, -startTop, duration);
+
+        window.scrollTo(0, ease);
+
+        if (elapsed < duration) {
+          window.requestAnimationFrame(scrollStep);
+        }
+      };
+      window.requestAnimationFrame(scrollStep);
+    };
+    // 스크롤 이벤트 리스너 등록
+    onMounted(() => {
+      window.addEventListener('scroll', handleScroll);
+    });
+    // 컴포넌트 제거 시 스크롤 이벤트 리스너 해제
+    onUnmounted(() => {
+      window.removeEventListener('scroll', handleScroll);
+    });
+    return {
+      state,
+      scrollToTop,
+    };
+  },
     mounted() {
         // 이미지 슬라이드가 렌더링되고 준비가 완료되면 slidesReady를 true로 설정
         this.slidesReady = true;
@@ -186,8 +252,13 @@ export default {
             this.currentIndex = index;
             this.transitionDuration = '0.3s';
         },
-        openFloating(){
-
+        openFloating() {
+            const floatdiv = this.$refs.float.classList;
+            floatdiv.toggle("display_none");
+        },
+        closeFloating() {
+            const floatdiv = this.$refs.float.classList;
+            floatdiv.toggle("display_none");
         },
     },
 };
@@ -195,6 +266,14 @@ export default {
 
 <style>
 /* 메인 공용 스타일 */
+.display_none {
+    display: none;
+}
+
+.cursor {
+    cursor: pointer;
+}
+
 .container {
     width: 80%;
     margin: 5% auto 5% auto;
@@ -231,49 +310,6 @@ export default {
 .main_item_writer,
 .main_item_publisher {
     line-height: 40px;
-}
-
-
-/* NAV바 */
-.nav {
-    width: 80%;
-    height: 10vh;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: center;
-    box-shadow: inset 0 5px 5px -5px #ccc;
-}
-
-.nav_btn_wrap {
-    width: 10%;
-}
-
-.nav_btn {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 50%;
-    padding: 8px 16px;
-    font-weight: bold;
-    font-size: large;
-    background-color: white;
-}
-
-.nav_category {
-    width: 30%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-left: -50%;
-}
-
-.nav_category_link li {
-    font-size: x-large;
-    font-weight: bold;
-}
-
-.nav_sub {
-    width: 10%;
 }
 
 
@@ -390,9 +426,11 @@ export default {
     width: 100%;
     height: 140%;
 }
+
 .container_blur h2 {
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 }
+
 .container_blur a {
     margin-top: 1%;
     border: 2px solid #4E4EFF;
@@ -403,6 +441,7 @@ export default {
     font-size: x-large;
     padding: 1% 10%;
 }
+
 .container_blur a:hover {
     background-color: #4E4EFF;
     color: white;
@@ -426,18 +465,18 @@ export default {
 
 
 /* 베스트 */
-.best_header {
+.main_contents_header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.best_header a {
+.main_contents_header a {
     font-size: large;
     font-weight: bold;
 }
 
-.best_item {
+.main_contents_item {
     width: 15%;
     margin: 2% 0 0 0;
 }
@@ -486,18 +525,20 @@ export default {
     text-align: center;
     position: fixed;
     right: 2%;
-    bottom: 10%;
+    bottom: 20%;
     background-color: #F2F2F2;
-    padding: 0.7%;
-    border-radius:100%;
+    padding: 0.8%;
+    border-radius: 100%;
     cursor: pointer;
     z-index: 50;
 }
+
 .floating_btn img {
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     border-radius: 50%;
 }
+
 .floating_num {
     position: absolute;
     font-size: small;
@@ -505,7 +546,164 @@ export default {
     top: -15%;
     color: white;
     background-color: #4E4EFF;
-    padding: 6% 15% 9% 15%;
+    padding: 9% 12% 9% 14%;
     border-radius: 100px;
+}
+
+.floating_modal_wrap {
+    z-index: 100;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.floating_modal {
+    position: fixed;
+    right: 2%;
+    top: 5%;
+    width: 23%;
+    height: 90%;
+    background-color: white;
+    border-radius: 22px;
+    padding: 1.5%;
+}
+
+.floating_modal_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20%;
+}
+
+.floating_modal_header h2 {
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.floating_modal_header span {
+    font-size: xx-large;
+
+}
+
+.floating_modal_list_header_left span:first-child {
+    color: #4E4EFF;
+    font-weight: bold;
+    font-size: large;
+}
+
+.floating_modal_list_header_left span:last-child {
+    font-weight: bold;
+}
+
+.floating_modal_list_header_right {
+    width: 18%;
+    display: flex;
+    align-items: center;
+    font-size: medium;
+    color: #7c7c7c;
+}
+
+.floating_modal_list_header_right img {
+    margin-right: 5%;
+}
+
+.floating_modal_list_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5%;
+}
+
+.floating_modal_item {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 4%;
+    margin-bottom: 3%;
+}
+
+.floating_modal_item_img {
+    width: 25%;
+    height: 12%;
+    border-radius: 12px;
+}
+
+.floating_modal_item_img img {
+    width: 100%;
+    max-height: 110px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.floating_modal_item_info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-left: -30%;
+    font-size: medium;
+    padding: 2%;
+}
+
+.floating_modal_item_info h2 {
+    font-weight: bold;
+}
+
+.floating_modal_item_info h2:hover {
+    text-decoration: underline;
+}
+
+.floating_modal_item_info_price span:first-child {
+    font-weight: bold;
+    font-size: large;
+    color: #4E4EFF;
+    margin-right: 5%;
+}
+
+.floating_modal_item_info_price span:last-child {
+    font-weight: bold;
+    font-size: large;
+}
+
+.floating_modal_item_control {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 12%;
+    height: 10%;
+    font-size: x-large;
+}
+
+.floating_modal_item_control span {
+    margin-bottom: 1%;
+}
+
+.floating_modal_item_control img {
+    width: 40%;
+}
+
+
+/* toTop */
+.scroll_top_btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: fixed;
+    right: 2%;
+    bottom: 12%;
+    background-color: white;
+    padding: 1% 0.7%;
+    border: 1px solid #ccc;
+    border-radius: 100%;
+    cursor: pointer;
+    z-index: 50;
+    font-weight: bold;
+    color: #7c7c7c;
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
 }
 </style>
