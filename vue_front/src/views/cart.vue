@@ -1,4 +1,5 @@
 <template>
+  <gnbbar />
   <div class="container">
     <div class="cart_wrap">
       <div class="cart_header" style="background-color: white">
@@ -98,7 +99,10 @@
 <script>
 import axios from "axios";
 
+import gnbbar from "../components/gnbBar.vue";
+
 export default {
+  components: { gnbbar },
   data() {
     return {
       cart: [
@@ -420,7 +424,7 @@ export default {
 .cart_wrap {
   width: 100%;
 
-  margin-top: 8.65%;
+  margin-top: -1%;
   margin-left: 11%;
   padding-bottom: 5%;
 }
@@ -492,7 +496,7 @@ export default {
 
 .progress {
   position: absolute;
-  top: 17%;
+  top: 20%;
   right: 15%;
   font-size: 1.4em;
   font-weight: bolder;
@@ -521,7 +525,7 @@ export default {
   position: fixed;
   width: 20%; /* 가로20% 공간 사용 */
   height: 400px;
-  margin-top: 0%;
+  margin-top: 1.2%;
   margin-right: 18%; /* 박스를 오른쪽으로 18%만큼 떨어뜨림(밀어냄) */
   padding: 2% 30px; /* 위아래 1% 양옆 10px*/
   border-radius: 5%;

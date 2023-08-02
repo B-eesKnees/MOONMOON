@@ -18,30 +18,32 @@ app.use(cookieParser());
 dotenv.config();
 
 app.use(
-  session({
-    resave: false,
-    saveUninitialized: false,
-    secret: process.env.COOKIE_SECRET,
-    cookie: {
-      httpOnly: true,
-      secure: false,
-    },
-  })
+    session({
+        resave: false,
+        saveUninitialized: false,
+        secret: process.env.COOKIE_SECRET,
+        cookie: {
+            httpOnly: true,
+            secure: false,
+        },
+    })
 );
 
 // 첫번째 처럼 각자 맡은 페이지 라우터 써서 작성 ㄱㄱ
-app.use("/qna", qnaRouter);  // qna
-// 
-// 
-// 
-// 
+//app.use("/qna", qnaRouter); // qna
+//
+//
+const authRouter = require("./routes/auth");
+const aladinRouter = require("./routes/aladin");
 const cartRouter = require("./routes/cart");
 const floatingRouter = require("./routes/floating");
 
 app.use("/cart", cartRouter);
 app.use("/floating", floatingRouter);
+app.use("/aladin", aladinRouter);
+app.use("/auth", authRouter);
 
 app.listen(app.get("port"), () => {
-  //서버 연결
-  console.log(app.get("port"), "번 대기중");
+    //서버 연결
+    console.log(app.get("port"), "번 대기중");
 });
