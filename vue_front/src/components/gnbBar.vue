@@ -3,16 +3,19 @@
 <template>
   <div class="gnb">
     <div class="gnb_bar">
-      <div class="gnb_bar_service">
+      <div v-if="!login" class="gnb_bar_service">
         <a href="/join">회원가입</a>
-        |
         <a href="/login">로그인</a>
-        |
+        <a href="/고객센터">고객센터</a>
+      </div>
+      <div v-if="login" class="gnb_bar_service">
+        <a href="/logout">로그아웃</a>
         <a href="/고객센터">고객센터</a>
       </div>
     </div>
   </div>
   <!-- 상단고정 검색헤더 -->
+
   <div class="gnb_bar_header_wrap">
     <div class="gnb_bar_header">
       <div class="gnb_bar_header_logo">
@@ -23,13 +26,44 @@
         <img class="gnb_bar_header_search_icon" src="../assets/img/search.png" alt="">
       </div>
       <div class="gnb_bar_header_user">
-        <a href=""><img class="gnb_bar_header_cart" src="../assets/img/cart1.png" alt="">
+        <a href="/cart"><img class="gnb_bar_header_cart" src="../assets/img/cart1.png" alt="">
           <span class="gnb_bar_header_cart_num">0</span>
         </a>
         <a href=""><img class="gnb_bar_header_userimg" src="../assets/img/user.png" alt=""></a>
       </div>
     </div>
   </div>
+  <!-- nav-->
+  <div class="nav_wrap">
+    <div class="nav">
+      <div class="nav_btn_wrap">
+        <button class="nav_btn">☰</button>
+      </div>
+      <ul class="nav_category">
+        <a class="nav_category_link" href="">
+          <li>추천</li>
+        </a>
+        <a class="nav_category_link" href="/best">
+          <li>베스트</li>
+        </a>
+        <a class="nav_category_link" href="/new">
+          <li>신상품</li>
+        </a>
+        <a class="nav_category_link" href="">
+          <li>이벤트</li>
+        </a>
+        <a class="nav_category_link" href="">
+          <li>굿즈</li>
+        </a>
+      </ul>
+      <div class="nav_sub">
+        <a class="nav_sub_link" href="">마일리지</a>
+        •
+        <a class="nav_sub_link" href="">출석체크</a>
+      </div>
+    </div>
+  </div>
+
   <!-- 카카오 로그인--------------------------------------------------------------------------------------------------------------------
         ------------------------------------------------------------------------------------------------------------------------ -->
   <!-- <div v-else-if="provider === 'kakao'" class="gnb_bar_user_login">
