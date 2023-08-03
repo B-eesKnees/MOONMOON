@@ -3,13 +3,14 @@ import Main from "../views/Main.vue";
 import Login from "../views/Login.vue";
 import Join from "../views/Join.vue";
 
-import BestList from "../views/bestList.vue"
-import NewList from "../views/newList.vue"
+import BestList from "../views/bestList.vue";
+import NewList from "../views/newList.vue";
 
 import booktestPage from "../views/bookTest.vue";
 import cart from "../views/cart.vue";
 import resultpage from "../views/paymentResult.vue";
 import bookInsert from "../views/bookInsert.vue";
+import pay from "../views/pay.vue";
 
 import qnaList from "../views/qnaList.vue";
 import qnaWrite from "../views/qnaWrite.vue";
@@ -72,7 +73,12 @@ const routes = [
       path: "/qnaEdit",
       name: "qnaEdit",
       component: qnaEdit
-    }
+    },
+    {
+      path: "/pay",
+      name: "paymentPage",
+      component: pay,
+    },
 ];
 
 const router = createRouter({
