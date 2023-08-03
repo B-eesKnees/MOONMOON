@@ -40,6 +40,7 @@ const floatingRouter = require("./routes/floating");
 const qnaRouter = require("./routes/qna");
 const reviewRouter = require("./routes/review");
 const rouletteRouter = require("./routes/roulette");
+const payRouter = require("./routes/pay");
 
 app.use("/cart", cartRouter);
 app.use("/floating", floatingRouter);
@@ -48,6 +49,7 @@ app.use("/auth", authRouter);
 app.use("/qna", qnaRouter); // qna
 app.use("/review", reviewRouter);
 app.use("/roulette", rouletteRouter);
+app.use("/pay", payRouter);
 
 app.listen(app.get("port"), () => {
   //서버 연결
