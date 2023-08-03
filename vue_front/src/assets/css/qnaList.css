@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap');
+
+@media screen and (max-width: 1920px) {
+  body {
+    background-color: rgba(250, 250, 250, 1);
+    font-family: 'Noto Sans KR', sans-serif;
+    /* line-height: 1.7; */
+
+}
+
+
+
+.display_none {
+  display: none;
+}
+
+.wrap {
+  width: 43%;
+  margin: 5% auto 5% auto;
+}
+
+.qna_title {
+font-size: 25pt;
+font-weight: 500;
+}
+
+}

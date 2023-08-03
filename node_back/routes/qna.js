@@ -19,7 +19,7 @@ router.get('/qnaList', (req, res) => {
       return console.log(error);
     } 
     if (result) {
-      res.send({qnaList: result});  // res.render? res.json?
+      res.send({qnaList: result});  // res.render?-x  res.json?
     }
    })
   });
@@ -37,6 +37,7 @@ router.post('/qnaView', async (req, res) => {
     }
   });
 }); */
+
 
 // 문의글 작성 --ok post 요청은 됐다 db에 들어왂다!!
 // get 요청이 왜 같이 들어오지..(아무래도 redirect 부분인 듯..)
@@ -62,15 +63,18 @@ router.post('/qnaWrite', (req, res) => {
   }
 });
 
-// 문의 내용 수정
+
+// 문의 내용 수정  --ok
 router.post('/qnaEdit', (req, res) => {
   let { QNA_ID } = req.body;
    QNA_ID = Number(QNA_ID);
   const { QNA_TITLE, QNA_CON } = req.body;
 
-  const query = ``;
+  const query = `update qna
+                 set QNA_CON = ?
+                 where QNA_ID = ?`;
 
-  db.query(query, [], (error, result) => {
+  db.query(query, [QNA_CON, QNA_ID], (error, result) => {
     if (error) {
       return console.log(error);
     }
@@ -81,14 +85,15 @@ router.post('/qnaEdit', (req, res) => {
 });
 
 
-// 문의 삭제
+// 문의 삭제  --ok
 router.get('/qnaDel', (req, res) => {
   let { QNA_ID } = req.body;
    QNA_ID = Number(QNA_ID); 
 
-  const query = ``;
+  const query = `delete from qna
+                 where QNA_ID = ?`;
 
-  db.query(query, [], (error, result) => {
+  db.query(query, QNA_ID, (error, result) => {
     if (error) {
       return console.log(error);
     }
