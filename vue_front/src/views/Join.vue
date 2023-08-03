@@ -23,23 +23,23 @@
         <div class="wrap">
             <form @submit.prevent="joinForm">
                 <label for="name">이름</label>
-                <input v-model="name" type="text" id="name" placeholder="이름 입력"
-                    :class="{ error_border: email_check || emailcheck != 2 }" maxlength="25">
+                <input v-model="name" type="text" id="name" placeholder="이름 입력" :class="{ error_border: name_check }"
+                    maxlength="25">
                 <label for="email">아이디</label>
-                <input v-model="email" type="text" id="email" placeholder="이메일 입력"
+                <input v-model="emailFirst" type="text" id="email" placeholder="이메일 입력"
                     :class="{ error_border: email_check || emailcheck != 2 }" maxlength="25">
-                <select class="email_list" name="emailList" id="emailList">
-                    <option value="">@naver.com</option>
-                    <option value="">@hanmail.net</option>
-                    <option value="">@gmail.com</option>
-                    <option value="">@nate.com</option>
-                    <option value="">@hotmail.com</option>
+                <select v-model="emailSecond" class="email_list" name="emailList" id="emailList">
+                    <option value="@naver.com">@naver.com</option>
+                    <option value="@hanmail.net">@hanmail.net</option>
+                    <option value="@gmail.com">@gmail.com</option>
+                    <option value="@nate.com">@nate.com</option>
+                    <option value="@hotmail.com">@hotmail.com</option>
                 </select>
-                <button @click="sendEmail(), startCountdown()" class="email_auth">인증메일 전송</button>
+                <button type="button" @click=" startCountdown(), sendEmail()" class="email_auth">인증메일 전송</button>
                 <div v-if="clickSendEmail" class="email_auth_complete">
-                    <input type="text" maxlength="6">
+                    <input v-model="userVerifyNum" :disabled="!email_auth_check" type="text" maxlength="6">
                     <span>{{ formattedTime }}</span>
-                    <button @click="completeAuthEmail">인증완료</button>
+                    <button type="button" @click="completeAuthEmail">인증완료</button>
 
                 </div>
                 <form @submit.prevent="emailCheckForm">
@@ -52,18 +52,11 @@
                 <label for="password">비밀번호</label>
                 <input v-model="password" type="password" id="password" :class="{ error_border: password_check }"
                     placeholder="비밀번호 입력" maxlength="15"><br />
-                <p id="error" v-if="password_check">비밀번호를 정확히 입력해주세요.<br /> *8자리 이상 영문 대소문자, 숫자, 특수문자가 각각 1개 이상</p>
+                <p id="error" v-if="password_check">비밀번호를 정확히 입력해주세요.<br /> *8자리 이상 영문, 숫자, 특수문자가 각각 1개 이상</p>
                 <label for="password_check2">비밀번호 확인</label>
                 <input v-model="password2" type="password" id="password_check" :class="{ error_border: password_check2 }"
                     placeholder="비밀번호 확인 입력"><br />
                 <p id="error" v-if="password_check2">비밀번호가 일치하지 않습니다.</p>
-                <form @submit.prevent="nicknameCheckForm">
-                    <a href="/auth/checknick"><button type="submit" id="nickname_check"
-                            class="username_submit">중복확인</button></a>
-                </form>
-                <p id="error" v-show="nicknamecheck == 1">존재하는 닉네임입니다.</p>
-                <p id="complete" v-show="nicknamecheck == 2">사용가능한 닉네임입니다.</p>
-                <p id="error" v-if="nickname_check2">닉네임을 입력해주세요.</p>
                 <div class="gender">
                     <label for="sex">성별</label>
                     <input v-model="sex" type='radio' name='gender' value='m' class="input_sex" />남자
@@ -84,16 +77,17 @@
                 <input v-model="phone_num" @input="formatPhoneNumber" type="text" id="phone_num" placeholder="전화번호 입력"
                     :class="{ error_border: phone_check }" maxlength="13"><br />
                 <p id="error" v-if="phone_check">전화번호를 정확히 입력해주세요.</p>
-                <label for="epostNum">우편번호</label>
-                <input ref="epostNum" type="text" id="epostNum" placeholder="우편번호 입력">
+                <label for="epostNum">우편번호<span class="fontRed">*</span></label>
+                <input v-model="epostNum" ref="epostNum" type="text" id="epostNum" placeholder="우편번호 입력">
                 <input @click="sample6_execDaumPostcode" class="epostNumBtn" type="button" value="우편번호 검색"><br />
-                <label for="epostAdress">주소</label>
-                <input ref="epostAdress" type="text" id="epostAdress" placeholder="주소 입력"><br />
-                <label for="epostDetailAdress">상세주소</label>
-                <input ref="epostDetailAdress" type="text" id="epostDetailAdress" placeholder="상세주소 입력"><br />
+                <label for="epostAdress">주소<span class="fontRed">*</span></label>
+                <input v-model="epostAdress" ref="epostAdress" type="text" id="epostAdress" placeholder="주소 입력"><br />
+                <label for="epostDetailAdress">상세주소<span class="fontRed">*</span></label>
+                <input v-model="epostDetailAdress" ref="epostDetailAdress" type="text" id="epostDetailAdress"
+                    placeholder="상세주소 입력"><br />
                 <!-- 가입하기버튼 -->
-                <a href="/auth/join"><input type="submit" :class="{ 'error_submit': allcheck, 'submit': !allcheck }"
-                        :disabled="allcheck" id="login" value="가입하기"></a>
+                <button type="submit"/><input type="submit" :class="{ 'error_submit': allcheck, 'submit': !allcheck }"
+                         id="login" value="가입하기">
             </form>
         </div>
     </div>
@@ -112,18 +106,25 @@ export default {
     // components: { gnbBar, Footer },
     data() {
         return {
+            // 회원 입력정보
+            name: '',
             email: '',
+            emailFirst: '',
+            emailSecond: '',
             password: '',
             password2: '',
-            nickname: '',
             phone_num: '',
             sex: '',
             agegroup: '',
+            epostNum: '',
+            epostAdress: '',
+            epostDetailAdress: '',
 
+
+            name_check: true,
             email_check: false,
             password_check: false,
             password_check2: false,
-            nickname_check: false,
             sex_check: false,
             age_range_check: false,
             phone_check: false,
@@ -133,6 +134,9 @@ export default {
             clickSendEmail: false,
             countdown: 180,
             interval: null,
+            verifyNum: '',
+            userVerifyNum: '',
+            email_auth_check: true,
 
             //주소 데이터
             epostNum: "",
@@ -153,102 +157,106 @@ export default {
         };
     },
     watch: {
-        'email': function () {
+        'name': function () {
+            this.checkName()
+            this.inputAllCheck()
+        },
+        'emailFirst': function () {
+            this.checkEmail()
+            this.funcWatch()
+        },
+        'emailSecond': function () {
             this.checkEmail()
             this.funcWatch()
         },
         'password': function () {
             this.checkPassword()
-            this.funcWatch()
+            this.inputAllCheck()
         },
         'password2': function () {
             this.checkPassword2()
-            this.funcWatch()
-        },
-        'nickname': function () {
-            this.checknickname()
-            this.funcWatch()
+            this.inputAllCheck()
         },
         'sex': function () {
             this.checksex()
-            this.funcWatch()
+            this.inputAllCheck()
         },
         'agegroup': function () {
             this.checkage_range()
-            this.funcWatch()
+            this.inputAllCheck()
         },
         'phone_num': function () {
             this.checkphone()
-            this.funcWatch()
+            this.inputAllCheck()
         }
 
     },
     computed: {
         formattedTime() {
-          const minutes = Math.floor(this.countdown / 60);
-          const seconds = this.countdown % 60;
-          return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            const minutes = Math.floor(this.countdown / 60);
+            const seconds = this.countdown % 60;
+            return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
         },
     },
     methods: {
+
         funcWatch() {
             this.emailCheckForm()
             this.inputAllCheck()
-            this.nicknameCheckForm()
         },
         movetomain() {
             window.location.href = '/';
         },
-        checkEmail() {
-            // 이메일 형식 검사
-            const validateEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-
-            if (this.email === '' || !validateEmail.test(this.email) || !this.email) {
-                this.email_check = true;
+        checkName() {
+            if (this.name === '' || !this.name) {
+                this.name_check = true;
                 this.error_border_check = true;
-                this.allcheck1 = true; //입력조건 안맞을시 true
+                this.allcheck1 = true;
             } else {
-                this.email_check = false;
+                this.name_check = false;
                 this.error_border_check = false;
                 this.allcheck1 = false;
             }
         },
+        checkEmail() {
+            // 이메일 형식 검사
+            this.email = this.emailFirst + this.emailSecond;
+            const validateEmail1 = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+            const validateEmail2 = /^[a-zA-Z0-9]*$/;
+            console.log(this.email);
+            if (this.email === '' || !validateEmail1.test(this.email) || !this.email || !validateEmail2.test(this.emailFirst)) {
+                this.email_check = true;
+                this.error_border_check = true;
+                this.allcheck2 = true; //입력조건 안맞을시 true
+            } else {
+                this.email_check = false;
+                this.error_border_check = false;
+                this.allcheck2 = false;
+            }
+        },
         checkPassword() {
-            // 최소 8자리 이상 영문 대소문자, 숫자, 특수문자가 각각 1개 이상
-            const validatePassword = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/
+            // 최소 8자리 이상 영문, 숫자, 특수문자가 각각 1개 이상
+            const validatePassword = /^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/
 
             if (this.password === '' || !validatePassword.test(this.password) || !this.password) {
                 this.password_check = true;
                 this.error_border_check = true;
-                this.allcheck2 = true;
+                this.allcheck3 = true;
             } else {
                 this.password_check = false;
                 this.error_border_check = false;
-                this.allcheck2 = false;
+                this.allcheck3 = false;
             }
         },
         checkPassword2() {
             if (this.password === this.password2) {
                 this.password_check2 = false;
                 this.error_border_check = false;
-                this.allcheck3 = false;
+                this.allcheck4 = false;
             } else {
                 this.password_check2 = true;
                 this.error_border_check = true;
-                this.allcheck3 = true;
-            }
-        },
-        checknickname() {
-            const validateNickname = /^.{1,10}$/;
-
-            if (!this.nickname || !validateNickname.test(this.nickname)) {
-                this.nickname_check2 = true;
-                this.error_border_check = true;
                 this.allcheck4 = true;
-            } else {
-                this.nickname_check2 = false;
-                this.error_border_check = false;
-                this.allcheck4 = false;
             }
         },
         checksex() {
@@ -287,36 +295,57 @@ export default {
             }
         },
         inputAllCheck() {
-            if (this.allcheck1 || this.allcheck2 || this.allcheck3 || this.allcheck4 || this.allcheck5 || this.allcheck6 || this.allcheck7 || this.email_check) { //하나라도 입력조건이 안맞을시
+            if (this.allcheck1 || this.allcheck2 || this.allcheck3 || this.allcheck4 || this.allcheck5 || this.allcheck6 || this.allcheck7 || this.email_check || this.email_auth_check) { //하나라도 입력조건이 안맞을시
                 this.allcheck = true; //버튼 비활성
             } else {
                 this.allcheck = false;
             }
         },
-        sendEmail() {
-            this.clickSendEmail = true;
+        async sendEmail() {
+            await axios({
+                url: "http://localhost:3000/auth/sendEmail",
+                method: "POST",
+                data: {
+                    email: this.email
+                },
+            }).then(async (res) => {
+                this.verifyNum = res.data.verifyNum;
+                console.log(res.data.verifyNum, "서버 코드");
+            }).catch(error => {
+                alert(error);
+            })
         },
         startCountdown() {
-          this.interval = setInterval(() => {
-            if (this.countdown > 0) {
-              this.countdown--;
-            } else {
-                clearInterval(this.interval); // 컴포넌트가 제거되기 전에 interval을 정리해야합니다.
-              alert('인증에 실패하였습니다.');
-              this.clickSendEmail = false;
-              this.countdown = 180;
-            }
-          }, 1000);
+            this.clickSendEmail = true;
+            this.interval = setInterval(() => {
+                if (this.countdown > 0) {
+                    this.countdown--;
+                } else {
+                    clearInterval(this.interval); // 컴포넌트가 제거되기 전에 interval을 정리해야합니다.
+                    alert('인증에 실패하였습니다.');
+                    this.clickSendEmail = false;
+                    this.countdown = 180;
+                    this.userVerifyNum = "";
+                }
+            }, 1000);
         },
         completeAuthEmail() {
-            if(인증번호일치할시) {
+            console.log(this.userVerifyNum, "사용자입력 코드");
+            if (this.verifyNum == this.userVerifyNum) {
                 alert("인증이 완료되었습니다.");
+                this.email_auth_check = false;
+                this.clickSendEmail = false; //사용자입력 인증코드 초기화
+                this.userVerifyNum = ""; // 인증시간 초기화
             } else {
                 alert("인증번호가 일치하지 않습니다.");
+                this.email_auth_check = true;
+                this.clickSendEmail = false;
+                this.userVerifyNum = ""; //사용자입력 인증코드 초기화
+                this.countdown = 180; // 인증시간 초기화
             }
         },
-        emailCheckForm() {
-            axios({
+        async emailCheckForm() {
+            await axios({
                 url: "http://localhost:3000/auth/checkemail",
                 method: "POST",
                 data: {
@@ -324,40 +353,21 @@ export default {
                 },
             }).then(async (res) => {
                 const validateEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-
-                if (res.data.message == '사용가능한 이메일입니다.' && validateEmail.test(this.email)) {
+                console.log(res.data);
+                console.log(this.emailcheck);
+                if (res.data == "사용가능한 이메일입니다." && validateEmail.test(this.email)) {
                     this.emailcheck = 2;
-                } else if (res.data.message == '존재하는 이메일입니다.') {
+                } else if (res.data == "존재하는 이메일입니다.") {
                     this.emailcheck = 1;
                     this.allcheck = true;
                 } else if (!this.email) {
                     this.emailcheck = 3;
                 }
+            }).catch(error => {
+                alert(error);
+            })
+        },
 
-            }).catch(error => {
-                alert(error);
-            })
-        },
-        nicknameCheckForm() {
-            axios({
-                url: "http://localhost:3000/auth/checknick",
-                method: "POST",
-                data: {
-                    nickname: this.nickname,
-                },
-            }).then(async (res) => {
-                if (res.data.message == '사용가능한 닉네임입니다.' && this.nickname) {
-                    this.nicknamecheck = 2;
-                } else if (res.data.message == '존재하는 닉네임입니다.') {
-                    this.nicknamecheck = 1;
-                    this.allcheck = true;
-                } else if (!this.nickname) {
-                    this.nicknamecheck = 3;
-                }
-            }).catch(error => {
-                alert(error);
-            })
-        },
         sample6_execDaumPostcode() { // 다음 지도API
             new daum.Postcode({
                 oncomplete: function (data) {
@@ -400,23 +410,31 @@ export default {
                 }
             }).open();
         },
-        joinForm() { //백엔드로 회원가입 정보 전달
-            axios({
-                url: "http://localhost:3000/auth/join",
-                method: "POST",
-                data: {
-                    email: this.email,
-                    password: this.password,
-                    nickname: this.nickname,
-                    sex: this.sex,
-                    agegroup: this.agegroup,
-                    phone_num: this.phone_num
-                },
-            }).then(async (res) => {
-                alert(res.data.message);
-            }).catch(error => {
-                alert(error);
-            })
+        async joinForm() { //백엔드로 회원가입 정보 전달
+            if (this.email_auth_check == true || this.allcheck == true) {
+                alert("회원정보를 다시 입력하세요.");
+            } else {
+                await axios({
+                    url: "http://localhost:3000/auth/join",
+                    method: "POST",
+                    data: {
+                        name: this.name,
+                        email: this.email,
+                        password: this.password,
+                        sex: this.sex,
+                        agegroup: this.agegroup,
+                        phone: this.phone_num,
+                        zipcode: this.epostNum,
+                        add1: this.epostAdress,
+                        add2: this.epostDetailAdress
+                    },
+                }).then(async (res) => {
+                    alert(res.data.message);
+                }).catch(error => {
+                    alert(error);
+                })
+            }
+
         },
         async autoLogin() {
             await axios({
@@ -443,6 +461,12 @@ export default {
 </script> 
 
 <style scoped>
+/* 공용 CSS */
+.fontRed {
+    color: red;
+}
+
+
 /* 회원가입 */
 .join {
     padding-top: 5%;
@@ -534,6 +558,7 @@ export default {
     align-items: center;
     position: relative;
 }
+
 .email_auth_complete span {
     position: absolute;
     top: 18%;
@@ -541,6 +566,7 @@ export default {
     color: red;
     padding: 1%;
 }
+
 .email_auth_complete input {
     width: 20%;
 }
@@ -688,4 +714,5 @@ input.submit:hover {
     margin-left: 20%;
     margin-top: 25px;
     transition: all .2s ease-in-out;
-}</style>
+}
+</style>
