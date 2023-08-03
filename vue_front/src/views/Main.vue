@@ -362,8 +362,8 @@ export default {
 }
 
 .container {
-  width: 80%;
-  margin: 5% auto 5% auto;
+  width: 70%;
+  margin: 5% auto;
 }
 
 .main_title {
