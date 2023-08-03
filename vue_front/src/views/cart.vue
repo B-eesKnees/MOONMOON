@@ -410,6 +410,10 @@ export default {
   padding-bottom: 20px;
   padding-top: 20px;
   border-radius: 30px 30px 0 0;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  padding-left: 12px;
 }
 /* .cart_header h3{
   vertical-align: top;
@@ -432,9 +436,13 @@ export default {
 .cart_list li {
   width: 100%;
   height: 250px;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
   list-style: none;
   background-color: white;
+  padding-left: 10px;
 }
 
 .book_name {
@@ -496,7 +504,7 @@ export default {
 
 .progress {
   position: absolute;
-  top: 20%;
+  top: 22%;
   right: 15%;
   font-size: 1.4em;
   font-weight: bolder;
@@ -521,7 +529,7 @@ export default {
 
 .payment_area {
   right: -20px;
-  top: 205px;
+  top: 229px;
   position: fixed;
   width: 20%; /* 가로20% 공간 사용 */
   height: 400px;
@@ -575,11 +583,11 @@ export default {
   text-align: right; /* 텍스트 오른쪽 정렬(텍스트 길이가 길어지면 왼쪽으로 늘어남) */
 }
 .pay_button {
-  position: absolute;
-  width: 300px;
-  height: 80px;
-  top: 75%;
-  right: 40px;
+  position: relative;
+  width: 95%;
+  height: 23%;
+  top: 12%;
+  left: 3%;
   color: white;
   background-color: #4e4eff;
   border: none;
@@ -632,7 +640,7 @@ input[id^="book_checkbox"]:checked + label::after {
   background-position: center 8px;
   background-repeat: no-repeat;
   background-color: #4e4eff;
-  border: 2px solid #000000;
+  border: 1px solid #000000;
   transition: background-color 0.3s, border-color 0.3s, content 0.3s;
 }
 .if_nodata {
