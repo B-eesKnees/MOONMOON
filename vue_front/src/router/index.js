@@ -12,6 +12,8 @@ import resultpage from "../views/paymentResult.vue";
 import bookInsert from "../views/bookInsert.vue";
 
 import qnaList from "../views/qnaList.vue";
+import qnaWrite from "../views/qnaWrite.vue";
+import qnaEdit from "../views/qnaEdit.vue";
 
 const routes = [
     {
@@ -60,6 +62,16 @@ const routes = [
       path: "/qna",
       name: "qnaList",
       component: qnaList
+    },
+    {
+      path: "/qnaWrite",
+      name: "qnaWrite",
+      component: qnaWrite
+    },
+    {
+      path: "/qnaEdit",
+      name: "qnaEdit",
+      component: qnaEdit
     }
 ];
 
