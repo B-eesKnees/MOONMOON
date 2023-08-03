@@ -3,8 +3,9 @@ import Main from "../views/Main.vue";
 import Login from "../views/Login.vue";
 import Join from "../views/Join.vue";
 
-import BestList from "../views/bestList.vue";
-import NewList from "../views/newList.vue";
+import SearchList from "../views/searchList.vue"
+import BestList from "../views/bestList.vue"
+import NewList from "../views/newList.vue"
 
 import booktestPage from "../views/bookTest.vue";
 import cart from "../views/cart.vue";
@@ -38,6 +39,11 @@ const routes = [
         component: booktestPage
     },
     //---책리스트---
+    {
+      path: "/search",
+      name: "SearchList",
+      component: SearchList
+    },
     {
      path: "/best",
      name: "BestList",
