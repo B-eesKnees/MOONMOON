@@ -33,6 +33,8 @@ export default {
     return {
       value: [100, 500, 1000, 500, 3000, 5000],
       //룰렛 돌리고 받는 포인트
+      //룰렛 이미지 assets/룰.png보면 0~5 적어놨는데 이 배열임
+      // ex) 3 > value[3];
       rolLength: 6,
       //룰렛 보상 배열 길이
       probabilities: [0.5, 0.15, 0.1, 0.15, 0.07, 0.03],
