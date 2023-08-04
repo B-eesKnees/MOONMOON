@@ -209,14 +209,17 @@
       <span>TOP</span>
     </div>
   </div>
+
+  <roulette />
 </template>
 
 <script>
 import GnbBar from "../components/gnbBar.vue";
 import { ref, reactive, onMounted, onUnmounted } from "vue";
+import roulette from "../components/roulette.vue";
 
 export default {
-  components: { GnbBar },
+  components: { GnbBar, roulette },
   data() {
     return {
       images: [

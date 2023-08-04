@@ -14,7 +14,7 @@ router.post("/postreview", (req, res) => {
     REV_RATING: reviewData.REV_RATING,
   };
 
-  const query = "INSERT INTO REVIEWBOOK SET ?";
+  const query = "INSERT INTO REVIEW SET ?";
   db.query(query, reviewRow, (err, results) => {
     if (err) {
       console.error(err);
@@ -32,7 +32,7 @@ router.post("/postreview", (req, res) => {
 router.get("/reviewdata", (req, res) => {
   const { bookId } = req.query;
   const query =
-    "SELECT r.REVIEW_ID, r.REV_COMMENT, r.REV_CREATED_AT, r.REV_RATING, b.BOOK_ID FROM reviewbook r INNER JOIN books b ON r.REV_ORDERITEM_BOOK = b.BOOK_ID WHERE b.BOOK_ID = ? ORDER BY r.REV_CREATED_AT DESC;";
+    "SELECT r.REVIEW_ID, r.REV_COMMENT, r.REV_CREATED_AT, r.REV_RATING, b.BOOK_ID FROM review r INNER JOIN book b ON r.REV_ORDERITEM_BOOK = b.BOOK_ID WHERE b.BOOK_ID = ? ORDER BY r.REV_CREATED_AT DESC;";
   db.query(query, [bookId], (err, results) => {
     if (err) {
       console.error(err);
@@ -47,7 +47,7 @@ router.get("/reviewdata", (req, res) => {
 router.get("/reviewrating", (req, res) => {
   const { bookId } = req.query;
   const query =
-    "SELECT r.REVIEW_ID, r.REV_COMMENT, r.REV_CREATED_AT, r.REV_RATING, b.BOOK_ID FROM reviewbook r INNER JOIN books b ON r.REV_ORDERITEM_BOOK = b.BOOK_ID WHERE b.BOOK_ID = ? ORDER BY r.REV_RATING DESC";
+    "SELECT r.REVIEW_ID, r.REV_COMMENT, r.REV_CREATED_AT, r.REV_RATING, b.BOOK_ID FROM review r INNER JOIN book b ON r.REV_ORDERITEM_BOOK = b.BOOK_ID WHERE b.BOOK_ID = ? ORDER BY r.REV_RATING DESC";
   db.query(query, [bookId], (err, results) => {
     if (err) {
       console.error(err);
@@ -63,7 +63,7 @@ router.put("/updatereview/:reviewId", (req, res) => {
   const { reviewId } = req.params;
   const review = req.body.review;
 
-  const query = `UPDATE reviewbook SET REV_CREATED_AT=now(), REV_COMMENT=?, REV_RATING=? WHERE REVIEW_ID=?`;
+  const query = `UPDATE review SET REV_CREATED_AT=now(), REV_COMMENT=?, REV_RATING=? WHERE REVIEW_ID=?`;
   db.query(
     query,
     [review.REV_COMMENT, review.REV_RATING, reviewId],
@@ -84,7 +84,7 @@ router.put("/updatereview/:reviewId", (req, res) => {
 //리뷰삭제ok
 router.delete("/deletereview", (req, res) => {
   const { reviewId } = req.query;
-  const query = `DELETE FROM reviewbook where REVIEW_ID=?`;
+  const query = `DELETE FROM review where REVIEW_ID=?`;
 
   db.query(query, [reviewId], (err, results) => {
     if (err) {

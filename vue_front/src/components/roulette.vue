@@ -5,14 +5,17 @@
         <div class="rouletter-wacu"></div>
       </div>
       <div class="rouletter-arrow"></div>
-      <button class="rouletter-btn" @click="startRoulette">start</button>
+      <button class="rouletter-btn" @click="startRoulette()">start</button>
     </div>
 
+    <input type="hidden" class="hidden-input" ref="hiddenInput" />
     <div class="modal" id="resultModal">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-title">축하합니다!</div>
-          <div class="modal-body" id="modal-body">{{ modalMessage }}</div>
+          <div class="modal-body" id="modal-body">
+            {{ selectedValue }}P 당첨되었습니다!
+          </div>
           <div class="modal-footer">
             <span class="modal-close" @click="hideModal">&times;</span>
           </div>
@@ -23,15 +26,20 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
+      value: [100, 500, 1000, 500, 3000, 5000],
       rolLength: 6,
-      probabilities: [0.03, 0.07, 0.15, 0.1, 0.15, 0.5],
+      probabilities: [0.5, 0.15, 0.1, 0.15, 0.07, 0.03],
       setNum: null,
       modalMessage: "",
+      selectedValue: null,
     };
   },
+
   methods: {
     rRandom() {
       var rand = Math.random();
@@ -45,14 +53,17 @@ export default {
     rRotate() {
       var panel = document.querySelector(".rouletter-wacu");
       var btn = document.querySelector(".rouletter-btn");
+
       var deg = [];
       for (var i = 1, len = this.rolLength; i <= len; i++) {
         deg.push((360 / len) * i);
       }
 
       var num = 0;
+
       this.$el.append(this.$refs.hiddenInput);
       this.setNum = this.$refs.hiddenInput.value = this.rRandom();
+      this.modalMessage = "";
 
       var ani = setInterval(() => {
         num++;
@@ -64,6 +75,8 @@ export default {
           clearInterval(ani);
           panel.style.transform = `rotate(${deg[this.setNum]}deg)`;
 
+          this.selectedValue = this.value[this.setNum];
+
           setTimeout(() => {
             this.rLayerPopup(this.setNum);
             btn.disabled = false;
@@ -73,25 +86,11 @@ export default {
       }, 50);
     },
     rLayerPopup(num) {
-      switch (num) {
-        case 1:
-          this.showModal("5000P 당첨!");
-          break;
-        case 2:
-          this.showModal("3000P 당첨!");
-          break;
-        case 3:
-          this.showModal("500P 당첨!");
-          break;
-        case 4:
-          this.showModal("1000P 당첨!");
-          break;
-        case 5:
-          this.showModal("500P 당첨!!");
-          break;
-        default:
-          this.showModal("100P당첨!");
-      }
+      const prizes = [100, 500, 1000, 500, 3000, 5000];
+
+      this.modalMessage = prizes[num];
+      var modal = this.$el.querySelector("#resultModal");
+      modal.style.display = "block";
     },
     showModal(message) {
       this.modalMessage = message;
@@ -112,8 +111,25 @@ export default {
       }, 8000);
     },
     startRoulette() {
+      // 룰렛 값을 선택하는 로직
+      this.setNum = this.rRandom();
+      this.selectedValue = this.value[this.setNum];
       this.rRotate();
       this.rReset();
+
+      // 선택된 값을 바로 백엔드로 전송
+      const backServer = "http://localhost:3000/roulette";
+      axios
+        .post(`${backServer}/addroul`, {
+          userEmail: "user8@example.com",
+          selectedValue: this.selectedValue,
+        })
+        .then((response) => {
+          console.log(response.data.message);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     },
   },
 };
@@ -140,7 +156,7 @@ export default {
   width: 100%;
   height: 100%;
   background: #f5f5f2
-    url("https://m.lifeplanet.co.kr:444/commons/slink/administrator/openInnovation/img/MO)%20360%ED%94%8C%EB%9E%98%EB%8B%9B_%EB%A3%B0%EB%A0%9B%ED%8C%90_476x476_201026.png")
+    url("C:\Users\white\Documents\카카오톡 받은 파일\book\MOONMOON\vue_front\public\assets\룰.png")
     no-repeat;
   background-size: 100%;
   transform-origin: center;
