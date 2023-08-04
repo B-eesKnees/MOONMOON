@@ -3,13 +3,13 @@
 <template>
   <div class="gnb">
     <div class="gnb_bar">
-      <div v-if="!login" class="gnb_bar_service">
+      <div v-if="logined == false" class="gnb_bar_service">
         <a href="/join">회원가입</a>
         <a href="/login">로그인</a>
         <a href="/고객센터">고객센터</a>
       </div>
-      <div v-if="login" class="gnb_bar_service">
-        <a href="/logout">로그아웃</a>
+      <div v-else-if="logined == true" class="gnb_bar_service">
+        <a @click="logout" href="/">로그아웃</a>
         <a href="/고객센터">고객센터</a>
       </div>
     </div>
@@ -194,9 +194,11 @@
 
 <script>
 import { app } from "../main";
+import { isLogindDisplay } from '../mixins/gnbBar.js';
 
 export default {
-  data() {
+  mixins: [isLogindDisplay],
+    data() {
     return {
       email: "",
       nick: "",
@@ -250,7 +252,6 @@ export default {
     logout() {
       localStorage.removeItem("userID");
       localStorage.removeItem("userNick");
-      localStorage.removeItem("userImage");
       localStorage.removeItem("userProvider");
       // localStorage.clear(); // localStorage의 모든 항목 제거
       window.location.href = "/"; // 메인
