@@ -1,0 +1,153 @@
+.input_book_title {
+    margin-bottom: 20px;
+  }
+  
+  .book_title_form {
+    display: block;
+    max-width: 20%;
+    min-width: 300px;
+    position: relative;
+    margin: 5% auto;
+    /* border: 1px solid #000; */
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .book_title {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: inline-block;
+    width: 70%;
+
+  }
+  
+  button {
+    padding: 8px 16px;
+    background-color: #4E4EFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 5%;
+    display: inline-block;
+  }
+  
+
+  .book_selection {
+    /* margin-bottom: 20px; */
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    width: 40%;
+    /* border: 1px solid #000; */
+    display: inline-flexbox;
+    margin-bottom: 3%;
+  }
+
+  label {
+    font-weight: bold;
+    margin-right: 20px;
+    min-width: 120px;
+    /* border: 1px solid #000; */
+  }
+  
+  select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 80%;
+    min-width: 400px;
+  }
+
+
+
+
+
+
+
+.info_all {
+    width: 50%;
+    /* justify-content: center; */
+    align-items: center;
+    margin: 0 auto;
+    /* border: 1px solid #000; */
+    display: flex;
+}
+
+
+
+
+
+  .book_info_image {
+    /* display: inline-block; */
+    left: 0;
+    text-align: center;
+    justify-content: center;
+    
+  }
+  
+.info_text {
+  width: 80%;
+  display: block;
+  line-height: 250%;
+  /* border: 1px solid #000; */
+  margin-left: 5%;
+}
+
+  .book_image {
+    height: 400px;
+    width: 300px;
+    /* width: auto; */
+    /* display: block; */
+    margin-bottom: 10px;
+    /* border: 1px solid #000; */
+    text-align: center;
+  }
+  .book_non_image {
+    height: 400px;
+    width: 300px;
+    display: flex;
+    margin-bottom: 10px;
+    border: 1px solid #000;
+    justify-content: center;
+    align-items: center;
+  }
+  
+
+h6 {
+  min-width: 120px;
+  text-align: right;
+  display: inline-block;
+  margin-right: 10px;
+  /* border: 1px solid #000; */
+}
+
+.con_line {
+  display: flex;
+}
+
+.contents {
+  display: flex;
+  line-height: 150%;
+  margin-top: 8px;
+}
+
+
+
+
+
+
+  
+  
+
+
+  .insertBookInfo {
+    display: flex;
+    margin: 5% auto;
+    /* padding: 0.5% 10%; */
+    width: 300px;
+    justify-content: center;
+    align-items: center;
+  }

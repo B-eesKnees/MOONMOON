@@ -5,28 +5,11 @@
         type="text"
         class="book_title"
         v-model="bookname"
-        placeholder="Enter book name"
+        placeholder="책이름을 입력하세요"
       />
       <button type="submit">검색</button>
     </form>
   </div>
-  <div class="book_info">
-    <img v-if="book_image" :src="book_image" class="book_image" />
-    <p v-else>이미지없음</p>
-    <p>이미지 제공 api: {{ book_provider }}</p>
-    <h6>책 이름: {{ book_title }}</h6>
-    <h6>작가: {{ book_author }}</h6>
-    <h6>정가: {{ book_pricestandard }}</h6>
-    <h6>세일가: {{ book_pricesales }}</h6>
-    <h6>카테고리: {{ book_categoryname }}</h6>
-    <h6>포인트: {{ book_point }}</h6>
-    <h6>출판사: {{ book_publisher }}</h6>
-    <h6>출판일: {{ book_pubdate }}</h6>
-    <h6>알라딘 판매 지수: {{ book_salesPoint }}</h6>
-    <h6>책 한줄 설명: {{ book_description }}</h6>
-    <button type="button" @click="insertBookInfo">db 삽입</button>
-  </div>
-
   <div v-if="bookResults.length > 0" class="book_selection">
     <label for="selectedBook">Select a book:</label>
     <select v-model="selectedBook" @change="onBookSelectionChange">
@@ -36,9 +19,62 @@
       </option>
     </select>
   </div>
+  <div class="info_all">
+    <div class="book_info_image">
+      <img v-if="book_image" :src="book_image" class="book_image" />
+      <p v-else class="book_non_image">이미지없음</p>
+      <p>이미지 제공 api: {{ book_provider }}</p>
+    </div>
+    <div class="info_text">
+      <div class="con_line">
+        <h6>책 이름:</h6>
+        <div class="contents">{{ book_title }}</div>
+      </div>
+      <div class="con_line">
+        <h6>작가:</h6>
+        <div class="contents">{{ book_author }}</div>
+      </div>
+      <div class="con_line">
+        <h6>정가:</h6>
+        <div class="contents">{{ book_pricestandard }}</div>
+      </div>
+      <div class="con_line">
+        <h6>세일가:</h6>
+        <div class="contents">{{ book_pricesales }}</div>
+      </div>
+      <div class="con_line">
+        <h6>카테고리:</h6>
+        <div class="contents">{{ book_categoryname }}</div>
+      </div>
+      <div class="con_line">
+        <h6>포인트:</h6>
+        <div class="contents">{{ book_point }}</div>
+      </div>
+      <div class="con_line">
+        <h6>출판사:</h6>
+        <div class="contents">{{ book_publisher }}</div>
+      </div>
+      <div class="con_line">
+        <h6>출판일:</h6>
+        <div class="contents">{{ book_pubdate }}</div>
+      </div>
+      <div class="con_line">
+        <h6>알라딘 판매 지수:</h6>
+        <div class="contents">{{ book_salesPoint }}</div>
+      </div>
+      <div class="con_line">
+        <h6>책 한줄 설명:</h6>
+        <div class="contents">{{ book_description }}</div>
+      </div>
+    </div>
+  </div>
+  <button type="button" @click="insertBookInfo" class="insertBookInfo">
+    등록하기
+  </button>
 </template>
 
 <script>
+import "@/assets/css/bookInsert.css";
 import axios from "axios";
 axios.defaults.baseURL = "http://localhost:3000";
 axios.defaults.headers.post["Content-Type"] = "application/json;charset=utf-8";
@@ -230,56 +266,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.input_book_title {
-  margin-bottom: 20px;
-}
-
-.book_title_form {
-  display: flex;
-  align-items: center;
-}
-
-.book_title {
-  flex: 1;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-button {
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-left: 8px;
-}
-
-.book_info {
-  margin-bottom: 20px;
-}
-
-.book_image {
-  max-height: 300px;
-  width: auto;
-  display: block;
-  margin-bottom: 10px;
-}
-
-.book_selection {
-  margin-bottom: 20px;
-}
-
-label {
-  font-weight: bold;
-  margin-right: 8px;
-}
-
-select {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-</style>
+<style scoped></style>
