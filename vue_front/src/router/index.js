@@ -17,6 +17,16 @@ import qnaList from "../views/qnaList.vue";
 import qnaWrite from "../views/qnaWrite.vue";
 import qnaEdit from "../views/qnaEdit.vue";
 
+const requireLogin = () => (to, from, next) => {
+  //로그인안하고 접근하려했을때 실행할 함수?
+  if (localStorage.getItem("userID") !== null) {
+    //localStorage에 데이터 있으면
+    return next(); //접근가능
+  }
+  next("/login"); //localStorage에 데이터 없으면 로그인창으로 리다이렉트
+};
+
+// beforeEnter: requireLogin(),  <<로그인 한사람만 들어갈 수 있는 페이지 component아래에 붙여넣으면됨
 const routes = [
   {
     path: "/",

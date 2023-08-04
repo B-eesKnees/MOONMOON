@@ -1,11 +1,15 @@
+<style src="../assets/css/Login.css"></style>
+
 <template>
     <!-- <gnbBar /> -->
     <div class="login">
         <div class="title-bar">
-            <h5>로그인</h5>
+            <div class="login_header_logo">
+                <a href="/"><img src="../assets/img/logo.png" alt=""></a>
+            </div>
         </div>
 
-        <div class="wrap">
+        <div class="login_wrap">
             <form class="loginform" @submit.prevent="loginForm">
                 <input v-model="email" type="text" id="username" :class="{ error_border: error_border_check }"
                     placeholder="이메일" />
@@ -14,28 +18,28 @@
                 <img :src="passwordVisibleSrc[passwordVisibleIndex]" class="password_visible"
                     @click="passwordVisibleToggle" />
 
-                <p id="error" v-if="email_check">
+                <p id="login_error" v-if="email_check">
                 <div class="circle">
                     <span>!</span>
                 </div>
                 이메일주소를 정확히 입력해주세요. 예)abcd@naver.com
                 </p>
-                <p id="error" v-else-if="password_check">
+                <p id="login_error" v-else-if="password_check">
                 <div class="circle">
                     <span>!</span>
                 </div>
                 비밀번호를 정확히 입력해주세요.<br />
-                *8자리 이상 영문 대소문자, 숫자, 특수문자가 각각 1개 이상
+                *8자리 이상 영문, 숫자, 특수문자가 각각 1개 이상
                 </p>
                 <div class="user_login_btns">
                     <a href="#">
-                        <input @click="loginValidation" class="submit" type="submit" id="login" value="로그인" /></a>
+                        <input @click="loginValidation" class="login_submit" type="submit" id="login" value="로그인" /></a>
                     <a class="join_btn" href="/join">회원가입</a>
                 </div>
             </form>
         </div>
 
-        <div class="wrap2">
+        <div class="login_wrap2">
             <form method="post">
                 <div class="user_social_btns">
                     <div class="user_social_btns_p">
@@ -123,7 +127,7 @@ export default {
         checkPassword() {
             // 최소 8자리 이상 영문 대소문자, 숫자, 특수문자가 각각 1개 이상
             const validatePassword =
-                /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/;
+            /^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/;
 
             if (
                 this.password === "" ||
@@ -162,7 +166,6 @@ export default {
                         //로그인 성공시
                         localStorage.setItem("userID", res.data.email);
                         localStorage.setItem("userNick", res.data.nick);
-                        localStorage.setItem("userImage", res.data.image);
                         localStorage.setItem("userProvider", res.data.provider);
 
                         window.location.href = "/";
@@ -236,253 +239,4 @@ export default {
 };
 </script>
   
-<style scoped>
-a {
-    padding: 0;
-    margin: 0;
-}
-
-.login {
-    padding-top: 5%;
-    width: 100%;
-    height: 80vh;
-    margin: 0;
-    background-color: white;
-    font-family: arial;
-    font-size: 14px;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-.title-bar {
-    text-align: center;
-    color: #333333;
-    font-size: 30px;
-    padding-bottom: 10px;
-}
-
-.title-bar h5 {
-    margin-top: 2%;
-    font-size: x-large;
-    font-weight: bold;
-}
-
-.info-bar {
-    text-align: center;
-    color: #666;
-    font-size: 15px;
-    padding-bottom: 50px;
-}
-
-.info-bar a {
-    color: #45b3e7;
-    text-decoration: none;
-}
-
-.wrap {
-    background-color: #ffffff;
-    padding: 2%;
-    width: 30%;
-    min-width: 350px;
-    margin: 0 auto;
-    border-radius: 6px;
-    border: 1px solid #fff;
-}
-
-.circle {
-    width: 12px;
-    height: 12px;
-    background-color: #fff;
-    border: 1px solid #f00;
-    /* 동그라미 배경색 */
-    border-radius: 50%;
-    /* 동그라미 모양 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 8px;
-    font-weight: bold;
-    /* 텍스트 크기 */
-    color: #f00;
-    /* 텍스트 색상 */
-}
-
-.wrap2 {
-    background-color: #ffffff;
-    padding: 0 2%;
-    width: 30%;
-    min-width: 350px;
-    margin: 0 auto;
-    border-radius: 6px;
-}
-
-.loginform {
-    position: relative;
-}
-
-input {
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 3%;
-    border: none;
-    border-bottom: 2px solid #efefef;
-    font-size: 15px;
-    transition: all 0.2s ease-in-out;
-}
-
-.join_btn {
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 3%;
-    border-radius: 6px;
-    border: 2px solid #efefef;
-    font-size: 15px;
-    transition: all 0.2s ease-in-out;
-}
-
-.submit2 {
-    width: 100%;
-    margin-top: 20px;
-    margin-bottom: 0px;
-    padding: 3%;
-    border-radius: 6px;
-    border: 1px solid #efefef;
-    font-size: 15px;
-    color: #fff;
-    background-color: #4E4EFF;
-    transition: all 0.2s ease-in-out;
-}
-
-input:focus {
-    outline: none;
-    border-color: #4E4EFF;
-    transition: all 0.2s ease-in-out;
-}
-
-.password_visible {
-    position: absolute;
-    left: 90%;
-    top: 80px;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-}
-
-input.submit {
-    width: 100%;
-    padding: 6%;
-    border-radius: 6px;
-    border: 1px solid #4E4EFF;
-    font-size: 15px;
-    background-color: #4E4EFF;
-    color: #fff;
-    margin-top: 25px;
-    transition: all 0.2s ease-in-out;
-}
-
-.join_btn {
-    width: 100%;
-    padding: 3%;
-    border-radius: 6px;
-    border: 1px solid #4E4EFF;
-    font-size: 14px;
-    background-color: white;
-    color: #4E4EFF;
-    margin-top: 25px;
-    transition: all 0.2s ease-in-out;
-}
-
-input.submit:hover {
-    width: 100%;
-    padding: 6%;
-    border-radius: 6px;
-    font-size: 15px;
-    color: #fff;
-    margin-top: 25px;
-    transition: all 0.2s ease-in-out;
-}
-
-input.submit2:hover {
-    width: 100%;
-    padding: 5%;
-    border-radius: 6px;
-    opacity: 0.7;
-    font-size: 15px;
-    color: #fff;
-    transition: all 0.2s ease-in-out;
-}
-
-.user_login_btns {
-    display: flex;
-    text-align: center;
-}
-
-.user_login_btns a:last-child {
-    text-decoration: none;
-    text-align: center;
-    line-height: 260%;
-    margin-left: 8px;
-    width: 30%;
-}
-
-.user_login_btns a:first-child {
-    text-decoration: none;
-    text-align: center;
-    width: 70%;
-}
-
-
-.user_social_btns {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 2%;
-    margin: 0 auto;
-}
-
-.user_social_btns_p {
-    width: 80%;
-    font-size: large;
-    color: #333333;
-}
-
-.social_btn {
-    width: 15%;
-}
-
-
-
-#error {
-    color: red;
-    margin-left: 2%;
-    font-size: 12px;
-    line-height: normal;
-    display: flex;
-}
-
-.error_border:focus {
-    border-color: red;
-    box-shadow: none;
-}
-
-.error_submit {
-    width: 100%;
-    padding: 6%;
-    border-radius: 6px;
-    border: 1px solid gray;
-    font-size: 15px;
-    background-color: grey;
-    color: darkgray;
-    margin-top: 25px;
-    transition: all 0.2s ease-in-out;
-}
-
-.naver,
-.kakao {
-    cursor: pointer;
-}
-</style>
   
