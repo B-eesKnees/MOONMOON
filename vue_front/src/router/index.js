@@ -18,73 +18,78 @@ import qnaWrite from "../views/qnaWrite.vue";
 import qnaEdit from "../views/qnaEdit.vue";
 
 const routes = [
-    {
-        path: "/",
-        name: "Main",
-        component: Main,
-    },
-    {
-        path: "/login",
-        name: "Login",
-        component: Login,
-    },
-    {
-        path: "/join",
-        name: "Join",
-        component: Join,
-    },
-    {
-        path: "/test",
-        name: "testAPIPage",
-        component: booktestPage
-    },
-    //---책리스트---
-    {
-      path: "/search",
-      name: "SearchList",
-      component: SearchList
-    },
-    {
-     path: "/best",
-     name: "BestList",
-     component: BestList
-   },
-   {
-     path: "/new",
-     name: "NewList",
-     component: NewList
-   },
-   //-------------
-    {
-      path: "/cart",
-      name: "cartPage",
-      component: cart
-    },
-    {
-      path: "/result/:orderNum",
-      name: "resultpage",
-      component: resultpage,
-    },
-    {
-      path: "/qna",
-      name: "qnaList",
-      component: qnaList
-    },
-    {
-      path: "/qnaWrite",
-      name: "qnaWrite",
-      component: qnaWrite
-    },
-    {
-      path: "/qnaEdit",
-      name: "qnaEdit",
-      component: qnaEdit
-    },
-    {
-      path: "/pay",
-      name: "paymentPage",
-      component: pay,
-    },
+  {
+    path: "/",
+    name: "Main",
+    component: Main,
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: Login,
+  },
+  {
+    path: "/join",
+    name: "Join",
+    component: Join,
+  },
+  {
+    path: "/test",
+    name: "testAPIPage",
+    component: booktestPage
+  },
+  //---책리스트---
+  {
+    path: "/search",
+    name: "SearchList",
+    component: SearchList
+  },
+  {
+    path: "/best",
+    name: "BestList",
+    component: BestList
+  },
+  {
+    path: "/new",
+    name: "NewList",
+    component: NewList
+  },
+  //-------------
+  {
+    path: "/cart",
+    name: "cartPage",
+    component: cart
+  },
+  {
+    path: "/result/:orderNum",
+    name: "resultpage",
+    component: resultpage,
+  },
+  {
+    path: "/qna",
+    name: "qnaList",
+    component: qnaList
+  },
+  {
+    path: "/qnaWrite",
+    name: "qnaWrite",
+    component: qnaWrite
+  },
+  {
+    path: "/qnaEdit",
+    name: "qnaEdit",
+    component: qnaEdit
+  },
+  {
+    path: "/pay",
+    name: "paymentPage",
+    component: pay,
+  },
+  {
+    path: "/bookinsert",
+    name: "bookInsert",
+    component: bookInsert,
+  },
 ];
 
 const router = createRouter({
