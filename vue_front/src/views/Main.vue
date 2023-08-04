@@ -6,10 +6,13 @@
     <!-- 이미지슬라이더 -->
     <div class="image-slider">
       <div class="slider-wrapper" v-if="slidesReady">
-        <div class="slider" :style="{
-          transform: `translateX(-${currentIndex * 100}%)`,
-          transition: transitionDuration,
-        }">
+        <div
+          class="slider"
+          :style="{
+            transform: `translateX(-${currentIndex * 100}%)`,
+            transition: transitionDuration,
+          }"
+        >
           <div v-for="(image, index) in images" :key="index" class="slide">
             <img :src="image" alt="Slide Image" />
           </div>
@@ -19,8 +22,13 @@
           <button @click="nextSlide" class="next-btn">&gt;</button>
         </div>
         <div class="dots">
-          <span v-for="(image, index) in images" :key="index" @click="goToSlide(index)"
-            :class="{ active: index === currentIndex }" class="dot"></span>
+          <span
+            v-for="(image, index) in images"
+            :key="index"
+            @click="goToSlide(index)"
+            :class="{ active: index === currentIndex }"
+            class="dot"
+          ></span>
         </div>
       </div>
     </div>
@@ -112,16 +120,27 @@
     <div ref="float" class="floating_modal_wrap display_none">
       <div class="floating_modal">
         <div class="floating_modal_header">
-          <h2 ref="floatRecent" class="floating_modal_heart_btn current" @click="floatingMenuRecent(), getRecentBook()">
+          <h2
+            ref="floatRecent"
+            class="floating_modal_heart_btn current"
+            @click="floatingMenuRecent(), getRecentBook()"
+          >
             최근 본
           </h2>
-          <h2 ref="floatHeart" class="floating_modal_recent_btn" @click="floatingMenuHeart">
+          <h2
+            ref="floatHeart"
+            class="floating_modal_recent_btn"
+            @click="floatingMenuHeart"
+          >
             찜 목록
           </h2>
           <span @click="closeFloating" class="cursor">✖</span>
         </div>
         <!-- 최근 본 -->
-        <div v-if="floatingState == 'recent'" class="floating_modal_recent_wrap">
+        <div
+          v-if="floatingState == 'recent'"
+          class="floating_modal_recent_wrap"
+        >
           <div class="floating_modal_list_header">
             <div class="floating_modal_list_header_left">
               <span>1</span>
@@ -134,7 +153,9 @@
           </div>
           <div class="floating_modal_list">
             <div v-for="i in 2" class="floating_modal_item">
-              <a class="floating_modal_item_img" href=""><img src="../assets/img/book4.jpg" alt="" /></a>
+              <a class="floating_modal_item_img" href=""
+                ><img src="../assets/img/book4.jpg" alt=""
+              /></a>
               <div class="floating_modal_item_info">
                 <a href="">
                   <h2>세이노의 가르침</h2>
@@ -166,7 +187,9 @@
           </div>
           <div class="floating_modal_list">
             <div v-for="i in 2" class="floating_modal_item">
-              <a class="floating_modal_item_img" href=""><img src="../assets/img/book4.jpg" alt="" /></a>
+              <a class="floating_modal_item_img" href=""
+                ><img src="../assets/img/book4.jpg" alt=""
+              /></a>
               <div class="floating_modal_item_info">
                 <a href="">
                   <h2>세이노의 가르침</h2>
@@ -194,6 +217,8 @@
       <span>TOP</span>
     </div>
   </div>
+
+  <roulette />
 </template>
 
 <script>
@@ -204,7 +229,7 @@ axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 
 import GnbBar from "../components/gnbBar.vue";
 import { ref, reactive, onMounted, onUnmounted } from "vue";
-import { isLogindDisplay } from '../mixins/main.js';
+import { isLogindDisplay } from "../mixins/main.js";
 
 export default {
   mixins: [isLogindDisplay],
@@ -223,8 +248,6 @@ export default {
 
       // 플로팅 데이터
       floatingState: "recent",
-
-
     };
   },
 
@@ -283,7 +306,6 @@ export default {
   mounted() {
     // 이미지 슬라이드가 렌더링되고 준비가 완료되면 slidesReady를 true로 설정
     this.slidesReady = true;
-
   },
   methods: {
     // 이전 슬라이드로 이동하는 메서드 (이미지가 오른쪽으로 넘어가는 애니메이션 추가)
@@ -343,9 +365,7 @@ export default {
       await axios({
         url: "http://localhost:3000/floating/recentbook",
         method: "GET",
-        data: {
-
-        },
+        data: {},
       })
         .then((res) => {
           console.log(res);
@@ -353,9 +373,7 @@ export default {
         .catch((err) => {
           alert(err);
         });
-    }
+    },
   },
 };
 </script>
-
-
