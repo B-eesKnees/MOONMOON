@@ -3,9 +3,9 @@ import Main from "../views/Main.vue";
 import Login from "../views/Login.vue";
 import Join from "../views/Join.vue";
 
-import SearchList from "../views/searchList.vue"
-import BestList from "../views/bestList.vue"
-import NewList from "../views/newList.vue"
+import SearchList from "../views/searchList.vue";
+import BestList from "../views/bestList.vue";
+import NewList from "../views/newList.vue";
 
 import booktestPage from "../views/bookTest.vue";
 import cart from "../views/cart.vue";
@@ -16,6 +16,7 @@ import pay from "../views/pay.vue";
 import qnaList from "../views/qnaList.vue";
 import qnaWrite from "../views/qnaWrite.vue";
 import qnaEdit from "../views/qnaEdit.vue";
+import eventPage from "../views/event.vue";
 
 const requireLogin = () => (to, from, next) => {
   //로그인안하고 접근하려했을때 실행할 함수?
@@ -46,29 +47,29 @@ const routes = [
   {
     path: "/test",
     name: "testAPIPage",
-    component: booktestPage
+    component: booktestPage,
   },
   //---책리스트---
   {
     path: "/search",
     name: "SearchList",
-    component: SearchList
+    component: SearchList,
   },
   {
     path: "/best",
     name: "BestList",
-    component: BestList
+    component: BestList,
   },
   {
     path: "/new",
     name: "NewList",
-    component: NewList
+    component: NewList,
   },
   //-------------
   {
     path: "/cart",
     name: "cartPage",
-    component: cart
+    component: cart,
   },
   {
     path: "/result/:orderNum",
@@ -78,17 +79,17 @@ const routes = [
   {
     path: "/qna",
     name: "qnaList",
-    component: qnaList
+    component: qnaList,
   },
   {
     path: "/qnaWrite",
     name: "qnaWrite",
-    component: qnaWrite
+    component: qnaWrite,
   },
   {
     path: "/qnaEdit",
     name: "qnaEdit",
-    component: qnaEdit
+    component: qnaEdit,
   },
   {
     path: "/pay",
@@ -99,6 +100,11 @@ const routes = [
     path: "/bookinsert",
     name: "bookInsert",
     component: bookInsert,
+  },
+  {
+    path: "/event",
+    name: "eventPage",
+    component: eventPage,
   },
 ];
 
