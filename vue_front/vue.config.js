@@ -3,6 +3,11 @@ module.exports = defineConfig({
   transpileDependencies: true,
   lintOnSave: false,
   devServer: {
-    proxy: "https://business.juso.go.kr",
+    proxy: {
+      "/payresult": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+      },
+    },
   },
 });

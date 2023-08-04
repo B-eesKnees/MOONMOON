@@ -47,13 +47,13 @@
                     <img :src="book.image" :alt="book.name" />
                   </span>
                 </div>
-                <div class="prod_info_box size_sm">
-                  <span class="prod_info">
-                    <span class="prod_name">{{ book.name }}</span>
-                  </span>
-                  <span class="book_price"> {{ book.price }}원 </span
-                  ><br /><br />
-                  <span class="book_q">{{ book.quantity }}개</span>
+                <div class="prod_info_box">
+                  <div class="prod_info">
+                    <div class="prod_name">{{ book.name }}</div>
+                    <div class="book_price">{{ book.price }}원</div>
+                    <div class="book_q">{{ book.quantity }}개</div>
+                    <div class="book_total">{{ book.totalPrice }}원</div>
+                  </div>
                 </div>
               </div>
             </td>
@@ -106,7 +106,7 @@
           <span class="won">2300 P</span>
         </div>
         <div class="pay_button">
-          <button type="button">결제하러 가기</button>
+          <button type="button" @click="startPay">결제하러 가기</button>
         </div>
       </div>
     </div>
@@ -126,28 +126,26 @@ export default {
       user_zipcode: "01484",
       user_add1: "주소1테스트",
       user_add2: "주소2테스트",
+      user_email: `bj3757@gmail.com`,
       books: [
         {
           id: 1,
           name: "강원국의 진짜 공부",
-          link: "https://product.kyobobook.co.kr/detail/S000203286291",
           image:
             "https://contents.kyobobook.co.kr/sih/fit-in/200x0/pdt/9791165702205.jpg",
-          delivery: "교보문고배송",
           quantity: "1",
           price: "15,300",
+          totalPrice: "35,100",
         },
         {
           id: 2,
           name: "거의 모든 순간의 미술사",
-          link: "https://product.kyobobook.co.kr/detail/S000203285128",
           image:
             "https://contents.kyobobook.co.kr/sih/fit-in/200x0/pdt/9788972917984.jpg",
-          delivery: "교보문고배송",
           quantity: "1",
           price: "35,100",
+          totalPrice: "35,100",
         },
-        // Additional book objects can be added here for testing with 3 or 4 books
       ],
       coupons: [
         { name: "쿠폰 1", value: 1000 },
@@ -172,16 +170,48 @@ export default {
       this.month = today.getMonth() + 1;
     },
     openAdd() {
-      axios({
-        url: "/addrlink/addrLinkUrl.do",
-        method: "GET",
-        params: {
-          confmKey: "devU01TX0FVVEgyMDIzMDgwMzE2NTY0NDExMzk4ODQ=",
-          returnUrl: "localhost:8080/pay",
-          resultType: "4",
-          useDetailAddr: "N",
+      const confmKey = "devU01TX0FVVEgyMDIzMDgwMzE2NTY0NDExMzk4ODQ=";
+      const returnUrl = "http://localhost:8080/pay";
+      const resultType = "4";
+      const useDetailAddr = "N";
+
+      // 주소검색 팝업 API 호출 URL을 생성합니다.
+      const apiUrl = `https://business.juso.go.kr/addrlink/addrLinkUrl.do?confmKey=${confmKey}&returnUrl=${returnUrl}&resultType=${resultType}&useDetailAddr=${useDetailAddr}`;
+
+      // 팝업창을 엽니다.
+      window.open(
+        apiUrl,
+        "주소검색팝업",
+        "width=570, height=420, toolbar=no, menubar=no, scrollbars=yes, resizable=no"
+      );
+    },
+    startPay() {
+      const IMP = window.IMP;
+      IMP.init("imp18828153");
+      IMP.request_pay(
+        {
+          // param
+          pg: "inicis",
+          pay_method: "card",
+          name: `${this.user_name}`,
+          amount: 1, //결제 금액
+          buyer_email: `${this.user_email}`,
+          buyer_name: `${this.user_name}`,
+          buyer_tel: `${this.user_phone}`,
+          buyer_addr: `${this.user_add1} ${this.user_add2}`,
+          buyer_postcode: "01181", //고유번호..?
         },
-      });
+        (rsp) => {
+          // callback
+          if (rsp.success) {
+            alert("!");
+            console.log(rsp.success);
+            console.log(rsp);
+          } else {
+            alert("?");
+          }
+        }
+      );
     },
   },
 };
@@ -233,10 +263,8 @@ th .text {
 
 .prod_info_box {
   flex: 1;
-}
-
-.prod_name {
-  font-weight: bold;
+  position: relative;
+  width: 100%;
 }
 
 /* 배송 방법 뱃지 스타일 */
@@ -281,7 +309,6 @@ th .text {
   margin-bottom: 0;
 }
 .payment_total {
-  border: 1px solid #000000;
 }
 
 .user_add {
@@ -370,18 +397,27 @@ th .text {
 }
 .prod_name {
   position: relative;
-  top: -100px;
-  margin-left: 10px;
+  top: -50px;
+  margin-left: 2%;
+  font-weight: bold;
 }
 .book_price {
   position: relative;
-  top: -70px;
-  left: -140px;
+  top: -20px;
+  margin-left: 2%;
 }
 .book_q {
   position: relative;
-  top: 80px;
-  left: 15px;
+  top: -35px;
+  margin-right: 5%;
+  text-align: right;
+}
+.book_total {
+  position: relative;
+  top: -100px;
+  text-align: right;
+  margin-right: 5%;
+  font-weight: bold;
 }
 .user_add_detail button {
   margin-left: 10px;
@@ -425,6 +461,7 @@ th .text {
   background-color: #4e4eff;
   color: white;
   margin-top: 25px;
+  margin-left: 9px;
 }
 .pay_button {
   text-align: center;
@@ -452,5 +489,12 @@ th .text {
 .now {
   color: #4e4eff;
   font-weight: bolder;
+}
+.img_box img {
+  max-height: 280px;
+  height: 280px;
+  width: 190px;
+  border: 1px solid rgb(138, 138, 138);
+  object-fit: scale-down;
 }
 </style>
