@@ -4,26 +4,28 @@ const db = require("../db");
 const router = express.Router();
 
 
-// 가입시 입력한 배송지 정보 출력
-router.get('/payAdd', (req, res) => {
+// 가입시 입력한 유저/배송지 정보 출력
+router.get('/payUserInfo', (req, res) => {
   
   const userEmail = 'user1@example.com';  // req.body.userEmail
 
-  const query = ``;
+  const query = `select USER_NAME, USER_PHONE, USER_ADD1, USER_ADD2
+                 from user
+                 where USER_EMAIL = ?`;
 
  db.query(query, userEmail, (error, result) => {
   if (error) {
     return console.log(error);
   } 
-  if (result) {
-    res.send({qnaList: result});  // res.render?-x  res.json?
+  if (result.length > 0) {
+    res.send({payUserInfo: result});  // res.render?-x  res.json?
   }
  })
 });
 
 
 // 배송지 주소 변경 - 변경한 주소 받아오기
-router.post('/payAddEdit', (req, res) => {
+/* router.post('/payAddEdit', (req, res) => {
 
   const {  } = req.body;
 
@@ -38,21 +40,26 @@ router.post('/payAddEdit', (req, res) => {
     }
   });
 });
+ */
 
 
 // 상품 정보 출력
 router.get('/payBookInfo', (req, res) => {
   
-  const ORDERITEM_ID = '';  // ORDERITEM 테이블에 각 책별 이미지 컬럼 추가하기
+  const ORDERITEM_ORDER_ID = req.body.orderid;  // req.body.orderid
 
-  const query = ``;
+  const query = `SELECT b.BOOK_COVER, b.BOOK_TITLE, b.BOOK_PRICE, o.ORDERITEM_CNT, o.ORDERITEM_PRICE
+                 FROM book b
+                 JOIN orderitem o ON b.BOOK_ID = o.ORDERITEM_BOOK_ID
+                 where o.ORDERITEM_ORDER_ID = ?`;
 
- db.query(query, userEmail, (error, result) => {
+ db.query(query, [ ORDERITEM_ORDER_ID ], (error, result) => {
   if (error) {
     return console.log(error);
   } 
   if (result) {
-    res.send({payBookList: result});  // res.render?-x  res.json?
+    res.send({payBookInfo: result});  // res.render?-x  res.json?
+    console.log(req.body.orderid);
   }
  })
 });
