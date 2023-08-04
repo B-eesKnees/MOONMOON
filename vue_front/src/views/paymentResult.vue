@@ -14,15 +14,18 @@
     <div class="payment_info">
       <span>주문번호</span><span class="payment_no">{{ payment_no }}</span>
       <br /><br />
-      <span>구매내역</span><span class="payment_title">{{ cutBookTitle }}</span
-      ><span v-if="payment_data.length > 1"
-        >...외 {{ payment_data.length - 1 }}개</span
+      <span>구매내역</span
+      ><span class="payment_title">{{ bookTitle_data[0]?.BOOK_TITLE }}</span
+      ><span v-if="bookTitle_data.length > 1">
+        외 {{ bookTitle_data.length - 1 }} 개</span
       ><br />
       <br /><br /><br />
       <div class="user_info">
-        <div class="user_info2">배송지 정보</div>
-        <span class="user_name">임승리</span>
-        <br /><br />
+        <div class="user_info2">
+          <div>배송지 정보</div>
+          <div class="user_name">임승리</div>
+        </div>
+        <br />
         <div class="user_phone">010-2222-2222</div>
         <br />
         <div class="user_add">경기도 고양시 화신로 170 2111-1111</div>
@@ -68,6 +71,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import gnbbar from "../components/gnbBar.vue";
 
 export default {
@@ -75,23 +79,39 @@ export default {
   data() {
     return {
       payment_no: this.$route.params.orderNum,
-      payment_data: [
-        {
-          book_title:
-            "테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트",
-        },
-        { book_title: "ㄴㄹㄴㅁㄹㄹㄹㄴㄴㅁㄹㄴㅁㄹ" },
-        { book_title: "fasfsssfsasafsafsfs" },
-      ],
+      bookTitle_data: [],
     };
   },
-  computed: {
-    cutBookTitle() {
+  computed: {},
+  mounted() {
+    this.getBookTitle();
+    // this.cutTitle();
+  },
+  methods: {
+    getBookTitle() {
+      const cartNum = this.$route.params.orderNum;
+
+      axios({
+        url: "/payresult",
+        method: "GET",
+        params: { cartNum },
+      }).then((res) => {
+        this.bookTitle_data = res.data;
+        this.cutTitle();
+
+        console.log(this.bookTitle_data[0].BOOK_TITLE);
+      });
+    },
+    cutTitle() {
       const max_title_len = 24;
-      if (this.payment_data[0].book_title.length > max_title_len) {
-        return this.payment_data[0].book_title.slice(0, max_title_len) + " ";
+      console.log(this.bookTitle_data[0].BOOK_TITLE);
+
+      const first_booktitle = this.bookTitle_data[0].BOOK_TITLE;
+      if (first_booktitle.length > max_title_len) {
+        this.bookTitle_data[0].BOOK_TITLE =
+          this.bookTitle_data[0].BOOK_TITLE.slice(0, max_title_len) + " ...";
       } else {
-        return this.payment_data[0].book_title;
+        return this.bookTitle_data[0].BOOK_TITLE;
       }
     },
   },
@@ -99,23 +119,24 @@ export default {
 </script>
 
 <style scoped>
-.user_info2,
+.user_info2 {
+  display: flex;
+}
 .user_name {
-  display: inline-block;
-  margin-right: 40px; /* Optional: Add some space between items */
+  margin-left: 4.6%;
 }
 .user_phone {
-  margin-left: 144px;
+  margin-left: 12%;
 }
 .user_add {
-  margin-right: 791px;
-  text-align: right;
+  margin-left: 12%;
+  text-align: left;
 }
 .payment_title {
-  margin-left: 70px;
+  margin-left: 80px;
 }
 .payment_no {
-  margin-left: 70px;
+  margin-left: 80px;
   text-align: right;
   color: #4e4eff;
 }
@@ -266,7 +287,7 @@ export default {
 .progress {
   position: absolute;
   font-size: 1.4em;
-  top: 20%;
+  top: 22%;
   right: 15%;
 }
 .progress .before {
@@ -276,10 +297,10 @@ export default {
   font-weight: bolder;
 }
 .pay_title {
-  font-size: 1.6em;
   position: absolute;
-  font-size: 1.4em;
-  top: 20%;
+  top: 22%;
   left: 15%;
+  font-size: 1.6em;
+  font-weight: bolder;
 }
 </style>

@@ -204,10 +204,10 @@ export default {
         });
       });
 
-      if (TP >= 15000) {
+      if (TP >= 50000) {
         //결제금액이 15000원이상이면 배송료 0원으로 설정
         thisFee = 0;
-      } else if (TP < 15000) {
+      } else if (TP < 50000) {
         thisFee = 2500;
       }
 
