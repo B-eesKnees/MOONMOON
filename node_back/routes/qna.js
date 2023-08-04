@@ -42,17 +42,17 @@ router.post('/qnaView', async (req, res) => {
 // 문의글 작성 --ok post 요청은 됐다 db에 들어왂다!!
 // get 요청이 왜 같이 들어오지..(아무래도 redirect 부분인 듯..)
 router.post('/qnaWrite', (req, res) => {
-  const QNA_USERID = 'user1@example.com';  // req.body.email
+  const QNA_USER_EMAIL = 'user1@example.com';  // req.body.email
   const { QNA_TITLE, QNA_CON } = req.body;
   const QNA_REP = 0;
 
-  const query = `INSERT INTO qna (QNA_USERID, QNA_TITLE, QNA_CON, QNA_REP)
+  const query = `INSERT INTO qna (QNA_USER_EMAIL, QNA_TITLE, QNA_CON, QNA_REP)
                  VALUES (?,?,?,?)`;
   
   if (QNA_TITLE ==='' || QNA_CON ==='') {
     res.send(alertMove('제목이나 내용을 입력해주세요', '/qna/write'));
   } else {
-    db.query(query, [QNA_USERID, QNA_TITLE, QNA_CON, QNA_REP], (error, result) => {
+    db.query(query, [QNA_USER_EMAIL, QNA_TITLE, QNA_CON, QNA_REP], (error, result) => {
       if (error) {
         return console.log(error);
       }
@@ -105,8 +105,8 @@ router.get('/qnaDel', (req, res) => {
 
 
 // 문의 답변 작성(admin 계정만) - update로 써야할 듯
+//---- 답변 달렸을 시 db에 반영
 
-// 답변 달렸을 시 db에 반영
 
 
 // alertMove함수 선언
