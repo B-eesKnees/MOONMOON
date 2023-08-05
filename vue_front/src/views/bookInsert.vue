@@ -59,7 +59,7 @@
         <div class="contents">{{ book_pubdate }}</div>
       </div>
       <div class="con_line">
-        <h6>알라딘 판매 지수:</h6>
+        <h6 class="line">알라딘<br />판매지수:</h6>
         <div class="contents">{{ book_salesPoint }}</div>
       </div>
       <div class="con_line">
