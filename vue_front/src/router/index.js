@@ -6,6 +6,7 @@ import Join from "../views/Join.vue";
 import SearchList from "../views/searchList.vue";
 import BestList from "../views/bestList.vue";
 import NewList from "../views/newList.vue";
+import bookDetail from "../views/bookDetail.vue";
 
 import booktestPage from "../views/bookTest.vue";
 import cart from "../views/cart.vue";
@@ -49,7 +50,7 @@ const routes = [
     name: "testAPIPage",
     component: booktestPage,
   },
-  //---책리스트---
+  //---책리스트-------------------------------------------------
   {
     path: "/search",
     name: "SearchList",
@@ -65,17 +66,30 @@ const routes = [
     name: "NewList",
     component: NewList,
   },
-  //-------------
+  {
+    path: "/detail",
+    name: "bookDetail",
+    component: bookDetail,
+  },
+  //-------------------------------------------------------------
+  //장바구니 - 결제 - 결제완료
   {
     path: "/cart",
     name: "cartPage",
     component: cart,
   },
   {
+    path: "/pay",
+    name: "paymentPage",
+    component: pay,
+  },
+  {
     path: "/result/:orderNum",
     name: "resultpage",
     component: resultpage,
   },
+  //-------------------------------------------------------------
+  //QNA
   {
     path: "/qna",
     name: "qnaList",
@@ -91,21 +105,20 @@ const routes = [
     name: "qnaEdit",
     component: qnaEdit,
   },
-  {
-    path: "/pay",
-    name: "paymentPage",
-    component: pay,
-  },
-  {
-    path: "/bookinsert",
-    name: "bookInsert",
-    component: bookInsert,
-  },
+  //-------------------------------------------------------------
+  //룰렛, 쿠폰주는 화면
   {
     path: "/event",
     name: "eventPage",
     component: eventPage,
   },
+  //-------------------------------------------------------------
+  //관리자페이지
+  {
+    path: "/bookinsert",
+    name: "bookInsert",
+    component: bookInsert,
+  }
 ];
 
 const router = createRouter({
