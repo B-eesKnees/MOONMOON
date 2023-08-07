@@ -72,7 +72,11 @@
       </div>
     </div>
   </div>
-  <button type="button" @click="insertBookInfo" class="insertBookInfo">
+  <button
+    type="button"
+    @click="insertBookInfo"
+    class="insertBookInfo bi_button"
+  >
     등록하기
   </button>
 </template>

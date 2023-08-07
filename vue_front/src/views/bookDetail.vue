@@ -1,6 +1,6 @@
 <template>
   <GnbBar />
-  <div>시작한다..</div>
+  <div class="tesst">시작한다..</div>
 </template>
 
 <script>
