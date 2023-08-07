@@ -289,12 +289,13 @@ export default {
   font-size: 1.4em;
   top: 22%;
   right: 15%;
+  font-weight: bolder;
 }
 .progress .before {
+  color: rgb(158, 158, 158);
 }
 .progress .now {
   color: #4e4eff;
-  font-weight: bolder;
 }
 .pay_title {
   position: absolute;

@@ -478,17 +478,17 @@ th .text {
   margin-top: 2%;
 }
 .progress {
-  position: relative;
-  left: 72%;
+  position: absolute;
+  top: 22%;
+  right: 15%;
   font-size: 1.4em;
-  top: -25px;
-  width: 300px;
+  font-weight: bolder;
 }
 .before {
+  color: rgb(158, 158, 158);
 }
 .now {
   color: #4e4eff;
-  font-weight: bolder;
 }
 .img_box img {
   max-height: 280px;

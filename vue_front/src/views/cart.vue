@@ -1,5 +1,5 @@
 <template>
-  <gnbbar />
+  <gnbbar ref="childComponent" />
   <div class="container">
     <div class="cart_wrap">
       <div class="cart_header" style="background-color: white">
@@ -98,6 +98,9 @@
 
 <script>
 import axios from "axios";
+axios.defaults.baseURL = "http://localhost:3000";
+axios.defaults.headers.post["Content-Type"] = "application/json;charset=utf-8";
+axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 
 import gnbbar from "../components/gnbBar.vue";
 
@@ -105,60 +108,10 @@ export default {
   components: { gnbbar },
   data() {
     return {
-      cart: [
-        // 책 데이터 예시
-        {
-          img: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9791192512365.jpg",
-          title:
-            "엄청나게 긴 책 제목 테스트입니다 아무튼간에 엄청나게 긴 책 제목 테스트입니다 아무튼간에 엄청나게 긴 책 제목 테스트입니다 아무튼간에",
-          price: 9900,
-          point: 50,
-          quantity: 20,
-          book_no: 1,
-        },
-        {
-          img: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9791192512365.jpg",
-          title: "Book 2",
-          price: 24000,
-          point: 30,
-          quantity: 1,
-          book_no: 2,
-        },
-        {
-          img: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9791192512365.jpg",
-          title: "Book 2",
-          price: 24000,
-          point: 30,
-          quantity: 1,
-          book_no: 3,
-        },
-        {
-          img: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9791192512365.jpg",
-          title: "Book 2",
-          price: 24000,
-          point: 30,
-          quantity: 1,
-          book_no: 4,
-        },
-        {
-          img: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9791192512365.jpg",
-          title: "Book 2",
-          price: 24000,
-          point: 30,
-          quantity: 1,
-          book_no: 5,
-        },
-        {
-          img: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9791192512365.jpg",
-          title: "Book 2",
-          price: 24000,
-          point: 30,
-          quantity: 1,
-          book_no: 6,
-        },
-      ],
+      cart: [],
       select: [],
       selectAll: false,
+      userEmail: localStorage.getItem("userID"),
     };
   },
   methods: {
@@ -168,9 +121,21 @@ export default {
       book.quantity++;
     },
     deleteBook(book) {
-      if (confirm("상품을 삭제하시겠습니까?")) {
-        this.cart = this.cart.filter((i) => i.book_no !== book.book_no);
-        console.log(this.cart);
+      console.log(book.book_no);
+      if (confirm("장바구니에서 제거하시겠습니까?")) {
+        axios({
+          url: "/cart/deleteCartBook",
+          method: "GET",
+          params: { bookid: book.book_no },
+        })
+          .then((res) => {
+            alert("제거되었습니다.");
+            this.$refs.childComponent.getCartNum();
+            this.getCart();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } else {
         return;
       }
@@ -228,6 +193,7 @@ export default {
           } else if (res.status == 200) {
             const orderId = res.data.orderID;
             alert("결제페이지로 이동합니다");
+            console.log(orderId);
             window.location.href = `/pay/${orderId}`;
           }
         })
@@ -314,10 +280,32 @@ export default {
     },
     handleChildCheckboxChange() {
       // 모든 자식 체크박스가 선택되어 있는지 확인합니다.
+      if (this.cart.length == 0) {
+        this.selectAll = false;
+        return;
+      }
       const allChildChecked = this.cart.every((book) => book.checked);
 
       // 부모 체크박스의 상태를 업데이트합니다.
       this.selectAll = allChildChecked;
+    },
+    getCart() {
+      const email = this.userEmail;
+
+      axios({
+        url: "/cart/getInfo",
+        method: "POSt",
+        data: {
+          email: email,
+        },
+      })
+        .then((res) => {
+          this.cart = res.data;
+          console.log(this.cart);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
   computed: {
@@ -376,7 +364,10 @@ export default {
       return totalPoint;
     },
   },
-  mounted() {},
+
+  mounted() {
+    this.getCart();
+  },
   watch: {
     // 자식 체크박스 상태 변경 감지
     cart: {
@@ -610,13 +601,13 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
 }
-input[type="checkbox"] {
+.container input[type="checkbox"] {
   display: none;
 }
 
-input[type="checkbox"] + label {
+.container input[type="checkbox"] + label {
   display: inline-block;
-  width: 22px;
+  max-width: 22px;
   height: 22px;
   border: 0.5px solid #707070;
   border-radius: 50%;
@@ -626,7 +617,7 @@ input[type="checkbox"] + label {
   transition: background-color 0.3s, border-color 0.3s;
 }
 
-input[id^="book_checkbox"]:checked + label::after {
+.container input[id^="book_checkbox"]:checked + label::after {
   content: "";
   width: 22px;
   height: 22px;

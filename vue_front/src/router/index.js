@@ -18,6 +18,7 @@ import qnaList from "../views/qnaList.vue";
 import qnaWrite from "../views/qnaWrite.vue";
 import qnaEdit from "../views/qnaEdit.vue";
 import eventPage from "../views/event.vue";
+import attendance from "../views/attendance.vue";
 
 const requireLogin = () => (to, from, next) => {
   //로그인안하고 접근하려했을때 실행할 함수?
@@ -118,7 +119,14 @@ const routes = [
     path: "/bookinsert",
     name: "bookInsert",
     component: bookInsert,
-  }
+  },
+  //-------------------------------------------------------------
+  //출석체크페이지
+  {
+    path: "/attendance",
+    name: "attendanceEventPage",
+    component: attendance,
+  },
 ];
 
 const router = createRouter({

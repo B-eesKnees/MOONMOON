@@ -15,46 +15,97 @@ router.post("/", async (req, res) => {
         ORDER_COST: req.body.fee,
     };
 
-    db.query(`insert into order set ?`, paymentDate, (err, results) => {
-        if (err) {
-            res.send({
-                // 에러 발생 시
-                code: 400,
-                failed: "error occurred",
-                error: err,
-            });
-        } else {
-            const order_id = results.insertId;
-            const orderItems = testdata.map((item) => [
-                order_id,
-                ORDER_USEREMAIL,
-                item.ORDERITEM_BOOK_ID,
-                item.ORDERITEM_CNT,
-                item.ORDERITEM_PRICE,
-                item.ORDERITEM_POINT,
-            ]);
-            console.log(orderItems);
-            db.query(
-                `INSERT INTO orderItem (ORDERITEM_ID, ORDERITEM_ORDER_ID, ORDERITEM_BOOK_ID, ORDERITEM_CNT, ORDERITEM_PRICE, ORDERITEM_POINT) VALUES ?`,
-                [orderItems],
-                (err) => {
-                    if (err) {
-                        res.status(401).send({
-                            // 에러 발생 시
-                            code: 400,
-                            failed: "error occurred",
-                            error: err,
-                        });
-                    } else {
-                        res.status(200).send({
-                            message: "성공",
-                            orderID: order_id,
-                        });
+    db.query(
+        `insert into moonmoon.order set ?`,
+        paymentDate,
+        (err, results) => {
+            if (err) {
+                res.send({
+                    // 에러 발생 시
+                    code: 400,
+                    failed: "error occurred",
+                    error: err,
+                });
+            } else {
+                const order_id = results.insertId;
+                const orderItems = testdata.map((item) => [
+                    order_id,
+                    item.ORDERITEM_BOOKID,
+                    item.ORDERITEM_CNT,
+                    item.ORDERITEM_PRICE,
+                    item.ORDERITEM_POINT,
+                ]);
+                console.log(orderItems);
+                db.query(
+                    `INSERT INTO orderItem (ORDERITEM_ORDER_ID, ORDERITEM_BOOK_ID, ORDERITEM_CNT, ORDERITEM_PRICE, ORDERITEM_POINT) VALUES ?`,
+                    [orderItems],
+                    (err) => {
+                        if (err) {
+                            res.status(401).send({
+                                // 에러 발생 시
+                                code: 400,
+                                failed: "error occurred",
+                                error: err,
+                            });
+                        } else {
+                            console.log(order_id);
+                            res.status(200).send({
+                                message: "성공",
+                                orderID: order_id,
+                            });
+                        }
                     }
-                }
-            );
+                );
+            }
+        }
+    );
+});
+
+router.post("/getInfo", async (req, res) => {
+    const email = req.body.email;
+
+    db.query(
+        `select b.BOOK_COVER as img, b.BOOK_PRICE as price, b.BOOK_POINT as point, c.CART_COUNT as quantity, b.BOOK_ID as book_no
+        from CART c join book b on c.CART_BOOK_ID = b.BOOK_ID
+        where c.CART_USER_EMAIL = ?`,
+        email,
+        (err, result) => {
+            if (err) {
+                res.status(400).send(err);
+            } else {
+                res.status(200).send(result);
+            }
+        }
+    );
+});
+
+router.get("/deleteCartBook", async (req, res) => {
+    const bookId = req.query.bookid;
+    console.log(bookId);
+
+    db.query(`delete from cart where CART_BOOK_ID = ?`, bookId, (err) => {
+        if (err) {
+            res.status(400).send(err);
+        } else {
+            res.status(200).send("삭제성공");
         }
     });
+});
+
+router.post("/countCart", async (req, res) => {
+    const userEmail = req.body.email;
+
+    db.query(
+        `select count(*) as cartNum from cart where CART_USER_EMAIL = ?`,
+        userEmail,
+        (err, result) => {
+            if (err) {
+                res.status(400).send(err);
+            } else {
+                res.status(200).send(result[0].cartNum.toString());
+            }
+        }
+    );
 });
 
 module.exports = router;

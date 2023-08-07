@@ -2,11 +2,13 @@ const express = require("express");
 const db = require("../db"); //db연결
 const router = express.Router();
 
-router.get("/:bookNum", async (req, res) => {
+//성공
+router.get("/", async (req, res) => {
     //책 정보 보내기
-    const bookId = req.params.bookNum;
+    const bookId = req.query.bookNum;
+    const id = parseInt(bookId);
 
-    db.query(`select * from book from BOOK_ID = ?`, bookId, (err, result) => {
+    db.query(`select * from book where BOOK_ID = ?`, id, (err, result) => {
         if (err) {
             res.send(err).status(400);
         } else {
@@ -15,6 +17,7 @@ router.get("/:bookNum", async (req, res) => {
     });
 });
 
+//흠
 router.post("/gotoPay", async (req, res) => {
     //결제 기능
     const ORDERITEM_BOOK_ID = req.body.bookId; //책 고유번호
@@ -57,6 +60,7 @@ router.post("/gotoPay", async (req, res) => {
     });
 });
 
+//성공
 router.post("/gotoCart", async (req, res) => {
     //장바구니에 추가
     const gotoCartInfo = {
