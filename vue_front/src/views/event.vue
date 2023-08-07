@@ -191,8 +191,6 @@ export default {
   height: 350px;
   border-radius: 350px;
   overflow: hidden;
-
-  border: 25px solid rgb(127, 127, 170);
 }
 .rouletter-wacu {
   width: 100%;
@@ -203,18 +201,15 @@ export default {
   transition-timing-function: ease-in-out;
   transition: 5s;
 }
-
 .rouletter-arrow {
   position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 1px;
-  height: 1px;
-  border-right: 10px solid transparent;
-  border-left: 10px solid transparent;
-  border-top: 40px solid rgb(127, 127, 170);
-  border-bottom: 0px solid transparent;
+  width: 100px; /* 이미지의 가로 길이에 맞게 조정하세요 */
+  height: 130px; /* 이미지의 세로 길이에 맞게 조정하세요 */
+  background-image: url("../assets/룰렛핀.png");
+  background-size: cover;
 }
 .rouletter-btn {
   position: absolute;
