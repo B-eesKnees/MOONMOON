@@ -1,7 +1,8 @@
 <template>
+  <gnbbar />
   <div class="attendance">
     <div class="bar_wrap">
-      <p class="name">이 달의 출석일</p>
+      <p class="name">{{ realMonth }}월의 출석</p>
       <div class="bar">
         <div style="width: 13%"></div>
       </div>
@@ -13,8 +14,12 @@
     <ol class="stamp">
       <li v-for="index in month">
         <div class="stamp-item">
-            <span v-if="checkAtt(index)"><img src="https://contents.kyobobook.co.kr/resources/fo/images/common/ink/img_attendance_active@2x.png" alt="출석완료"></span>
-            <span v-else>{{ index }}</span>
+          <span v-if="checkAtt(index)"
+            ><img
+              src="https://contents.kyobobook.co.kr/resources/fo/images/common/ink/img_attendance_active@2x.png"
+              alt="출석완료"
+          /></span>
+          <span v-else>{{ index }}</span>
         </div>
       </li>
     </ol>
@@ -23,56 +28,104 @@
     </div>
     <!-- 비로그인인 경우 -->
   </div>
+  <div class="benefit">
+    <div class="benefit_text1">-출석체크 혜택-</div>
+    <br />
+    <div class="benefit_text2">출석 할 때 마다 100포인트씩 드려요</div>
+  </div>
 </template>
 
 <script>
+import axios from "axios";
+axios.defaults.baseURL = "http://localhost:3000";
+axios.defaults.headers.post["Content-Type"] = "application/json;charset=utf-8";
+axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
+import gnbbar from "../components/gnbBar.vue";
 export default {
+  components: {
+    gnbbar,
+  },
   data() {
     return {
-      userAtt: [10, 11, 13, 15], //ex 출석체크 데이터
+      userAtt: [], //출석체크 데이터
       today: null, //오늘의 날짜 데이터
-      month: null //30일인지 31일인지 확인
+      month: null, //30일인지 31일인지 확인
+      realMonth: new Date().getMonth() + 1,
+      userEmail: localStorage.getItem("userID"),
     };
   },
   mounted() {
     this.getMonth();
+    this.getUserAtt();
   },
   methods: {
-    checkAtt(index) { // 유저가 출석한 날짜를 받아와서 출석한 날짜는 true 안한 날짜는 false로 return
-        return this.userAtt.includes(index);
+    checkAtt(index) {
+      // 유저가 출석한 날짜를 받아와서 출석한 날짜는 true 안한 날짜는 false로 return
+      return this.userAtt.includes(index);
     },
-    attendance() {
-        this.today = new Date().toISOString().slice(8, 10); //오늘의 날짜 추출 STRING으로 추출됨
-
-        const todayInt = parseInt(this.today); //STRING > INT
-
-        if(this.userAtt.includes(todayInt)) { //버튼 연속으로 누르면 거부하는 조건문
-            return;
-        }
-
-        this.userAtt.push(todayInt); //버튼을 처음 누르면 배열에 오늘 날짜 삽입
-        console.log(this.userAtt); //테스트용 콘솔
-        alert(`${todayInt}일 출석 성공!!`);
-
-        //출석체크 쿠폰 출석일이 쌓이면 받는 형식으로 
-    },
-    getMonth() { //달에 알맞은 일자 출력하게 하는 함수
-      //new Date 객체 생성하고 getMonth() 쓰는게 더 간단함 
+    getMonth() {
+      //달에 알맞은 일자 출력하게 하는 함수
+      //new Date 객체 생성하고 getMonth() 쓰는게 더 간단함
       const checkMonth = new Date().toISOString().slice(5, 7); //2023-"01"-01 //무슨 달인지 추출
-      if(checkMonth == "01"  || checkMonth == "03" || checkMonth == "05"  || checkMonth == "07"  || checkMonth == "08"  || checkMonth == "10"  || checkMonth == "12") {
+      if (
+        checkMonth == "01" ||
+        checkMonth == "03" ||
+        checkMonth == "05" ||
+        checkMonth == "07" ||
+        checkMonth == "08" ||
+        checkMonth == "10" ||
+        checkMonth == "12"
+      ) {
         this.month = 31; //31일인 달
-      } else if(checkMonth == "02") {
+      } else if (checkMonth == "02") {
         this.month = 28; //2월은 28일
       } else {
         this.month = 30; //나머지는 30일
       }
-    }
-  }
+    },
+    getUserAtt() {
+      axios({
+        url: `http://localhost:3000/att`,
+        method: "GET",
+        params: { email: this.userEmail },
+      }).then((res) => {
+        if (res.data == "출석체크 기록이 없습니다.") {
+          this.userAtt = [];
+        } else {
+          this.userAtt = res.data;
+        }
+      });
+    },
+    attendance() {
+      const today1 = new Date().getDate();
+
+      if (this.userAtt.includes(today1)) {
+        //버튼 연속으로 누르면 거부하는 조건문
+        alert("이미 출석하셨습니다.");
+        return;
+      }
+      axios({
+        url: "/att/attendance",
+        method: "POST",
+        data: {
+          email: this.userEmail,
+          date: today1,
+        },
+      })
+        .then((res) => {
+          alert("출석체크 성공!");
+          this.getUserAtt();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+  },
 };
 </script>
 
 <style scoped>
-.attendance_button{
+.attendance_button {
   text-align: center;
 }
 .attendance_button button {
@@ -174,7 +227,7 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
-  Text-Align: center;
+  text-align: center;
 }
 
 .stamp-item img {
@@ -182,5 +235,24 @@ p {
   max-height: 80%; /* 이미지가 자동으로 축소되도록 함 */
   margin: auto;
   display: block;
+}
+.benefit {
+  position: relative;
+  margin-left: 10%;
+  margin-bottom: 100px;
+  border: none;
+  width: 80%;
+
+  height: 200px;
+  text-align: center;
+}
+.benefit_text1 {
+  font-size: larger;
+  font-weight: bolder;
+}
+.benefit_text2 {
+  margin-top: 3%;
+  font-size: larger;
+  font-weight: bolder;
 }
 </style>

@@ -58,7 +58,7 @@ router.post("/checkemail", async (req, res) => {
     const email = req.body.email;
 
     db.query(
-        `select * from users where USER_EMAIL = ?`,
+        `select * from user where USER_EMAIL = ?`,
         email,
         (err, results) => {
             if (err) {
@@ -90,7 +90,7 @@ router.post(`/join`, async (req, res) => {
         USER_ADD2: frontUserData.add2,
     };
 
-    db.query(`insert into users set ?`, userdata, (err, result) => {
+    db.query(`insert into user set ?`, userdata, (err, result) => {
         if (err) {
             res.status(200).send("에러 발생: " + err);
         } else {
@@ -231,7 +231,7 @@ router.post("/login", async (req, res) => {
     const password = req.body.password; //받아오는 데이터
 
     db.query(
-        `select * from users where USER_EMAIL = ?`,
+        `select * from user where USER_EMAIL = ?`,
         email,
         async (error, results) => {
             //이메일이 존재하는지 확인

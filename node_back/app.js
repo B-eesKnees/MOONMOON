@@ -44,6 +44,8 @@ const payRouter = require("./routes/pay");
 const payResultRouter = require("./routes/pay_result");
 const mainPageRouter = require("./routes/main");
 const detailPageRouter = require("./routes/detail");
+const attPageRouter = require("./routes/att");
+const booklistPageRouter = require("./routes/bookList");
 
 app.use("/cart", cartRouter);
 app.use("/floating", floatingRouter);
@@ -56,6 +58,8 @@ app.use("/pay", payRouter);
 app.use("/payresult", payResultRouter);
 app.use("/main", mainPageRouter);
 app.use("/detail", detailPageRouter);
+app.use("/att", attPageRouter);
+app.use("/booklist", booklistPageRouter);
 
 app.listen(app.get("port"), () => {
     //서버 연결

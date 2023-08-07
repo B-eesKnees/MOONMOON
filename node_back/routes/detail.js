@@ -2,6 +2,7 @@ const express = require("express");
 const db = require("../db"); //db연결
 const router = express.Router();
 
+//성공
 router.get("/", async (req, res) => {
     //책 정보 보내기
     const bookId = req.query.bookNum;
@@ -15,6 +16,8 @@ router.get("/", async (req, res) => {
         }
     });
 });
+
+//흠
 router.post("/gotoPay", async (req, res) => {
     //결제 기능
     const ORDERITEM_BOOK_ID = req.body.bookId; //책 고유번호
@@ -57,6 +60,7 @@ router.post("/gotoPay", async (req, res) => {
     });
 });
 
+//성공
 router.post("/gotoCart", async (req, res) => {
     //장바구니에 추가
     const gotoCartInfo = {
