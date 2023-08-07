@@ -7,6 +7,7 @@ import SearchList from "../views/searchList.vue";
 import BestList from "../views/bestList.vue";
 import NewList from "../views/newList.vue";
 import bookDetail from "../views/bookDetail.vue";
+import Goods from "../views/goods.vue";
 
 import booktestPage from "../views/bookTest.vue";
 import cart from "../views/cart.vue";
@@ -72,6 +73,11 @@ const routes = [
     path: "/detail/:bookNum",
     name: "bookDetail",
     component: bookDetail,
+  },
+  {
+    path: "/goods",
+    name: "Goods",
+    component: Goods,
   },
   //-------------------------------------------------------------
   //장바구니 - 결제 - 결제완료

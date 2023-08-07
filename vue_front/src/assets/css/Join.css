@@ -137,14 +137,15 @@
     width: 30%;
 }
 
-label {
+.join label {
     margin-right: 3%;
     display: inline-block;
     width: 110px;
     text-align: right;
 }
 
-input {
+.join input[type="text"],
+.join input[type="password"] {
     width: 60%;
     margin-bottom: 1%;
     padding: 1%;
@@ -167,10 +168,9 @@ input {
     display: none;
 }
 
-input:focus {
+.join input:focus {
     outline: none;
     border-color: #4E4EFF;
-
     transition: all .2s ease-in-out;
 }
 
@@ -218,6 +218,9 @@ input.submit:hover {
     width: 20%;
     margin-left: 2%;
     background-color: #4E4EFF;
+    border: none;
+    padding: 1%;
+    border-radius: 6px;
     color: #fff;
     cursor: pointer;
 }
