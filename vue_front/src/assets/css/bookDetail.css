@@ -1,3 +1,85 @@
-.tesst {
-    background-color: #6969ff;
+.title_wri_sum {
+  /* border: 1px solid #000; */
+  position: relative;
+  width: 60%;
+  margin: 0 auto;
+  /* top: 150px; */
+  margin-top: 150px;
+}
+
+.detail_title {
+    /* border: 1px solid #000; */
+    position: relative;
+    width: 60%;
+    font-size: 2em;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.writer_date {
+    position: relative;
+    /* border: 1px solid #000; */
+    font-size: 1em;
+    font-weight: 400;
+    margin-bottom: 50px;
+    width: 40%;
+}
+
+.book_summary {
+    position: relative;
+    /* border: 1px solid #000; */
+    width: 60%;
+    margin-bottom: 100px;
+}
+
+
+
+
+
+.img_price_btn {
+    position: relative;
+    border: 1px solid #000;
+    width: 80%;
+    height: 1000px;
+    margin: 0 auto;
+}
+
+.detail_img {
+    position: relative;
+    display: inline-block;
+    margin-left: 15%;
+    margin-right: 10%;
+    width: 25%;
+    /* border: 1px solid #000; */
+}
+
+.detail_img > img {
+    width: 100%;
+}
+
+.img_right {
+    position: absolute;
+    display: inline-block;
+    width: 50%;
+    /* height: 100px; */
+    border: 1px solid #000;
+
+}
+
+
+.det_top_star {
+    position: relative;
+    margin-top: 2%;
+}
+
+.top_star_score {
+    position: relative;
+    display: inline-block;
+    margin-left: 2%;
+    font-weight: 500;
+}
+
+.top_star_count {
+    display: inline-block;
+    font-weight: 300;
 }

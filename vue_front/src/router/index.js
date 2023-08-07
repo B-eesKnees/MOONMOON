@@ -67,7 +67,7 @@ const routes = [
     component: NewList,
   },
   {
-    path: "/detail",
+    path: "/detail/:bookNum",
     name: "bookDetail",
     component: bookDetail,
   },
