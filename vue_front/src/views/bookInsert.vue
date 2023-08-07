@@ -1,4 +1,5 @@
 <template>
+  <GnbBar />
   <div class="input_book_title">
     <form class="book_title_form" @submit.prevent="book_research">
       <input
@@ -43,10 +44,6 @@
         <div class="contents">{{ book_pricestandard }}</div>
       </div>
       <div class="con_line">
-        <h6 class="bi_h6">세일가:</h6>
-        <div class="contents">{{ book_pricesales }}</div>
-      </div>
-      <div class="con_line">
         <h6 class="bi_h6">카테고리:</h6>
         <div class="contents">{{ book_categoryname }}</div>
       </div>
@@ -84,11 +81,15 @@
 <script>
 import "@/assets/css/bookInsert.css";
 import axios from "axios";
+import GnbBar from "../components/gnbBar.vue";
 axios.defaults.baseURL = "http://localhost:3000";
 axios.defaults.headers.post["Content-Type"] = "application/json;charset=utf-8";
 axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 
 export default {
+  components: {
+    GnbBar,
+  },
   data() {
     return {
       bookname: "",
@@ -264,6 +265,9 @@ export default {
         .then((res) => {
           if (res.status == 200) {
             alert(res.data);
+            if (res.data === "ok") {
+              this.$router.go(); // 등록하고나면 새로고침해서 넣은 데이터 안남아있게 수정했음!
+            }
           }
         })
         .catch((err) => {
