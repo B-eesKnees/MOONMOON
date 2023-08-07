@@ -43,6 +43,7 @@ const rouletteRouter = require("./routes/roulette");
 const payRouter = require("./routes/pay");
 const payResultRouter = require("./routes/pay_result");
 const mainPageRouter = require("./routes/main");
+const detailPageRouter = require("./routes/detail");
 
 app.use("/cart", cartRouter);
 app.use("/floating", floatingRouter);
@@ -54,6 +55,7 @@ app.use("/roulette", rouletteRouter);
 app.use("/pay", payRouter);
 app.use("/payresult", payResultRouter);
 app.use("/main", mainPageRouter);
+app.use("/detail", detailPageRouter);
 
 app.listen(app.get("port"), () => {
     //서버 연결

@@ -97,7 +97,7 @@ router.post("/insertInfo", async (req, res) => {
     const bookInfo = req.body;
 
     db.query(
-        `select * from books where BOOK_TITLE = ?`,
+        `select * from book where BOOK_TITLE = ?`,
         bookInfo.book_title,
         (err, results) => {
             if (err) {
@@ -105,7 +105,7 @@ router.post("/insertInfo", async (req, res) => {
             } else if (results.length > 0) {
                 res.status(401).send("이미 등록된 책입니다.");
             } else {
-                db.query(`insert into books set ?`, bookInfo, (err) => {
+                db.query(`insert into book set ?`, bookInfo, (err) => {
                     if (err) {
                         res.status(401).send("오류 발생: " + err);
                     } else {
