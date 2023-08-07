@@ -4,10 +4,10 @@ const db = require("../db");
 const router = express.Router();
 
 
-// 가입시 입력한 유저/배송지 정보 출력
+// 가입시 입력한 유저/배송지 정보 출력  --ok
 router.get('/payUserInfo', (req, res) => {
   
-  const userEmail = 'user1@example.com';  // req.body.userEmail
+  const userEmail = req.body.userEmail;  // req.body.userEmail
 
   const query = `select USER_NAME, USER_PHONE, USER_ADD1, USER_ADD2
                  from user
@@ -43,7 +43,7 @@ router.get('/payUserInfo', (req, res) => {
  */
 
 
-// 상품 정보 출력
+// 상품 정보 출력  --ok
 router.get('/payBookInfo', (req, res) => {
   
   const ORDERITEM_ORDER_ID = req.body.orderid;  // req.body.orderid
@@ -66,22 +66,63 @@ router.get('/payBookInfo', (req, res) => {
 
 
 
-// 할인 쿠폰 적용 - 개인 쿠폰 조회 후 출력, 사용한 쿠폰 번호 받아오기, 적용 금액/적용 후 금액 출력
-//----쿠폰 조회
+//------할인 쿠폰 적용
+// 사용 가능한 쿠폰 조회 --ok
+router.get('/CouponList', (req, res) => {
+  
+  const userEmail = req.body.userEmail;  // req.body.userEmail
 
-//----사용한 쿠폰 디비에 입력
+  const query = `SELECT c.COUPON_NAME, c.COUPON_RATIO, c.COUPON_PRICE, date_format(c.COUPON_MAXDATE, '%Y-%m-%d') AS COUPON_MAXDATE
+                 FROM coupon c
+                 JOIN cpuser cu ON c.COUPON_ID = cu.CPUSER_COUPON_ID
+                 WHERE cu.CPUSER_USER_EMAIL = ?`;
 
-//----적용 금액/적용 후 금액 -> 이거 그냥 위에 사용한 포인트 디비에 입력에서 서브쿼리로 적용해도 되려나
+ db.query(query, userEmail, (error, result) => {
+  if (error) {
+    return console.log(error);
+  } 
+  if (result) {
+    res.send({CouponList: result});  // res.render?-x  res.json?
+  }
+ })
+});
+
+// 사용자가 선택한 쿠폰 가격에 적용 --ok
+router.post('/applyCoupon', (req, res) => {
+  const selectedCoupon = req.body.selectedCoupon;  // req.body.selectedCoupon
+  const selectedCouponRatio = req.body.selectedCouponRatio;
+  // 선택한 쿠폰의 CouponRatio 받아올 수 있나??? 받아올 수 있으면 위에 selectedCoupon 변수는 빼도 됨
+  const originalPrice = 10000;  // 쿠폰 적용 전 금액 -- 변수 수정해야함!!!!!!!!!!!!!
+  
+  const applyCouponPrice = calAfterCouponPrice(selectedCouponRatio, originalPrice)
+  res.send({ applyCouponPrice });
+});
 
 
 
 
-// 포인트 적용 - 개인 포인트 조회 후 출력, 사용한 포인트 금액 받아오기, 적용 금액/적용 후 금액 출력
-//----포인트 조회
+//-----포인트 적용
+// 포인트 조회 --ok
+router.get('/userPoint', (req, res) => {
+  
+  const userEmail = req.body.userEmail;  // req.body.userEmail
 
-//----사용한 포인트 디비에 입력
+  const query = `select USER_POINT
+                 from user
+                 where USER_EMAIL = ?`;
 
-//----적용 금액/적용 후 금액 -> 이거 그냥 위에 사용한 포인트 디비에 입력에서 서브쿼리로 적용해도 되려나
+ db.query(query, userEmail, (error, result) => {
+  if (error) {
+    return console.log(error);
+  } 
+  if (result) {
+    res.send({userPoint: result});  // res.render?-x  res.json?
+  }
+ })
+});
+
+
+// 사용자가 선택한 포인트 가격에 적용
 
 
 
@@ -107,6 +148,21 @@ router.get('/payInfo', (req, res) => {
 });
 
 
+
+// calFinalPrice 함수 선언
+function calAfterCouponPrice(couponRatio, originalPrice) {
+  const parsedCouponRatio = parseFloat(couponRatio);
+  
+  if (isNaN(parsedCouponRatio)) {
+    // 변환 불가능하면 원래 가격 반환
+    return originalPrice;
+  }
+  
+  const discountPer = parsedCouponRatio * 0.01;
+  const discountPrice = originalPrice * (1 - discountPer);
+
+  return discountPrice;
+}
 
 
 module.exports = router;

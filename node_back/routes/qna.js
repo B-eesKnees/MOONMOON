@@ -39,7 +39,7 @@ router.post('/qnaView', async (req, res) => {
 }); */
 
 
-// 문의글 작성 --ok post 요청은 됐다 db에 들어왂다!!
+// 문의글 작성 --ok
 // get 요청이 왜 같이 들어오지..(아무래도 redirect 부분인 듯..)
 router.post('/qnaWrite', (req, res) => {
   const QNA_USER_EMAIL = 'user1@example.com';  // req.body.email
