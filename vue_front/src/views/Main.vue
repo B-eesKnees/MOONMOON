@@ -2,6 +2,7 @@
 
 <template>
   <GnbBar />
+
   <div ref="content" class="main content">
     <!-- 이미지슬라이더 -->
     <div class="image-slider">
@@ -217,8 +218,6 @@
       <span>TOP</span>
     </div>
   </div>
-
-  <roulette />
 </template>
 
 <script>

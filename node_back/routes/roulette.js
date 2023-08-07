@@ -30,7 +30,7 @@ router.get("/checkroul", (req, res) => {
       return res.status(500).json({ error: "서버에러" });
     }
     if (results.length > 0) {
-      return res.status(400).json({ message: "이미 오늘 참여하셨습니다." });
+      return res.status(200).json({ message: "참여불가" });
     } else {
       res.status(200).json({ message: "참여 가능합니다" });
     }
@@ -41,6 +41,9 @@ router.get("/checkroul", (req, res) => {
 router.post("/addroul", (req, res) => {
   const userEmail = req.body.userEmail;
   const selectedValue = req.body.selectedValue;
+
+  const currentTime = new Date();
+  const formattedTime = currentTime.toISOString().slice(0, 10);
 
   const insertQuery =
     "INSERT INTO roulette (roul_value, roul_date, roul_user_email) VALUES (?, ?, ?)";
