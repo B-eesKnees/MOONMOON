@@ -313,11 +313,12 @@
 }
 
 .floating_modal_header h2 {
-  font-size: x-large;
+  font-size: large;
   font-weight: bold;
   cursor: pointer;
   padding: 3% 6%;
   border-radius: 8px;
+  border: 2px solid #595959;
 }
 
 .floating_modal_header h2:nth-child(2) {
@@ -325,7 +326,7 @@
 }
 
 .floating_modal_header span {
-  font-size: xx-large;
+  font-size: x-large;
 }
 
 .floating_modal_list_header_left span:first-child {

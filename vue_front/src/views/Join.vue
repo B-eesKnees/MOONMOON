@@ -29,7 +29,7 @@
             <form @submit.prevent="joinForm">
                 <label for="name">이름<span class="fontRed">*</span></label>
                 <input v-model="name" type="text" id="name" placeholder="이름 입력" :class="{ error_border: name_check }"
-                    maxlength="25"><br/>
+                    maxlength="25"><br />
                 <label for="email">아이디<span class="fontRed">*</span></label>
                 <input :disabled="!email_auth_check" v-model="emailFirst" type="text" id="email" placeholder="이메일 입력"
                     :class="{ error_border: email_check || emailcheck != 2 }" maxlength="25">
@@ -92,8 +92,7 @@
                 <input v-model="epostDetailAdress" ref="epostDetailAdress" type="text" id="epostDetailAdress"
                     placeholder="상세주소 입력"><br />
                 <!-- 가입하기버튼 -->
-                <button type="submit" /><input type="submit" :class="{ 'error_submit': allcheck, 'submit': !allcheck }"
-                    id="login" value="가입하기">
+                <input type="submit" :class="{ 'error_submit': allcheck, 'submit': !allcheck }" id="login" value="가입하기">
             </form>
         </div>
     </div>

@@ -102,7 +102,7 @@
     <div class="container">
       <div class="main_contents_header">
         <h2 class="main_title">굿즈</h2>
-        <a href="">더보기 ＋</a>
+        <a href="/goods">더보기 ＋</a>
       </div>
       <div class="main_item_wrap">
         <div class="recommend_item" v-for="i in 4">
