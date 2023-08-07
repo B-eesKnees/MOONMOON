@@ -7,12 +7,16 @@
         v-model="bookname"
         placeholder="책이름을 입력하세요"
       />
-      <button type="submit">검색</button>
+      <button class="bi_button" type="submit">검색</button>
     </form>
   </div>
   <div v-if="bookResults.length > 0" class="book_selection">
-    <label for="selectedBook">Select a book:</label>
-    <select v-model="selectedBook" @change="onBookSelectionChange">
+    <label class="bi_label" for="selectedBook">Select a book:</label>
+    <select
+      class="bi_select"
+      v-model="selectedBook"
+      @change="onBookSelectionChange"
+    >
       <option value="default">-----------------------</option>
       <option v-for="(book, index) in bookResults" :key="index" :value="index">
         {{ book.title }}
@@ -27,35 +31,35 @@
     </div>
     <div class="info_text">
       <div class="con_line">
-        <h6>책 이름:</h6>
+        <h6 class="bi_h6">책 이름:</h6>
         <div class="contents">{{ book_title }}</div>
       </div>
       <div class="con_line">
-        <h6>작가:</h6>
+        <h6 class="bi_h6">작가:</h6>
         <div class="contents">{{ book_author }}</div>
       </div>
       <div class="con_line">
-        <h6>정가:</h6>
+        <h6 class="bi_h6">정가:</h6>
         <div class="contents">{{ book_pricestandard }}</div>
       </div>
       <div class="con_line">
-        <h6>세일가:</h6>
+        <h6 class="bi_h6">세일가:</h6>
         <div class="contents">{{ book_pricesales }}</div>
       </div>
       <div class="con_line">
-        <h6>카테고리:</h6>
+        <h6 class="bi_h6">카테고리:</h6>
         <div class="contents">{{ book_categoryname }}</div>
       </div>
       <div class="con_line">
-        <h6>포인트:</h6>
+        <h6 class="bi_h6">포인트:</h6>
         <div class="contents">{{ book_point }}</div>
       </div>
       <div class="con_line">
-        <h6>출판사:</h6>
+        <h6 class="bi_h6">출판사:</h6>
         <div class="contents">{{ book_publisher }}</div>
       </div>
       <div class="con_line">
-        <h6>출판일:</h6>
+        <h6 class="bi_h6">출판일:</h6>
         <div class="contents">{{ book_pubdate }}</div>
       </div>
       <div class="con_line">
@@ -63,7 +67,7 @@
         <div class="contents">{{ book_salesPoint }}</div>
       </div>
       <div class="con_line">
-        <h6>책 한줄 설명:</h6>
+        <h6 class="bi_h6">책 한줄 설명:</h6>
         <div class="contents">{{ book_description }}</div>
       </div>
     </div>
