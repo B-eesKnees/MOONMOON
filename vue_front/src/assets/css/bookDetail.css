@@ -39,9 +39,8 @@
 
 .img_price_btn {
     position: relative;
-    border: 1px solid #000;
+    /* border: 1px solid #000; */
     width: 80%;
-    height: 1000px;
     margin: 0 auto;
 }
 
@@ -62,8 +61,7 @@
     position: absolute;
     display: inline-block;
     width: 50%;
-    /* height: 100px; */
-    border: 1px solid #000;
+    /* border: 1px solid #000; */
 
 }
 
@@ -119,7 +117,7 @@
 .price_point_set_3 {
     /* border: #000 solid 1px; */
     display: block;
-    margin-bottom: 10%;
+    margin-bottom: 7%;
 }
 
 .price_point_title_2, .price_point_title_3 {
@@ -211,7 +209,12 @@
 
 
 
-
+.pay_cart_like {
+    /* border: #000 solid 1px; */
+    /* background-color: #4E4EFF; */
+    margin-top: 3%;
+    display: flex;
+}
 
 
 
@@ -224,5 +227,57 @@
     padding: 10px 20px;
     font-size: 1.2em;
     font-weight: 500;
-    margin-top: 3%;
+}
+
+.go_to_cart {
+    border: none;
+    background: none;
+    /* border: #000 1px solid; */
+    width: 50px;
+    display: inline-block;
+    margin-left: 16px;
+    position: relative;
+    top: 3px;
+}
+
+.go_to_cart > img {
+    width: 100%;
+}
+
+
+.detail_like_btn {
+    border: none;
+    background: none;
+    border: #000 1px solid;
+    border-radius: 100%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 16px;
+    position: relative;
+    top: 3px;
+    
+}
+
+
+
+.detail_main_next_hr {
+    margin-top: 5%;
+    margin-bottom: 8%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+}
+
+
+
+
+
+.detail_review_set {
+    width: 60%;
+    border: #000 1px solid;
+    margin: 0 auto;
 }
