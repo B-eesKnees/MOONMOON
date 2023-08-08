@@ -5,13 +5,13 @@ const router = express.Router();
 
 
 // 문의 내역 출력  --ok
-router.get('/qnaList', (req, res) => {
+router.get('/qnaAll', (req, res) => {
   
-    const userEmail = 'user1@example.com';  // req.body.userEmail
+    const userEmail =' beeskneesezen@gmail.com';  // req.body.userEmail
 
     const query = `select QNA_ID, QNA_REP, QNA_TITLE, QNA_DATE, QNA_CON, QNA_REPLY
                    from qna
-                   where QNA_USERID = ?
+                   where QNA_USER_EMAIL = ?
                    order by QNA_DATE desc`;
 
    db.query(query, userEmail, (error, result) => {
@@ -19,7 +19,7 @@ router.get('/qnaList', (req, res) => {
       return console.log(error);
     } 
     if (result) {
-      res.send({qnaList: result});  // res.render?-x  res.json?
+      res.json({qnaAll: result});  // res.render?-x  res.json?
     }
    })
   });
