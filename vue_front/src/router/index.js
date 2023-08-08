@@ -1,8 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Main from "../views/Main.vue";
 import Login from "../views/Login.vue";
+import NaverLogin from "../views/NaverLogin.vue"
 import Join from "../views/Join.vue";
+import Survey from "../views/survey.vue";
 
+import RecommendList from "../views/recommendList.vue";
 import SearchList from "../views/searchList.vue";
 import BestList from "../views/bestList.vue";
 import NewList from "../views/newList.vue";
@@ -44,9 +47,19 @@ const routes = [
     component: Login,
   },
   {
+    path: "/naverlogin",
+    name: "naverlogin",
+    component: NaverLogin,
+  },
+  {
     path: "/join",
     name: "Join",
     component: Join,
+  },
+  {
+    path: "/survey",
+    name: "Survey",
+    component: Survey,
   },
   {
     path: "/test",
@@ -54,6 +67,11 @@ const routes = [
     component: booktestPage,
   },
   //---책리스트-------------------------------------------------
+  {
+    path: "/recommendlist",
+    name: "RecommendList",
+    component: RecommendList,
+  },
   {
     path: "/search",
     name: "SearchList",

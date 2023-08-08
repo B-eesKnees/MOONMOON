@@ -99,24 +99,24 @@
     justify-content: flex-end;
     align-items: center;
     position: relative;
-    padding-right: 3%;
+    padding-right: 5%;
 }
 
 .email_auth_complete span {
     position: absolute;
     top: 18%;
-    right: 20%;
+    right: 21%;
     color: red;
     padding: 1%;
 }
 
-.email_auth_complete input {
-    width: 20%;
+.email_auth_complete_input {
+    width: 20% !important;
 }
 
 .email_auth_complete button {
     width: 15%;
-    padding: 1% 2%;
+    padding: 1% 3%;
     border: 1px solid #4E4EFF;
     border-radius: 4px;
     color: white;

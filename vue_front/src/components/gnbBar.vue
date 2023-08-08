@@ -41,7 +41,7 @@
         <button @click="navBtnToggle(event)" ref="nav_btn2" class="nav_btn  display_none">✖</button>
       </div>
       <ul class="nav_category">
-        <a class="nav_category_link" href="">
+        <a class="nav_category_link" href="/recommendlist">
           <li>추천</li>
         </a>
         <a class="nav_category_link" href="/best">
@@ -62,6 +62,7 @@
         •
         <a class="nav_sub_link" href="">출석체크</a>
       </div>
+      <!-- 카테고리 모달 -->
       <div v-if="showCategoryModal" class="nav_category_modal">
         <h2>카테고리</h2>
         <div class="nav_modal_main_category_wrap">
@@ -69,13 +70,13 @@
           <ul class="nav_modal_main_category">
             <li v-for="(main, i) in category" :key="main.id" class="nav_modal_main_category_list_main_wrap">
               <div class="nav_modal_main_category_list_wrap">
-                <div class="nav_modal_main_category_list">{{ main.top }}</div>
+                <div class="nav_modal_main_category_list"><a href="">{{ main.top }}</a></div>
                 <div class="nav_modal_category_btn">
                   <span @click="showCategoryMiddleBtn($event, main.id)">{{ main.expanded ? '―' : '＋' }}</span>
                 </div>
               </div>
               <ul v-if="main.expanded" class="nav_modal_middle_category_list">
-                <li v-for="middle in main.middle" :key="middle">{{ middle }}</li>
+                <li v-for="middle in main.middle" :key="middle"><a href="">{{ middle }}</a></li>
               </ul>
             </li>
           </ul>
@@ -330,6 +331,9 @@ export default {
       }
     },
     getCartNum() {
+      if (!localStorage.getItem("userID")) {
+        this.cartNum = 0;
+      }
       axios({
         url: "/cart/countCart",
         method: "POST",

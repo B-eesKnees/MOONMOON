@@ -35,11 +35,11 @@
     </div>
 
     <!-- 책추천-->
-    <div v-if="logined == false" class="container_blur">
+    <div v-if="logined == false" class="main_container_blur">
       <h2>로그인하시면 취향에 맞는 책을 보여드려요</h2>
       <a href="/login">로그인하고 책 추천받기</a>
     </div>
-    <div class="container">
+    <div class="main_container">
       <h2 class="recommend_title">
         <span class="recommend_username">ㅇㅇㅇ</span>님에게 추천하는 책이예요
       </h2>
@@ -57,7 +57,7 @@
     </div>
 
     <!-- 베스트추천-->
-    <div class="container">
+    <div class="main_container">
       <div class="main_contents_header">
         <h2 class="main_title">베스트</h2>
         <a href="/best">더보기 ＋</a>
@@ -76,7 +76,7 @@
     </div>
 
     <!-- 신상품추천-->
-    <div class="container">
+    <div class="main_container">
       <div class="main_contents_header">
         <h2 class="main_title">신상품</h2>
         <a href="/new">더보기 ＋</a>
@@ -100,7 +100,7 @@
     </div>
 
     <!-- 굿즈-->
-    <div class="container">
+    <div class="main_container">
       <div class="main_contents_header">
         <h2 class="main_title">굿즈</h2>
         <a href="/goods">더보기 ＋</a>
@@ -303,6 +303,8 @@ export default {
     };
   },
   mounted() {
+    (this.email = localStorage.getItem("userID"));
+    this.checkUserSurvey();
     // 이미지 슬라이드가 렌더링되고 준비가 완료되면 slidesReady를 true로 설정
     this.slidesReady = true;
   },
@@ -368,6 +370,24 @@ export default {
       })
         .then((res) => {
           console.log(res);
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    },
+    async checkUserSurvey() {
+      await axios({
+        url: "http://localhost:3000/sur/check",
+        method: "POST",
+        data: {
+          email: this.email
+        },
+      })
+        .then((res) => {
+          console.log(res.data);
+          if(res.data == "설문조사 안한 유저") {
+            window.location.href = "/survey";
+          }
         })
         .catch((err) => {
           alert(err);
