@@ -10,7 +10,7 @@
       <section class="tabWrap">
         <TabsWrapper>
           <TabItem title="전체">
-            <div v-if="!nodata">
+            <div class="qna-btn" v-if="!nodata">
               <a href="#" class="qna-write">1:1 문의하기</a>
             </div>
 

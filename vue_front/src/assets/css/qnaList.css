@@ -40,6 +40,17 @@
   border: 1px solid #000;
 }
 
+.qna-btn {
+  width: 165px;
+  height: 45px;
+  border: 1px solid #000;
+  border-radius: 5px;
+}
+
+.qna-write {
+  
+}
+
 
 .tabs {
   max-width: 60vw;
@@ -51,19 +62,21 @@
   padding: 0;
   margin: 0;
   display: flex;
-  justify-content: space-between;
+  /* justify-content: left; */
   gap: 5px;
+  width: 720px;
+  height: 55px;
 }
 
 .tabs__item {
-  width: 30px;
   flex: 1;
-  background-color: #eee;
-  padding: 5px 0;
+  /* background-color: #eee; */
+  padding: 25px 0;
   border-radius: 5px 5px 0 0;
-  transition: .4s all ease-out;
+  transition: 0.4s all ease-out;
   cursor: pointer;
   user-select: none;
+  border: solid 1px #eee;
 }
 
 .tabs__item.selected {
