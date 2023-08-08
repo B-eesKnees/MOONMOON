@@ -220,30 +220,30 @@ export default {
 <style scoped>
 /* 예시 CSS 스타일 */
 /* 테이블 스타일 */
-table {
+.payment_book_info table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
 }
-td {
+.payment_book_info td {
   background-color: white;
 }
 
-th,
-td {
+.payment_book_info th,
+.payment_book_info td {
   padding: 8px;
   border: 1px solid #ccc;
 }
 
-th {
+.payment_book_info th {
   display: flex;
   border: none;
 }
-th .num {
+.payment_book_info th .num {
   margin-left: 5%;
   margin-top: 8px;
 }
-th .text {
+.payment_book_info th .text {
   margin-left: 2%;
   font-size: 1.4em;
   font-weight: bold;
@@ -289,7 +289,7 @@ th .text {
   margin-top: 1%;
 }
 .user_info {
-  margin: 0 30% 0 7%;
+  margin: 0 30% 2% 7%;
   width: 60%;
   border: 1px solid #ccc;
   padding: 1%;
@@ -297,6 +297,8 @@ th .text {
   display: flex;
   align-items: center;
   background-color: white;
+  top: 30px;
+  position: relative;
 }
 .payment_date {
   text-align: center;
@@ -389,7 +391,7 @@ th .text {
   position: fixed;
   width: 17%;
   height: 35%;
-  top: 29.3%;
+  top: 29.5%;
   left: 68%;
   border: 1px solid #ccc;
   background-color: white;

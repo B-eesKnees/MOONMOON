@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
             if (err) {
                 res.send({
                     // 에러 발생 시
-                    code: 400,
+                    code: 200,
                     failed: "error occurred",
                     error: err,
                 });
@@ -43,7 +43,7 @@ router.post("/", async (req, res) => {
                         if (err) {
                             res.status(401).send({
                                 // 에러 발생 시
-                                code: 400,
+                                code: 200,
                                 failed: "error occurred",
                                 error: err,
                             });
@@ -71,7 +71,7 @@ router.post("/getInfo", async (req, res) => {
         email,
         (err, result) => {
             if (err) {
-                res.status(400).send(err);
+                res.status(200).send(err);
             } else {
                 res.status(200).send(result);
             }
@@ -85,7 +85,7 @@ router.get("/deleteCartBook", async (req, res) => {
 
     db.query(`delete from cart where CART_BOOK_ID = ?`, bookId, (err) => {
         if (err) {
-            res.status(400).send(err);
+            res.status(200).send(err);
         } else {
             res.status(200).send("삭제성공");
         }
@@ -100,7 +100,7 @@ router.post("/countCart", async (req, res) => {
         userEmail,
         (err, result) => {
             if (err) {
-                res.status(400).send(err);
+                res.status(200).send(err);
             } else {
                 res.status(200).send(result[0].cartNum.toString());
             }

@@ -110,20 +110,18 @@ router.post("/kakaologin", async (req, res) => {
     const user = {
         //프론트에서 전달해주는 데이터
         USER_EMAIL: req.body.email,
-        USER_IMAGE: req.body.image,
         USER_SEX: sex,
         USER_AGEGROUP: req.body.agegroup,
-        USER_NICKNAME: req.body.nick,
+        USER_NAME: req.body.name,
         USER_PROVIDER: req.body.provider,
-        USER_ADD: req.body.add,
     };
 
-    db.query("insert into weavewego.user set ?", user, (err) => {
+    db.query("insert into user set ?", user, (err) => {
         //쿼리 실행
         if (err) {
             res.send({
                 // 에러 발생 시
-                code: 400,
+                code: 200,
                 failed: "error occurred",
                 error: err,
             });
@@ -141,22 +139,20 @@ router.post("/kakaoData", async (req, res) => {
     const email = req.body.email;
 
     db.query(
-        `select * from weavewego.user where USER_EMAIL = ?`,
+        `select * from user where USER_EMAIL = ?`,
         email,
         async (err, results) => {
             if (err) {
                 res.send({
                     // 에러 발생 시
-                    code: 400,
+                    code: 200,
                     failed: "error occurred",
                     error: err,
                 });
             } else {
                 res.send({
                     email: results[0].USER_EMAIL,
-                    nick: results[0].USER_NICKNAME,
-                    image: results[0].USER_IMAGE,
-                    provider: results[0].USER_PROVIDER,
+                    nick: results[0].USER_NAME,
                 });
             }
         }
@@ -182,12 +178,12 @@ router.post("/naverlogin", async (req, res) => {
         USER_PROVIDER: req.body.provider,
     };
 
-    db.query("insert into weavewego.user set ?", user, (err) => {
+    db.query("insert into user set ?", user, (err) => {
         //쿼리 실행
         if (err) {
             res.send({
                 // 에러 발생 시
-                code: 400,
+                code: 200,
                 failed: "error occurred",
                 error: err,
             });
@@ -205,13 +201,13 @@ router.post("/naverData", async (req, res) => {
     const email = req.body.email;
 
     db.query(
-        `select * from weavewego.user where USER_EMAIL = ?`,
+        `select * from user where USER_EMAIL = ?`,
         email,
         async (err, results) => {
             if (err) {
                 res.send({
                     // 에러 발생 시
-                    code: 400,
+                    code: 200,
                     failed: "error occurred",
                     error: err,
                 });
@@ -238,7 +234,7 @@ router.post("/login", async (req, res) => {
             if (error) {
                 res.send({
                     //에러발생시
-                    code: 400,
+                    code: 200,
                     failed: "error occurred",
                     error: error,
                 });

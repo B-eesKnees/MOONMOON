@@ -6,7 +6,7 @@ const mailSender = {
         return new Promise((resolve, reject) => {
             var transporter = nodemailer.createTransport({
                 service: "gmail", // 메일 보내는 곳
-                prot: 567,
+                port: 567,
                 host: "smtp.gmlail.com",
                 secure: true,
                 requireTLS: true,
@@ -17,7 +17,7 @@ const mailSender = {
             });
             // 메일 옵션
             var mailOptions = {
-                from: "bj3757@gmail.com", // 보내는 메일의 주소
+                from: { name: "인증메일", address: "bj3757@gmail.com" }, // 보내는 메일의 주소
                 to: param.toEmail, // 수신할 이메일
                 subject: param.subject, // 메일 제목
                 html: param.html, //메일 html 형식 이게 있으면 text는 보내지지 않음
