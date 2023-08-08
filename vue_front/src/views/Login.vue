@@ -210,7 +210,6 @@ export default {
                 data: {
                     email: kakao_account.email,
                     nick: kakao_account.profile.nickname,
-                    image: kakao_account.profile.profile_image_url,
                     sex: kakao_account.gender,
                     agegroup: kakao_account.age_range,
                     provider: "kakao",
@@ -229,7 +228,6 @@ export default {
             }).then(async (res) => {
                 localStorage.setItem("userID", res.data.email);
                 localStorage.setItem("userNick", res.data.nick);
-                localStorage.setItem("userImage", res.data.image);
                 localStorage.setItem("userProvider", res.data.provider);
 
                 window.location.href = "/";

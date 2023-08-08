@@ -32,7 +32,7 @@
                     maxlength="25"><br />
                 <label for="email">아이디<span class="fontRed">*</span></label>
                 <input :disabled="!email_auth_check" v-model="emailFirst" type="text" id="email" placeholder="이메일 입력"
-                    :class="{ error_border: email_check || emailcheck != 2 }" maxlength="25">
+                    :class="{ error_border: email_check || emailcheck == 2 }" maxlength="25">
                 <select :disabled="!email_auth_check" v-model="emailSecond" class="email_list" name="emailList"
                     id="emailList">
                     <option value="@naver.com">@naver.com</option>
@@ -41,9 +41,9 @@
                     <option value="@nate.com">@nate.com</option>
                     <option value="@hotmail.com">@hotmail.com</option>
                 </select>
-                <button type="button" @click=" startCountdown(), sendEmail()" class="email_auth">이메일 인증</button>
-                <div v-if="clickSendEmail" class="email_auth_complete">
-                    <input v-model="userVerifyNum" type="text" maxlength="6">
+                <button type="button" @click=" startCountdown(), sendEmail()" :disabled="emailcheck != 2" class="email_auth">이메일 인증</button>
+                <div v-if="clickSendEmail && emailcheck == 2" class="email_auth_complete">
+                    <input class="email_auth_complete_input" v-model="userVerifyNum" type="text" maxlength="6">
                     <span>{{ formattedTime }}</span>
                     <button type="button" @click="completeAuthEmail">인증완료</button>
 
@@ -418,7 +418,7 @@ export default {
                     },
                 }).then(async (res) => {
                     alert(res.data);
-                    location.replace('/login');
+                    this.autoLogin();
                 }).catch(error => {
                     alert(error);
                 })

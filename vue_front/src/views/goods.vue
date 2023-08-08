@@ -9,10 +9,10 @@
         <div class="goods_items">
             <div v-for="i in 4" class="goods_item">
                 <div class="goods_item_img">
-                    <img src="../assets/img/book4.jpg" alt="">
+                    <a href=""><img src="../assets/img/book4.jpg" alt="" /></a>
                 </div>
                 <div class="goods_item_info">
-                    <h2 class="goods_item_info_title">2023 시나공 정보처리기사 실기</h2>
+                    <h2 class="best_item_info_title"><a href="">2023 시나공 정보처리기사 실기</a></h2>
                     <span class="goods_item_info_author">김정준 | 2023.06.24</span>
                     <div class="goods_item_info_price">
                         <span>23.000</span>
