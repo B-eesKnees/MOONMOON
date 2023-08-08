@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
         useremail,
         (err, result) => {
             if (err) {
-                res.status(400).send(err);
+                res.status(200).send(err);
             } else {
                 if (result.length == 0) {
                     res.status(200).send("출석체크 기록이 없습니다.");
@@ -29,7 +29,7 @@ router.post("/attendance", async (req, res) => {
 
     db.query(`insert into attendance set ?`, attInfo, (err, result) => {
         if (err) {
-            res.status(400).send(err);
+            res.status(200).send(err);
         } else {
             const USER_EMAIL = req.body.email;
             db.query(
@@ -37,7 +37,7 @@ router.post("/attendance", async (req, res) => {
                 USER_EMAIL,
                 (err) => {
                     if (err) {
-                        res.status(400).send(err);
+                        res.status(200).send(err);
                     } else {
                         res.status(200).send("출석체크 성공");
                     }

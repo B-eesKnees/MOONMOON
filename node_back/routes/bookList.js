@@ -11,7 +11,7 @@ router.post(`/getBest`, async (req, res) => {
         order by b.BOOK_SALESPOINT;`,
         (err, result) => {
             if (err) {
-                res.status(400).send(err);
+                res.status(200).send(err);
             } else {
                 res.status(200).send(result);
             }
@@ -28,7 +28,7 @@ router.post(`/getNew`, async (req, res) => {
         order by b.BOOK_PUBDATE;`,
         (err, result) => {
             if (err) {
-                res.status(400).send(err);
+                res.status(200).send(err);
             } else {
                 res.status(200).send(result);
             }
@@ -50,7 +50,7 @@ router.post("/checkLikeList", async (req, res) => {
         email,
         (err, results) => {
             if (err) {
-                res.status(400).send(err);
+                res.status(200).send(err);
             } else {
                 const likelist = results.map((like) => like.LIKE_BOOK_ID);
 

@@ -10,7 +10,7 @@ router.get("/", async (req, res) => {
 
     db.query(`select * from book where BOOK_ID = ?`, id, (err, result) => {
         if (err) {
-            res.send(err).status(400);
+            res.send(err).status(200);
         } else {
             res.status(200).send(result);
         }
@@ -33,7 +33,7 @@ router.post("/gotoPay", async (req, res) => {
 
     db.query(`insert into moonmoon.order set ?`, paymentDate, (err, result) => {
         if (err) {
-            res.send(err).status(400);
+            res.send(err).status(200);
         } else {
             const ORDERITEM_ORDER_ID = result.insertId;
 
@@ -50,7 +50,7 @@ router.post("/gotoPay", async (req, res) => {
                 orderItem_info,
                 (err, result) => {
                     if (err) {
-                        res.send(err).status(400);
+                        res.send(err).status(200);
                     } else {
                         res.status(200).send("ok");
                     }
@@ -74,13 +74,13 @@ router.post("/gotoCart", async (req, res) => {
 
     db.query(`insert into cart set ?`, gotoCartInfo, (err, result) => {
         if (err) {
-            res.send(err).status(400);
+            res.send(err).status(200);
         } else {
             res.status(200).send("ok");
         }
     });
 });
-
+//성공
 router.post("/likeOrDislike", async (req, res) => {
     //좋아요 싫어요 기능
     const LIKE_USER_EMAIL = req.body.email;
@@ -97,7 +97,7 @@ router.post("/likeOrDislike", async (req, res) => {
         [LIKE_USER_EMAIL, LIKE_BOOK_ID],
         (err, result) => {
             if (err) {
-                res.status(400).send(err);
+                res.status(200).send(err);
             } else {
                 if (result.length == 0) {
                     db.query(
@@ -105,7 +105,7 @@ router.post("/likeOrDislike", async (req, res) => {
                         likeInfo,
                         (err, result) => {
                             if (err) {
-                                res.send(err).status(400);
+                                res.send(err).status(200);
                             } else {
                                 res.status(200).send("ok");
                             }
@@ -117,7 +117,7 @@ router.post("/likeOrDislike", async (req, res) => {
                         [LIKE_USER_EMAIL, LIKE_BOOK_ID],
                         (err, result) => {
                             if (err) {
-                                res.send(err).status(400);
+                                res.send(err).status(200);
                             } else {
                                 res.status(200).send("ok");
                             }
@@ -128,7 +128,7 @@ router.post("/likeOrDislike", async (req, res) => {
         }
     );
 });
-
+//성공
 router.post("/checkLike", async (req, res) => {
     //내가 좋아요했는지 안했는지 기능
     const LIKE_BOOK_ID = req.body.bookId;
@@ -139,7 +139,7 @@ router.post("/checkLike", async (req, res) => {
         [LIKE_USER_EMAIL, LIKE_BOOK_ID],
         (err, result) => {
             if (err) {
-                res.status(400).send(err);
+                res.status(200).send(err);
             } else {
                 if (result.length > 0) {
                     res.status(200).send("등록된 책입니다.");
@@ -150,7 +150,7 @@ router.post("/checkLike", async (req, res) => {
         }
     );
 });
-
+//성공
 router.post("/gotoRecent", async (req, res) => {
     //최근 본 책 기능
     const REC_USER_EMAIL = req.body.email;
@@ -161,7 +161,7 @@ router.post("/gotoRecent", async (req, res) => {
         [REC_USER_EMAIL, REC_BOOK_ID],
         (err, result) => {
             if (err) {
-                res.send(err).status(400);
+                res.send(err).status(200);
             } else {
                 if (result.length > 0) {
                     db.query(
@@ -169,7 +169,7 @@ router.post("/gotoRecent", async (req, res) => {
                         [REC_VIEWED_AT, REC_USER_EMAIL, REC_BOOK_ID],
                         (err, result) => {
                             if (err) {
-                                res.send(err).status(400);
+                                res.send(err).status(200);
                             } else {
                                 res.status(200).send("ok");
                             }
@@ -181,7 +181,7 @@ router.post("/gotoRecent", async (req, res) => {
                         [REC_USER_EMAIL, REC_BOOK_ID, REC_VIEWED_AT],
                         (err, result) => {
                             if (err) {
-                                res.send(err).status(400);
+                                res.send(err).status(200);
                             } else {
                                 res.status(200).send("ok");
                             }
