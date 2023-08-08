@@ -1,36 +1,72 @@
 <template>
+  <div class="moonroul">
+    <div class="roultitle">MOONMOON 룰렛 이벤트</div>
+    <div class="roultitle1">꽝 없는 100% 당첨! 포인트 받고 책 읽자!</div>
+  </div>
+  <div>
+    <img class="luckyroul" src="../assets/img/럭키룰렛.png" alt="럭키룰렛" />
+  </div>
   <div id="app">
     <div class="rouletter">
       <div class="rouletter-bg">
         <div class="rouletter-wacu"></div>
       </div>
       <div class="rouletter-arrow"></div>
-      <button class="rouletter-btn" @click="startRoulette()">start</button>
+      <button class="rouletter-btn" @click="startRoulette()">GO!</button>
     </div>
 
     <input type="hidden" class="hidden-input" ref="hiddenInput" />
-    <div class="modal" id="resultModal">
+    <div class="modal" id="resultModal" :class="{ 'modal-show': showModal }">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-title">축하합니다!</div>
-          <div class="modal-body" id="modal-body">
-            {{ selectedValue }}P 당첨되었습니다!
+          <div class="modal-title" v-if="modalTitle">{{ modalTitle }}</div>
+          <div class="modal-body" id="modal-body" v-if="modalBody">
+            {{ modalBody }}
           </div>
           <div class="modal-footer">
-            <span class="modal-close" @click="hideModal">&times;</span>
+            <div class="modal-close" @click="hideModal">&times;</div>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <div class="roulinfo">
+    <div class="roulspan">행사기간</div>
+    <div class="roulspan1">2023.08.01 - 2023.08.31</div>
+    <div class="roulcustom">대상고객</div>
+    <div class="roulcustom1">문문서점 전 회원 (아이디당 1일 1회 참여 가능)</div>
+  </div>
+  <div class="luckyrouldesc">
+    <img src="../assets/img/룰렛당첨안내.png" alt="룰렛 당첨안내" />
+  </div>
+  <div class="awareroul">
+    <div class="importantroul">꼭! 알아두세요</div>
+    <div class="roulline">
+      ------------------------------------------------------------------
+    </div>
+    <div class="roulguide">
+      <ul>
+        <li>
+          •행사 기간 내 문문서점 로그인 한 후 참여 가능하며, 쿠폰은 이벤트 기간
+          내 ID당 1일 1회만 발급 가능합니다.
+        </li>
+        <li>
+          •포인트 사용은 이벤트 기간 내 사용가능하며, 사용된 포인트 취소 시
+          이벤트 기간에만 재 사용 가능합니다.
+        </li>
+        <li>•포인트는 마이페이지에서 확인 가능합니다.</li>
+        <li>•본 이벤트는 당사 사정에 의해 조기 종료될 수 있습니다</li>
+      </ul>
+    </div>
+  </div>
 </template>
-
 <script>
 import axios from "axios";
 
 export default {
   data() {
     return {
+      userEmail: "user3@example.com",
       value: [100, 500, 1000, 500, 3000, 5000],
       //룰렛 돌리고 받는 포인트
       //룰렛 이미지 assets/룰.png보면 0~5 적어놨는데 이 배열임
@@ -41,35 +77,66 @@ export default {
       // [0.5, 0.15, 0.1, 0.15, 0.07, 0.03]
       //룰렛 보상 확률 1 = 100%
       setNum: null,
-      modalMessage: "",
+      showModal: false,
+      modalTitle: "", // 모달 제목을 동적으로 표시할 변수
+      modalBody: "", // 모달 본문을 동적으로 표시할 변수
+
       selectedValue: null,
     };
   },
 
   methods: {
-    startRoulette() {
-      // 룰렛 버튼 누르면 동작
-      this.setNum = this.rRandom();
-      //> this.setNum 은 배열의 랜덤 인덱스 즉 (0~5)까지의 랜덤값을 줌
-      this.selectedValue = this.value[this.setNum];
-      //rRandom()을 실행해 받은 0~5까지의 값을 활용하여 포인트 보상을 정해줌
-
-      // 룰렛을 돌립니다.
-      this.rRotate();
-
-      // 선택된 값을 백엔드로 전송합니다.
+    async startRoulette() {
       const backServer = "http://localhost:3000/roulette";
-      axios
-        .post(`${backServer}/addroul`, {
-          userEmail: "user8@example.com",
-          selectedValue: this.selectedValue,
-        })
-        .then((response) => {
-          console.log(response.data.message);
-        })
-        .catch((error) => {
-          console.error(error);
+      try {
+        const response = await axios.get(`${backServer}/checkroul`, {
+          params: {
+            userEmail: this.userEmail,
+          },
         });
+        this.handleRouletteResponse(response);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    handleRouletteResponse(response) {
+      console.log(response.data.message);
+      if (response.data.message === "참여불가") {
+        // 이미 참여한 경우 모달 표시
+        this.setNum = null;
+        this.showModal = true;
+        this.modalTitle = "이미 참여하셨네요!";
+        this.modalBody = "내일 다시 참여해주세요.";
+      } else {
+        // 아직 참여하지 않은 경우 룰렛 돌리기
+        this.setNum = this.rRandom();
+        this.selectedValue = this.value[this.setNum];
+        this.rRotate();
+
+        const backServer = "http://localhost:3000/roulette";
+        axios
+          .post(`${backServer}/addroul`, {
+            userEmail: this.userEmail,
+            selectedValue: this.selectedValue,
+          })
+          .then((response) => {
+            console.log(response.data.message);
+            // 룰렛 결과에 따른 모달 표시
+
+            this.modalTitle = "축하합니다!";
+            this.modalBody = `${this.selectedValue}P 당첨되었습니다!`;
+            setTimeout(() => {
+              this.showModal = true;
+              setTimeout(() => {
+                window.location.reload();
+              }, 10000);
+            }, 8000);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
     },
     rRandom() {
       var rand = Math.random();
@@ -128,9 +195,6 @@ export default {
           // console.log(this.value[this.setNum]);
 
           this.selectedValue = this.value[this.setNum];
-          // //이건 왜 또 선언하는거지
-          // console.log(this.selectedValue);
-          // console.log(this.setNum);
 
           setTimeout(() => {
             this.rLayerPopup(this.setNum);
@@ -152,111 +216,61 @@ export default {
       modal.style.display = "block";
       //모달 css
     },
-    // showModal(message) {
-    //   this.modalMessage = message;
-    //   var modal = this.$el.querySelector("#resultModal");
-    //   modal.style.display = "block";
-    // },
-    // 이건 왜 있는지 모르겠네
+
     hideModal() {
       var modal = this.$el.querySelector("#resultModal");
       modal.style.display = "none";
     },
-    //모달창 끄는 버튼 이벤트 함수
-    // rReset() {
-    //   setTimeout(() => {
-    //     var btn = this.$el.querySelector(".rouletter-btn");
-    //     btn.disabled = false;
-    //     btn.style.pointerEvents = "auto";
-    //     this.rLayerPopup(this.setNum);
-    //     this.$refs.hiddenInput.remove();
-    //   }, 8000);
-    // },
-    // 이것도 왜 있는지 모르겠네
   },
 };
 </script>
-<style>
-.rouletter {
-  position: relative;
-  width: 400px;
-  height: 400px;
-}
-.rouletter-bg {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 350px;
-  height: 350px;
-  border-radius: 350px;
-  overflow: hidden;
-}
-.rouletter-wacu {
+<style scoped>
+.luckyroul {
   width: 100%;
-  height: 100%;
-  background: #f5f5f2 url("../assets/룰.png") no-repeat;
-  background-size: 100%;
-  transform-origin: center;
-  transition-timing-function: ease-in-out;
-  transition: 5s;
+
+  border: 1px solid #000;
+
+  background-size: cover; /* 이미지 크기 조절 옵션 */
+  background-position: center;
 }
-.rouletter-arrow {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px; /* 이미지의 가로 길이에 맞게 조정하세요 */
-  height: 130px; /* 이미지의 세로 길이에 맞게 조정하세요 */
-  background-image: url("../assets/룰렛핀.png");
-  background-size: cover;
-}
-.rouletter-btn {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80px;
-  height: 80px;
-  border-radius: 80px;
-  background: #fff;
-  border-image: linear-gradient(to right, #fbfcb9be, #ffcdf3aa, #65d3ffaa);
-  border: 2px solid;
-}
-.hidden-input {
-  display: none;
-}
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
+.luckyroul > img {
   width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
 }
-.modal-dialog {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 300px;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 5px;
-}
-.modal-title {
+.roultitle {
+  font-size: 30px;
+  color: #4e4eff;
   font-weight: bold;
-  margin-bottom: 10px;
 }
-.modal-body {
-  margin-bottom: 20px;
+.roultitle1 {
+  font-size: 20px;
+  margin: 15px;
+  margin-left: 0;
 }
-.modal-footer {
-  text-align: right;
+.roulspan {
+  display: inline-block;
+  font-size: 20px;
+  font-weight: 700;
 }
-.modal-close {
-  cursor: pointer;
-  color: #999;
+.roulspan1 {
+  display: inline-block;
+  margin-left: 20px;
+  font-size: 20px;
+}
+.roulcustom {
+  display: inline-block;
+  font-size: 20px;
+  font-weight: 700;
+}
+.roulcustom1 {
+  display: inline-block;
+  margin-left: 20px;
+  font-size: 20px;
+}
+.importantroul {
+  font-size: 30px;
+  font-weight: bold;
+}
+.roulguide {
+  font-size: 20px;
 }
 </style>
