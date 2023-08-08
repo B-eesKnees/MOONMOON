@@ -56,13 +56,44 @@
           <div class="top_star_count">(43)</div>
         </div>
       </div>
-      <div class="price_point">
+      <div class="price_point_set_1">
         <div class="price_point_title_1">판매가</div>
-        <div class="price_point_detai_1">23,000</div>
+        <div class="price_point_detail_1">
+          23,000
+          <div class="won">원</div>
+        </div>
+      </div>
+      <div class="price_point_set_2">
         <div class="price_point_title_2">포인트</div>
-        <div class="price_point_detai_2">1,150</div>
+        <div class="price_point_detail_2">1,150</div>
+      </div>
+      <div class="price_point_set_3">
         <div class="price_point_title_3">배송비</div>
-        <div class="price_point_detai_3">2,500</div>
+        <div class="price_point_detail_3">
+          2,500
+          <div class="won_3">원</div>
+        </div>
+      </div>
+      <!-- --------------------------------------------------------------------------------------------- -->
+      <!-- 갯수 늘리고 카운트, 가격 -->
+      <div class="count_price">
+        <div class="count_btn_ib">
+          <div class="count_btn">
+            <button class="count_minus">
+              <img src="@/assets/img/count_minus.png" alt="count_minus" />
+            </button>
+            <div class="count_num">1</div>
+            <button class="count_plus">
+              <img src="@/assets/img/count_plus.png" alt="count_plus" />
+            </button>
+          </div>
+        </div>
+        <div class="payment_price">23,000</div>
+        <div class="won_4">원</div>
+      </div>
+      <div class="pay_cart_like">
+        <button class="pay_btn">결제하러 가기</button>
+        <button class="go_to_cart"></button>
       </div>
     </div>
   </div>
