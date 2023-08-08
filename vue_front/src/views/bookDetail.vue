@@ -55,11 +55,14 @@
           9.3
           <div class="top_star_count">(43)</div>
         </div>
-        <div class="price_point">
-          <div class="price_point_title">판매가</div>
-          <div class="price_point_title">포인트</div>
-          <div class="price_point_title">배송비</div>
-        </div>
+      </div>
+      <div class="price_point">
+        <div class="price_point_title_1">판매가</div>
+        <div class="price_point_detai_1">23,000</div>
+        <div class="price_point_title_2">포인트</div>
+        <div class="price_point_detai_2">1,150</div>
+        <div class="price_point_title_3">배송비</div>
+        <div class="price_point_detai_3">2,500</div>
       </div>
     </div>
   </div>

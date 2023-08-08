@@ -70,6 +70,7 @@
 .det_top_star {
     position: relative;
     margin-top: 2%;
+    margin-bottom: 10%;
 }
 
 .top_star_score {
@@ -82,4 +83,13 @@
 .top_star_count {
     display: inline-block;
     font-weight: 300;
+}
+
+
+.price_point_title_1 {
+    display: inline-block;
+}
+
+.price_point_detai_1 {
+    display: inline-block;
 }
