@@ -9,11 +9,13 @@
       <!-- 탭시작 -->
       <section class="tabWrap">
         <TabsWrapper>
-          <TabItem title="전체">
-            <div class="qna-btn" v-if="!nodata">
-              <a href="#" class="qna-write">1:1 문의하기</a>
-            </div>
-
+          <TabItem title="전체">           
+            <a href="#">
+              <div class="qna-btn" v-if="!nodata">
+                1:1 문의하기
+              </div>
+            </a>
+            
             <div class="qna-all">
               <div v-if="qnaAll.length === 0">
                 <div id="nodata" class="nodata">작성한 문의글이 없습니다</div>
@@ -27,10 +29,12 @@
               ></qnaAll>
             </div>
           </TabItem>
-          <TabItem title="답변 대기({{ countWaiting }})">
-            <div v-if="!nodata">
-              <a href="#" class="qna-write">1:1 문의하기</a>
-            </div>
+          <TabItem title="답변 대기">
+            <a href="#">
+              <div class="qna-btn" v-if="!nodata">
+                1:1 문의하기
+              </div>
+            </a>
 
             <div class="qna-all">
               <div v-if="qnaAll.length === 0">
@@ -45,10 +49,12 @@
               ></qnaWaiting>
             </div>
           </TabItem>
-          <TabItem title="답변 완료({{ countDone }})">
-            <div v-if="!nodata">
-              <a href="#" class="qna-write">1:1 문의하기</a>
-            </div>
+          <TabItem title="답변 완료">
+            <a href="#">
+              <div class="qna-btn" v-if="!nodata">
+                1:1 문의하기
+              </div>
+            </a>
 
             <div class="qna-all">
               <div v-if="qnaAll.length === 0">
