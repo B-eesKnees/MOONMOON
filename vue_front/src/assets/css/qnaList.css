@@ -14,28 +14,8 @@
   display: none;
 }
 
-.container {
-  display: grid;
-  grid-gap: 10px;
-  width: 190vh;
-  height: 100vh;
-  grid-template-columns: 460px 1fr;
-  grid-template-rows: 55px 90px 105px 1fr;
-  grid-template-areas: 'mypage_menu qna_title'
-                       'mypage_menu qna_tap'
-                       'mypage_menu qna_tab-btn'
-                       'mypage_menu qna_list';
-  
-}
 
-.container > div {
-  background-color: mediumpurple;
-  padding: 0px;
-  border: 1px solid #000;
-  /* display: grid;
-  justify-items: center;
-  align-items: center; */
-}
+
 
 .mypage_menu {
   grid-area: mypage_menu;
