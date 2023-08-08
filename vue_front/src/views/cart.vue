@@ -1,6 +1,6 @@
 <template>
   <gnbbar ref="childComponent" />
-  <div class="container">
+  <div class="cart_container">
     <div class="cart_wrap">
       <div class="cart_header" style="background-color: white">
         <input
@@ -405,6 +405,7 @@ export default {
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
   padding-left: 12px;
+  margin-top: 4%;
 }
 /* .cart_header h3{
   vertical-align: top;
@@ -412,14 +413,12 @@ export default {
   margin-bottom: 20px;
 } */
 
-.container {
+.cart_container {
   width: 100%;
 }
 
 .cart_wrap {
   width: 100%;
-
-  margin-top: -1%;
   margin-left: 11%;
   padding-bottom: 5%;
 }
@@ -601,11 +600,11 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
 }
-.container input[type="checkbox"] {
+.cart_container input[type="checkbox"] {
   display: none;
 }
 
-.container input[type="checkbox"] + label {
+.cart_container input[type="checkbox"] + label {
   display: inline-block;
   max-width: 22px;
   height: 22px;
@@ -614,10 +613,10 @@ export default {
   position: relative;
   margin-right: 2%;
   bottom: 70%;
-  transition: background-color 0.3s, border-color 0.3s;
+  width: 22px;
 }
 
-.container input[id^="book_checkbox"]:checked + label::after {
+.cart_container input[id^="book_checkbox"]:checked + label::after {
   content: "";
   width: 22px;
   height: 22px;

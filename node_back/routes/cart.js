@@ -2,7 +2,7 @@ const express = require("express");
 const db = require("../db"); //db연결
 
 const router = express.Router();
-
+//결제버튼
 router.post("/", async (req, res) => {
     // console.log(req.body);
     const ORDER_USEREMAIL = req.body.email;
@@ -60,7 +60,7 @@ router.post("/", async (req, res) => {
         }
     );
 });
-
+//장바구니에 들어간거 확인
 router.post("/getInfo", async (req, res) => {
     const email = req.body.email;
 
@@ -78,7 +78,7 @@ router.post("/getInfo", async (req, res) => {
         }
     );
 });
-
+//삭제기능
 router.get("/deleteCartBook", async (req, res) => {
     const bookId = req.query.bookid;
     console.log(bookId);
@@ -91,7 +91,7 @@ router.get("/deleteCartBook", async (req, res) => {
         }
     });
 });
-
+//장바구니 수량 체크
 router.post("/countCart", async (req, res) => {
     const userEmail = req.body.email;
 
