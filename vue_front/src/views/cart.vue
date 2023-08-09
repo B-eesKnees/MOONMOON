@@ -144,6 +144,10 @@ export default {
     },
     choosePay() {
       // 선택된 상품들만 필터링하여 가져옵니다.
+      if (!localStorage.getItem("userID")) {
+        alert("로그인해주세요");
+        return;
+      }
       const selectedBooks = this.cart.filter((book) =>
         this.select.includes(book.book_no)
       );
@@ -282,6 +286,7 @@ export default {
     },
     handleChildCheckboxChange() {
       // 모든 자식 체크박스가 선택되어 있는지 확인합니다.
+      console.log(this.cart);
       if (this.cart.length == 0) {
         this.selectAll = false;
         return;
@@ -292,6 +297,10 @@ export default {
       this.selectAll = allChildChecked;
     },
     getCart() {
+      if (!localStorage.getItem("userID")) {
+        this.cart = [];
+        return;
+      }
       const email = this.userEmail;
 
       axios({

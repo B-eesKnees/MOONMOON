@@ -209,7 +209,7 @@ export default {
                 method: "POST",
                 data: {
                     email: kakao_account.email,
-                    nick: kakao_account.profile.nickname,
+                    name: kakao_account.profile.nickname,
                     sex: kakao_account.gender,
                     agegroup: kakao_account.age_range,
                     provider: "kakao",
