@@ -7,13 +7,10 @@
     <!-- 이미지슬라이더 -->
     <div class="image-slider">
       <div class="slider-wrapper" v-if="slidesReady">
-        <div
-          class="slider"
-          :style="{
-            transform: `translateX(-${currentIndex * 100}%)`,
-            transition: transitionDuration,
-          }"
-        >
+        <div class="slider" :style="{
+          transform: `translateX(-${currentIndex * 100}%)`,
+          transition: transitionDuration,
+        }">
           <div v-for="(image, index) in images" :key="index" class="slide">
             <img :src="image" alt="Slide Image" />
           </div>
@@ -23,13 +20,8 @@
           <button @click="nextSlide" class="next-btn">&gt;</button>
         </div>
         <div class="dots">
-          <span
-            v-for="(image, index) in images"
-            :key="index"
-            @click="goToSlide(index)"
-            :class="{ active: index === currentIndex }"
-            class="dot"
-          ></span>
+          <span v-for="(image, index) in images" :key="index" @click="goToSlide(index)"
+            :class="{ active: index === currentIndex }" class="dot"></span>
         </div>
       </div>
     </div>
@@ -41,16 +33,16 @@
     </div>
     <div class="main_container">
       <h2 class="recommend_title">
-        <span class="recommend_username">ㅇㅇㅇ</span>님에게 추천하는 책이예요
+        <span class="recommend_username">{{name}}</span> 님에게 추천하는 책이예요
       </h2>
       <div ref="mainBlur" class="main_item_wrap blur">
-        <div class="recommend_item" v-for="i in 8">
-          <img class="main_item_img" src="../assets/img/book4.jpg" alt="" />
+        <div class="recommend_item" v-for="(item, i) in recBook" :key="i">
+          <img class="main_item_img" :src="item.BOOK_COVER" alt="" />
           <div class="main_item_info">
-            <h5 class="main_item_title">제목제목</h5>
-            <span class="main_item_writer">글쓴이</span>
+            <h5 class="main_item_title">{{item.BOOK_TITLE}}</h5>
+            <span class="main_item_writer">{{item.BOOK_AUTHOR}}</span>
             •
-            <span class="main_item_publisher">출판사</span>
+            <span class="main_item_publisher">{{item.BOOK_PUBLISHER}}</span>
           </div>
         </div>
       </div>
@@ -63,13 +55,13 @@
         <a href="/best">더보기 ＋</a>
       </div>
       <div class="main_item_wrap">
-        <div class="main_contents_item" v-for="i in 5">
-          <img class="main_item_img" src="../assets/img/book4.jpg" alt="" />
+        <div class="main_contents_item" v-for="(item, i) in bestBook" :key="i">
+          <img class="main_item_img2" :src="item.BOOK_COVER" alt="" />
           <div class="main_item_info">
-            <h5 class="main_item_title">제목제목</h5>
-            <span class="main_item_writer">글쓴이</span>
+            <h5 class="main_item_title">{{item.BOOK_TITLE}}</h5>
+            <span class="main_item_writer">{{item.BOOK_AUTHOR}}</span>
             •
-            <span class="main_item_publisher">출판사</span>
+            <span class="main_item_publisher">{{item.BOOK_PUBLISHER}}</span>
           </div>
         </div>
       </div>
@@ -82,13 +74,13 @@
         <a href="/new">더보기 ＋</a>
       </div>
       <div class="main_item_wrap">
-        <div class="main_contents_item" v-for="i in 5">
-          <img class="main_item_img" src="../assets/img/book4.jpg" alt="" />
+        <div class="main_contents_item" v-for="(item, i) in newestBook" :key="i">
+          <img class="main_item_img2" :src="item.BOOK_COVER" alt="" />
           <div class="main_item_info">
-            <h5 class="main_item_title">제목제목</h5>
-            <span class="main_item_writer">글쓴이</span>
+            <h5 class="main_item_title">{{item.BOOK_TITLE}}</h5>
+            <span class="main_item_writer">{{item.BOOK_AUTHOR}}</span>
             •
-            <span class="main_item_publisher">출판사</span>
+            <span class="main_item_publisher">{{item.BOOK_PUBLISHER}}</span>
           </div>
         </div>
       </div>
@@ -121,27 +113,16 @@
     <div ref="float" class="floating_modal_wrap display_none">
       <div class="floating_modal">
         <div class="floating_modal_header">
-          <h2
-            ref="floatRecent"
-            class="floating_modal_heart_btn current"
-            @click="floatingMenuRecent(), getRecentBook()"
-          >
+          <h2 ref="floatRecent" class="floating_modal_heart_btn current" @click="floatingMenuRecent(), getRecentBook()">
             최근 본
           </h2>
-          <h2
-            ref="floatHeart"
-            class="floating_modal_recent_btn"
-            @click="floatingMenuHeart"
-          >
+          <h2 ref="floatHeart" class="floating_modal_recent_btn" @click="floatingMenuHeart">
             찜 목록
           </h2>
           <span @click="closeFloating" class="cursor">✖</span>
         </div>
         <!-- 최근 본 -->
-        <div
-          v-if="floatingState == 'recent'"
-          class="floating_modal_recent_wrap"
-        >
+        <div v-if="floatingState == 'recent'" class="floating_modal_recent_wrap">
           <div class="floating_modal_list_header">
             <div class="floating_modal_list_header_left">
               <span>1</span>
@@ -154,9 +135,7 @@
           </div>
           <div class="floating_modal_list">
             <div v-for="i in 2" class="floating_modal_item">
-              <a class="floating_modal_item_img" href=""
-                ><img src="../assets/img/book4.jpg" alt=""
-              /></a>
+              <a class="floating_modal_item_img" href=""><img src="../assets/img/book4.jpg" alt="" /></a>
               <div class="floating_modal_item_info">
                 <a href="">
                   <h2>세이노의 가르침</h2>
@@ -188,9 +167,7 @@
           </div>
           <div class="floating_modal_list">
             <div v-for="i in 2" class="floating_modal_item">
-              <a class="floating_modal_item_img" href=""
-                ><img src="../assets/img/book4.jpg" alt=""
-              /></a>
+              <a class="floating_modal_item_img" href=""><img src="../assets/img/book4.jpg" alt="" /></a>
               <div class="floating_modal_item_info">
                 <a href="">
                   <h2>세이노의 가르침</h2>
@@ -240,11 +217,16 @@ export default {
         require("../assets/img/book1.jpg"),
         require("../assets/img/book3.jpg"),
       ],
+      email: "",
+      name: "",
       // 이미지슬라이드
       currentIndex: 0,
       slidesReady: false, // 슬라이드 준비 여부 상태 추가
       transitionDuration: "0.3s", // 이미지 이동 애니메이션 시간
-
+      //추천책 데이터
+      recBook: [],
+      bestBook: [],
+      newestBook: [],
       // 플로팅 데이터
       floatingState: "recent",
     };
@@ -304,7 +286,11 @@ export default {
   },
   mounted() {
     (this.email = localStorage.getItem("userID"));
+    (this.name = localStorage.getItem("userNick"));
     this.checkUserSurvey();
+    this.getRecBook();
+    this.getBestBook();
+    this.getNewestBook();
     // 이미지 슬라이드가 렌더링되고 준비가 완료되면 slidesReady를 true로 설정
     this.slidesReady = true;
   },
@@ -361,7 +347,59 @@ export default {
         floatRecentBtn.classList.remove("current");
       }
     },
-
+    async getRecBook() {
+      await axios({
+        url: "http://localhost:3000/main/getRecBook",
+        method: "POST",
+        data: {
+          email: this.email
+        },
+      })
+        .then((res) => {
+          for (var i in res.data) {
+            this.recBook.push(res.data[i]);
+          }
+          console.log(this.recBook);
+          
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    },
+    async getBestBook() {
+      await axios({
+        url: "http://localhost:3000/main/getBestBook",
+        method: "POST",
+        data: {},
+      })
+        .then((res) => {
+          for (var i in res.data) {
+            this.bestBook.push(res.data[i]);
+          }
+          console.log(this.bestBook);
+          
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    },
+    async getNewestBook() {
+      await axios({
+        url: "http://localhost:3000/main/getNewestBook",
+        method: "POST",
+        data: {},
+      })
+        .then((res) => {
+          for (var i in res.data) {
+            this.newestBook.push(res.data[i]);
+          }
+          console.log(this.newestBook);
+          
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    },
     async getRecentBook() {
       await axios({
         url: "http://localhost:3000/floating/recentbook",
@@ -385,7 +423,7 @@ export default {
       })
         .then((res) => {
           console.log(res.data);
-          if(res.data == "설문조사 안한 유저") {
+          if (res.data == "설문조사 안한 유저") {
             window.location.href = "/survey";
           }
         })

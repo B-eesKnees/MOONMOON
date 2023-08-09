@@ -34,11 +34,10 @@
           var nickname = this.naverLogin.user.getNickName();
           var gender = this.naverLogin.user.getGender();
           var age = this.naverLogin.user.getAge();
-          var profile_image = this.naverLogin.user.getProfileImage();
           /* var mobile = this.naverLogin.user.getMobile(); */
           
           
-          userData = {email, nickname, gender, age, profile_image};
+          userData = {email, nickname, gender, age};
   
           if (email == undefined || email == null) {
             alert("이메일은 필수 정보입니다. 정보 제공을 동의해주세요.");
@@ -77,15 +76,6 @@
           console.log("callback 처리에 실패하였습니다.");
         }
   
-        if (profile_image == undefined || profile_image == null) {
-            /* alert("프로필 이미지는 필수 정보입니다. 정보 제공을 동의해주세요."); */
-            // 사용자 정보 재동의를 위하여 다시 동의 페이지로 이동함
-            this.naverLogin.reprompt();
-            return;
-          } else {
-          console.log("callback 처리에 실패하였습니다.");
-        }
-  
         this.naverlogin2(userData);
   
         // window.location.href = '/';
@@ -114,7 +104,6 @@
                   data: {
                       email: userData.email,
                       nick: userData.nickname,
-                      image: userData.profile_image,
                       sex: userData.gender,
                       agegroup: userData.age,
                       provider: 'naver'
@@ -134,7 +123,6 @@
               }).then(async (res)=> {
                   localStorage.setItem('userID', res.data.email);
                   localStorage.setItem('userNick', res.data.nick);
-                  localStorage.setItem('userImage', res.data.image);
                   localStorage.setItem('userProvider', res.data.provider);
   
                   window.location.href = '/';

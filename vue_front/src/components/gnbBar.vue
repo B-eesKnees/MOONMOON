@@ -333,6 +333,7 @@ export default {
     getCartNum() {
       if (!localStorage.getItem("userID")) {
         this.cartNum = 0;
+        return;
       }
       axios({
         url: "/cart/countCart",

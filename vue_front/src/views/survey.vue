@@ -38,6 +38,7 @@
                         item }}</button>
             </div>
             <div class="survey_container_footer">
+                <button @click="prevPage" class="survey_next_btn">이전</button>
                 <button @click="sendSelectedKeyword" class="survey_next_btn">선택 완료</button>
             </div>
         </div>
@@ -137,6 +138,10 @@ export default {
                 }
                 return [];
             });
+        },
+        prevPage() {
+            this.currentPage = 1;
+            this.selectedMainKeywords = [];
         },
         nextPage() {
             if (this.currentPage === 1) {

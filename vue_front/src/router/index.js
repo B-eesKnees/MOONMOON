@@ -24,6 +24,7 @@ import qnaEdit from "../views/qnaEdit.vue";
 import eventPage from "../views/event.vue";
 import roulette from "../views/roulette.vue";
 import attendance from "../views/attendance.vue";
+import axios from "axios";
 
 const requireLogin = () => (to, from, next) => {
   //로그인안하고 접근하려했을때 실행할 함수?
@@ -33,13 +34,33 @@ const requireLogin = () => (to, from, next) => {
   }
   next("/login"); //localStorage에 데이터 없으면 로그인창으로 리다이렉트
 };
-
+const requireSurvey = () => (to, from, next) => {
+  if (!localStorage.getItem("userID")) {
+    return next();
+  }
+  axios({
+    url: "http://localhost:3000/sur/check",
+    method: "POST",
+    data: { email: localStorage.getItem("userID") },
+  })
+    .then((res) => {
+      if (res.data == "설문조사 안한 유저") {
+        next("/survey");
+      } else {
+        return next();
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 // beforeEnter: requireLogin(),  <<로그인 한사람만 들어갈 수 있는 페이지 component아래에 붙여넣으면됨
 const routes = [
   {
     path: "/",
     name: "Main",
     component: Main,
+    beforeEnter: requireSurvey()
   },
   {
     path: "/login",
