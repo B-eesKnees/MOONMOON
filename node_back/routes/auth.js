@@ -102,7 +102,7 @@ router.post("/kakaologin", async (req, res) => {
   } else {
     sex = "f";
   }
-  console.log(sex);
+
   const user = {
     //프론트에서 전달해주는 데이터
     USER_EMAIL: req.body.email,
@@ -111,6 +111,8 @@ router.post("/kakaologin", async (req, res) => {
     USER_NAME: req.body.name,
     USER_PROVIDER: req.body.provider,
   };
+
+  console.log(user);
 
   db.query("insert into user set ?", user, (err) => {
     //쿼리 실행
@@ -133,7 +135,7 @@ router.post("/kakaologin", async (req, res) => {
 //카카오 로그인 후-----------------------------------
 router.post("/kakaoData", async (req, res) => {
   const email = req.body.email;
-  console.log(email);
+
   db.query(
     `select * from user where USER_EMAIL = ?`,
     email,
@@ -149,6 +151,7 @@ router.post("/kakaoData", async (req, res) => {
         res.send({
           email: results[0].USER_EMAIL,
           nick: results[0].USER_NAME,
+          provider: results[0].USER_PROVIDER,
         });
       }
     }
@@ -167,10 +170,9 @@ router.post("/naverlogin", async (req, res) => {
   const user = {
     //프론트에서 전달해주는 데이터
     USER_EMAIL: req.body.email,
-    USER_IMAGE: req.body.image,
     USER_SEX: sex,
     USER_AGEGROUP: req.body.agegroup,
-    USER_NICKNAME: req.body.nick,
+    USER_NAME: req.body.nick,
     USER_PROVIDER: req.body.provider,
   };
 
@@ -210,8 +212,7 @@ router.post("/naverData", async (req, res) => {
       } else {
         res.send({
           email: results[0].USER_EMAIL,
-          nick: results[0].USER_NICKNAME,
-          image: results[0].USER_IMAGE,
+          nick: results[0].USER_NAME,
           provider: results[0].USER_PROVIDER,
         });
       }
