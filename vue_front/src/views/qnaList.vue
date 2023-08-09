@@ -9,7 +9,7 @@
       <!-- 탭시작 -->
       <section class="tabWrap">
         <TabsWrapper>
-          <TabItem title="전체">           
+          <TabItem title="전체(11)">           
             <a href="#">
               <div class="qna-btn" v-if="!nodata">
                 1:1 문의하기
@@ -29,7 +29,7 @@
               ></qnaAll>
             </div>
           </TabItem>
-          <TabItem title="답변 대기">
+          <TabItem title="답변 대기(2)">
             <a href="#">
               <div class="qna-btn" v-if="!nodata">
                 1:1 문의하기
@@ -49,7 +49,7 @@
               ></qnaWaiting>
             </div>
           </TabItem>
-          <TabItem title="답변 완료">
+          <TabItem title="답변 완료(9)">
             <a href="#">
               <div class="qna-btn" v-if="!nodata">
                 1:1 문의하기
@@ -97,30 +97,18 @@ export default {
   data() {
     return {
       currentTagName: "all",
-      tabList: [
-        { name: "전체", tag: "all" },
-        { name: "답변 대기", tag: "waiting" },
-        { name: "답변 완료", tag: "done" },
-      ],
-      repList: [
-        { title: "1", tag: "all" },
-        { title: "2", tag: "waiting" },
-        { title: "3", tag: "done" },
-      ],
+     
       currentTagName: "전체",
       showQnaContent: true,
       repWaiting: true,
       repDone: false,
       conOpenBotton: require("../assets/img/qna-open.png"),
       conCloseBotton: require("../assets/img/qna-close.png"),
-      countAll: 1,
-      countWaiting: 1,
-      countDone: 1,
-      nodata: false,
-      qnaAll: [],
+      nodata: false,     
+      qnaAll: [], 
     };
   },
-  methods: {
+    methods: {
     toggleContent() {
       this.showQnaContent = !this.showQnaContent;
 
@@ -129,17 +117,17 @@ export default {
       } else {
         this.conOpenBotton = require("../assets/img/qna-open.png");
       }
-    },
-    qnaAlldata() {
-      axios
-        .get("/qnaAll")
-        .then((response) => {
-          this.qnaAll = response.data.qnaAll;
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    },
+    },  
+    async qnaAlldata() {
+    try {
+      const response = await axios.get('/qna/qnaAll');
+      this.qnaAll = response.data.qnaAll;
+      console.log(this.qnaAll);
+    } catch (error) {
+      console.log(error);
+    }
+  },  
+    
   },
   computed: {
     currentList() {

@@ -24,7 +24,7 @@
   /* top: 0; */
   margin-top: 110px;
   margin-left: 60px;
-  width: 57%;
+  width: 55%;
   height: 1010px;
   /* border: 1px solid #000; */
   /* background-color: aquamarine; */
@@ -34,22 +34,26 @@
   font-size: 23pt;
   font-weight: 500;
   margin-top: 18px;
-  margin-bottom: 30px;
+  margin-bottom: 55px;
   width: 100%;
   /* height: 60px; */
   /* border: 1px solid #000; */
 }
 
 .qna-btn {
-  width: 165px;
-  height: 45px;
-  border: 1px solid #000;
+  width: 170px;
+  height: 42px;
+  /* border: 1px solid #000; */
+  background-color: #4E4EFF;
+  color: #fff;
   border-radius: 5px;
   text-align: center;
   padding: 12px 0;
   position: absolute;
   right: 0;
-  top: 150px;
+  top: 200px;
+  font-size: 13pt;
+  font-weight: 500;
 }
 
 
@@ -64,36 +68,42 @@
   margin: 0;
   display: flex;
   /* justify-content: left; */
-  gap: 5px;
+  gap: 0px;
   width: 720px;
-  height: 55px;
+  height: 52px;
 }
 
 .tabs__item {
   flex: 1;
   /* background-color: #eee; */
-  padding: 18px 0;
+  padding: 16px 0;
   border-radius: 5px 5px 0 0;
   transition: 0.4s all ease-out;
   cursor: pointer;
   user-select: none;
   border: solid 1px #eee;
   text-align: center;
+  font-size: 15pt;
+  font-weight: 400;
+  color: #737373;
 }
 
 .tabs__item.selected {
   width: 30px;
-  background-color: #bfbfbf;
+  background-color: #fafafa;
+  color: #161616;
+  border-top: solid 1px #161616;
+  border-left: solid 1px #161616;
+  border-right: solid 1px #161616;
 }
 
 .tabs__content {
-  background-color: #bfbfbf;
+  background-color: #FAFAFA;
   min-height: 300px;
   display: grid;
   place-items: center;
   border-radius: 0 0 5px 5px;
+  border-top: #000 1px solid;
   padding: 10px;
 }
-
-
 

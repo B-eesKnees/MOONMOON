@@ -7,14 +7,14 @@ const router = express.Router();
 // 문의 내역 출력  --ok
 router.get('/qnaAll', (req, res) => {
   
-    const userEmail =' beeskneesezen@gmail.com';  // req.body.userEmail
+    const userEmail ='beeskneesezen@gmail.com';  // req.body.userEmail
 
     const query = `select QNA_ID, QNA_REP, QNA_TITLE, QNA_DATE, QNA_CON, QNA_REPLY
                    from qna
                    where QNA_USER_EMAIL = ?
                    order by QNA_DATE desc`;
 
-   db.query(query, userEmail, (error, result) => {
+   db.query(query, [userEmail], (error, result) => {
     if (error) {
       return console.log(error);
     } 
