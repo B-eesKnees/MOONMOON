@@ -22,6 +22,7 @@ import qnaList from "../views/qnaList.vue";
 import qnaWrite from "../views/qnaWrite.vue";
 import qnaEdit from "../views/qnaEdit.vue";
 import eventPage from "../views/event.vue";
+import eventPage1 from "../views/event_1.vue";
 import roulette from "../views/roulette.vue";
 import attendance from "../views/attendance.vue";
 
@@ -137,6 +138,11 @@ const routes = [
     path: "/event",
     name: "eventPage",
     component: eventPage,
+  },
+  {
+    path: "/event1",
+    name: "eventPage1",
+    component: eventPage1,
   },
   {
     path: "/roulette",
