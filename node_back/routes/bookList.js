@@ -5,7 +5,7 @@ const router = express.Router();
 //알라딘 판매포인트 순으로 정렬
 router.post(`/getBest`, async (req, res) => {
     db.query(
-        `select b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, b.BOOK_PUBDATE, b.BOOK_PRICE, b.BOOK_DESCRIPTION, COALESCE(ROUND(AVG(r.REV_RATING), 1), 0) AS reviewpoint
+        `select b.BOOK_COVER, b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, date_format(b.BOOK_PUBDATE, '%Y.%m.%d'), b.BOOK_PRICE, b.BOOK_DESCRIPTION, COALESCE(ROUND(AVG(r.REV_RATING), 1), 0) AS reviewpoint
         from book b left join review r on b.BOOK_ID = r.REV_ORDERITEM_BOOK
         group by b.BOOK_ID
         order by b.BOOK_SALESPOINT;`,
@@ -22,7 +22,7 @@ router.post(`/getBest`, async (req, res) => {
 //신상품 순으로 정렬
 router.post(`/getNew`, async (req, res) => {
     db.query(
-        `select b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, b.BOOK_PUBDATE, b.BOOK_PRICE, b.BOOK_DESCRIPTION, COALESCE(ROUND(AVG(r.REV_RATING), 1), 0) AS reviewpoint
+        `select b.BOOK_COVER, b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, date_format(b.BOOK_PUBDATE, '%Y.%m.%d'), b.BOOK_PRICE, b.BOOK_DESCRIPTION, COALESCE(ROUND(AVG(r.REV_RATING), 1), 0) AS reviewpoint
         from book b left join review r on b.BOOK_ID = r.REV_ORDERITEM_BOOK
         group by b.BOOK_ID
         order by b.BOOK_PUBDATE;`,
@@ -45,19 +45,15 @@ router.post(`/getNew`, async (req, res) => {
 router.post("/checkLikeList", async (req, res) => {
     const email = req.body.email;
 
-    db.query(
-        `select * from likedbook where LIKE_USER_EMAIL = ?`,
-        email,
-        (err, results) => {
-            if (err) {
-                res.status(200).send(err);
-            } else {
-                const likelist = results.map((like) => like.LIKE_BOOK_ID);
+    db.query(`select * from likedbook where LIKE_USER_EMAIL = ?`, email, (err, results) => {
+        if (err) {
+            res.status(200).send(err);
+        } else {
+            const likelist = results.map((like) => like.LIKE_BOOK_ID);
 
-                res.status(200).send(likelist);
-            }
+            res.status(200).send(likelist);
         }
-    );
+    });
 });
 
 //결제 기능
