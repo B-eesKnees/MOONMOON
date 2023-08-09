@@ -96,4 +96,21 @@ router.delete("/deletereview", (req, res) => {
   });
 });
 
+//리뷰 평균값
+router.get("/averagerating/:bookId", (req, res) => {
+  const bookId = req.params.bookId;
+  const query =
+    "SELECT ROUND(AVG(REV_RATING), 1) AS average_rating FROM review WHERE REV_ORDERITEM_BOOK = ?";
+
+  db.query(query, [bookId], (err, result) => {
+    if (err) {
+      console.error("Error executing query:", err);
+      res.status(500).json({ error: "Database error" });
+      return;
+    }
+
+    const averageRating = result[0].average_rating;
+    res.json({ averageRating });
+  });
+});
 module.exports = router;
