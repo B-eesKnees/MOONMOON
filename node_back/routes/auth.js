@@ -5,14 +5,14 @@ const mailer = require("../mail");
 const router = express.Router();
 
 router.post("/sendEmail", async (req, res) => {
-    const email = req.body.email;
+  const email = req.body.email;
 
-    const verifyNum = Math.floor(Math.random() * 888889 + 111111); //111111~999999
+  const verifyNum = Math.floor(Math.random() * 888889 + 111111); //111111~999999
 
-    let emailParam = {
-        toEmail: email,
-        subject: "문문서점 인증메일",
-        html: `<html>
+  let emailParam = {
+    toEmail: email,
+    subject: "문문서점 인증메일",
+    html: `<html>
               <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,241 +40,234 @@ router.post("/sendEmail", async (req, res) => {
                 </div>
               </body>
               </html>`,
-    };
-    mailer
-        .sendGmail(emailParam)
-        .then(() => {
-            res.status(200).json({
-                message: "success",
-                verifyNum: verifyNum,
-            });
-        })
-        .catch((error) => {
-            res.status(200).send("에러" + error);
-        });
+  };
+  mailer
+    .sendGmail(emailParam)
+    .then(() => {
+      res.status(200).json({
+        message: "success",
+        verifyNum: verifyNum,
+      });
+    })
+    .catch((error) => {
+      res.status(200).send("에러" + error);
+    });
 });
 
 router.post("/checkemail", async (req, res) => {
-    const email = req.body.email;
+  const email = req.body.email;
 
-    db.query(
-        `select * from user where USER_EMAIL = ?`,
-        email,
-        (err, results) => {
-            if (err) {
-                res.status(200).send(err);
-            } else {
-                if (results.length > 0) {
-                    res.status(200).send("존재하는 이메일입니다.");
-                } else {
-                    res.status(200).send("사용가능한 이메일입니다.");
-                }
-            }
-        }
-    );
+  db.query(`select * from user where USER_EMAIL = ?`, email, (err, results) => {
+    if (err) {
+      res.status(200).send(err);
+    } else {
+      if (results.length > 0) {
+        res.status(200).send("존재하는 이메일입니다.");
+      } else {
+        res.status(200).send("사용가능한 이메일입니다.");
+      }
+    }
+  });
 });
 
 router.post(`/join`, async (req, res) => {
-    const frontUserData = req.body;
-    const bcryptPassword = await bcrypt.hash(frontUserData.password, 12);
+  const frontUserData = req.body;
+  const bcryptPassword = await bcrypt.hash(frontUserData.password, 12);
 
-    const userdata = {
-        USER_EMAIL: frontUserData.email,
-        USER_PW: bcryptPassword,
-        USER_NAME: frontUserData.name,
-        USER_SEX: frontUserData.sex,
-        USER_AGEGROUP: frontUserData.agegroup,
-        USER_PHONE: frontUserData.phone,
-        USER_ZIPCODE: frontUserData.zipcode,
-        USER_ADD1: frontUserData.add1,
-        USER_ADD2: frontUserData.add2,
-    };
+  const userdata = {
+    USER_EMAIL: frontUserData.email,
+    USER_PW: bcryptPassword,
+    USER_NAME: frontUserData.name,
+    USER_SEX: frontUserData.sex,
+    USER_AGEGROUP: frontUserData.agegroup,
+    USER_PHONE: frontUserData.phone,
+    USER_ZIPCODE: frontUserData.zipcode,
+    USER_ADD1: frontUserData.add1,
+    USER_ADD2: frontUserData.add2,
+  };
 
-    db.query(`insert into user set ?`, userdata, (err, result) => {
-        if (err) {
-            res.status(200).send("에러 발생: " + err);
-        } else {
-            res.status(200).send("회원가입 성공");
-        }
-    });
+  db.query(`insert into user set ?`, userdata, (err, result) => {
+    if (err) {
+      res.status(200).send("에러 발생: " + err);
+    } else {
+      res.status(200).send("회원가입 성공");
+    }
+  });
 });
 router.post("/kakaologin", async (req, res) => {
-    let sex = "";
+  let sex = "";
 
-    if (req.body.sex === "male") {
-        sex = "m";
+  if (req.body.sex === "male") {
+    sex = "m";
+  } else {
+    sex = "f";
+  }
+  console.log(sex);
+  const user = {
+    //프론트에서 전달해주는 데이터
+    USER_EMAIL: req.body.email,
+    USER_SEX: sex,
+    USER_AGEGROUP: req.body.agegroup,
+    USER_NAME: req.body.name,
+    USER_PROVIDER: req.body.provider,
+  };
+
+  db.query("insert into user set ?", user, (err) => {
+    //쿼리 실행
+    if (err) {
+      res.send({
+        // 에러 발생 시
+        code: 200,
+        failed: "error occurred",
+        error: err,
+      });
     } else {
-        sex = "f";
+      res.send({
+        //쿼리 실행 성공시
+        code: 200,
+        message: "회원가입 성공",
+      });
     }
-
-    const user = {
-        //프론트에서 전달해주는 데이터
-        USER_EMAIL: req.body.email,
-        USER_SEX: sex,
-        USER_AGEGROUP: req.body.agegroup,
-        USER_NAME: req.body.name,
-        USER_PROVIDER: req.body.provider,
-    };
-
-    db.query("insert into user set ?", user, (err) => {
-        //쿼리 실행
-        if (err) {
-            res.send({
-                // 에러 발생 시
-                code: 200,
-                failed: "error occurred",
-                error: err,
-            });
-        } else {
-            res.send({
-                //쿼리 실행 성공시
-                code: 200,
-                message: "회원가입 성공",
-            });
-        }
-    });
+  });
 });
 //카카오 로그인 후-----------------------------------
 router.post("/kakaoData", async (req, res) => {
-    const email = req.body.email;
-
-    db.query(
-        `select * from user where USER_EMAIL = ?`,
-        email,
-        async (err, results) => {
-            if (err) {
-                res.send({
-                    // 에러 발생 시
-                    code: 200,
-                    failed: "error occurred",
-                    error: err,
-                });
-            } else {
-                res.send({
-                    email: results[0].USER_EMAIL,
-                    nick: results[0].USER_NAME,
-                });
-            }
-        }
-    );
+  const email = req.body.email;
+  console.log(email);
+  db.query(
+    `select * from user where USER_EMAIL = ?`,
+    email,
+    async (err, results) => {
+      if (err) {
+        res.send({
+          // 에러 발생 시
+          code: 200,
+          failed: "error occurred",
+          error: err,
+        });
+      } else {
+        res.send({
+          email: results[0].USER_EMAIL,
+          nick: results[0].USER_NAME,
+        });
+      }
+    }
+  );
 });
 //------------네이버 로그인---------
 router.post("/naverlogin", async (req, res) => {
-    let sex = "";
+  let sex = "";
 
-    if (req.body.sex === "M") {
-        sex = "m";
+  if (req.body.sex === "M") {
+    sex = "m";
+  } else {
+    sex = "f";
+  }
+
+  const user = {
+    //프론트에서 전달해주는 데이터
+    USER_EMAIL: req.body.email,
+    USER_IMAGE: req.body.image,
+    USER_SEX: sex,
+    USER_AGEGROUP: req.body.agegroup,
+    USER_NICKNAME: req.body.nick,
+    USER_PROVIDER: req.body.provider,
+  };
+
+  db.query("insert into user set ?", user, (err) => {
+    //쿼리 실행
+    if (err) {
+      res.send({
+        // 에러 발생 시
+        code: 200,
+        failed: "error occurred",
+        error: err,
+      });
     } else {
-        sex = "f";
+      res.send({
+        //쿼리 실행 성공시
+        code: 200,
+        message: "회원가입 성공",
+      });
     }
-
-    const user = {
-        //프론트에서 전달해주는 데이터
-        USER_EMAIL: req.body.email,
-        USER_IMAGE: req.body.image,
-        USER_SEX: sex,
-        USER_AGEGROUP: req.body.agegroup,
-        USER_NICKNAME: req.body.nick,
-        USER_PROVIDER: req.body.provider,
-    };
-
-    db.query("insert into user set ?", user, (err) => {
-        //쿼리 실행
-        if (err) {
-            res.send({
-                // 에러 발생 시
-                code: 200,
-                failed: "error occurred",
-                error: err,
-            });
-        } else {
-            res.send({
-                //쿼리 실행 성공시
-                code: 200,
-                message: "회원가입 성공",
-            });
-        }
-    });
+  });
 });
 //네이버 로그인 후-------------------------------------
 router.post("/naverData", async (req, res) => {
-    const email = req.body.email;
+  const email = req.body.email;
 
-    db.query(
-        `select * from user where USER_EMAIL = ?`,
-        email,
-        async (err, results) => {
-            if (err) {
-                res.send({
-                    // 에러 발생 시
-                    code: 200,
-                    failed: "error occurred",
-                    error: err,
-                });
-            } else {
-                res.send({
-                    email: results[0].USER_EMAIL,
-                    nick: results[0].USER_NICKNAME,
-                    image: results[0].USER_IMAGE,
-                    provider: results[0].USER_PROVIDER,
-                });
-            }
-        }
-    );
+  db.query(
+    `select * from user where USER_EMAIL = ?`,
+    email,
+    async (err, results) => {
+      if (err) {
+        res.send({
+          // 에러 발생 시
+          code: 200,
+          failed: "error occurred",
+          error: err,
+        });
+      } else {
+        res.send({
+          email: results[0].USER_EMAIL,
+          nick: results[0].USER_NICKNAME,
+          image: results[0].USER_IMAGE,
+          provider: results[0].USER_PROVIDER,
+        });
+      }
+    }
+  );
 });
 router.post("/login", async (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password; //받아오는 데이터
+  const email = req.body.email;
+  const password = req.body.password; //받아오는 데이터
 
-    db.query(
-        `select * from user where USER_EMAIL = ?`,
-        email,
-        async (error, results) => {
-            //이메일이 존재하는지 확인
-            if (error) {
-                res.send({
-                    //에러발생시
-                    code: 200,
-                    failed: "error occurred",
-                    error: error,
-                });
-            } else {
-                if (results.length > 0) {
-                    //이메일이 존재하면 비밀번호 bcrypt이용해서 확인
-                    const comparison = await bcrypt.compare(
-                        password,
-                        results[0].USER_PW
-                    ); //bcrypt 이용하여 비교 //배열이라 [0]을 사용하여 해야함 [0]빼면 작동안함
+  db.query(
+    `select * from user where USER_EMAIL = ?`,
+    email,
+    async (error, results) => {
+      //이메일이 존재하는지 확인
+      if (error) {
+        res.send({
+          //에러발생시
+          code: 200,
+          failed: "error occurred",
+          error: error,
+        });
+      } else {
+        if (results.length > 0) {
+          //이메일이 존재하면 비밀번호 bcrypt이용해서 확인
+          const comparison = await bcrypt.compare(password, results[0].USER_PW); //bcrypt 이용하여 비교 //배열이라 [0]을 사용하여 해야함 [0]빼면 작동안함
 
-                    if (comparison) {
-                        //확인한게 성공이면? 데이터가 있다면?
-                        res.send({
-                            code: 200,
-                            success: "로그인 성공",
-                            email: results[0].USER_EMAIL, //쿼리 실행값에서 데이터 뽑기 유저 이메일,닉네임, 이미지 파일 vue단으로 보내기
-                            nick: results[0].USER_NAME,
-                        });
-                    } else {
-                        //비밀번호가 다르면
-                        res.send({
-                            code: 204,
-                            error: "비밀번호 오류",
-                            message:
-                                "아이디 또는 비밀번호를 잘못 입력했습니다. 입력하신 내용을 다시 확인해주세요.",
-                        });
-                    }
-                } else {
-                    //이메일이 존재하지않으면 //메시지를 통일하기로함
-                    res.send({
-                        code: 206,
-                        error: "존재하지 않는 이메일",
-                        message:
-                            "아이디 또는 비밀번호를 잘못 입력했습니다. 입력하신 내용을 다시 확인해주세요.",
-                    });
-                }
-            }
+          if (comparison) {
+            //확인한게 성공이면? 데이터가 있다면?
+            res.send({
+              code: 200,
+              success: "로그인 성공",
+              email: results[0].USER_EMAIL, //쿼리 실행값에서 데이터 뽑기 유저 이메일,닉네임, 이미지 파일 vue단으로 보내기
+              nick: results[0].USER_NAME,
+            });
+          } else {
+            //비밀번호가 다르면
+            res.send({
+              code: 204,
+              error: "비밀번호 오류",
+              message:
+                "아이디 또는 비밀번호를 잘못 입력했습니다. 입력하신 내용을 다시 확인해주세요.",
+            });
+          }
+        } else {
+          //이메일이 존재하지않으면 //메시지를 통일하기로함
+          res.send({
+            code: 206,
+            error: "존재하지 않는 이메일",
+            message:
+              "아이디 또는 비밀번호를 잘못 입력했습니다. 입력하신 내용을 다시 확인해주세요.",
+          });
         }
-    );
+      }
+    }
+  );
 });
 
 module.exports = router;
