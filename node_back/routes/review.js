@@ -58,6 +58,21 @@ router.get("/reviewrating", (req, res) => {
   });
 });
 
+//리뷰데이터 평점 낮은 순 ok
+router.get("/lowreviewrating", (req, res) => {
+  const { bookId } = req.query;
+  const query =
+    "SELECT r.REVIEW_ID, r.REV_COMMENT, r.REV_CREATED_AT, r.REV_RATING, b.BOOK_ID FROM review r INNER JOIN book b ON r.REV_ORDERITEM_BOOK = b.BOOK_ID WHERE b.BOOK_ID = ? ORDER BY r.REV_RATING";
+  db.query(query, [bookId], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: "서버 에러" });
+    } else {
+      res.json({ review: results });
+    }
+  });
+});
+
 //리뷰수정 ok
 router.put("/updatereview/:reviewId", (req, res) => {
   const { reviewId } = req.params;
