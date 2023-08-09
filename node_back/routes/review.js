@@ -111,7 +111,7 @@ router.delete("/deletereview", (req, res) => {
   });
 });
 
-//리뷰 평균값
+//리뷰 별점 평균값
 router.get("/averagerating/:bookId", (req, res) => {
   const bookId = req.params.bookId;
   const query =
@@ -128,4 +128,29 @@ router.get("/averagerating/:bookId", (req, res) => {
     res.json({ averageRating });
   });
 });
+
+//책 당 리뷰  총 갯수
+router.get("/reviewcount/:bookId", (req, res) => {
+  const bookId = req.params.bookId;
+
+  const query = `
+    SELECT COUNT(*) AS REVIEW_COUNT
+    FROM review
+    WHERE REV_ORDERITEM_BOOK = ?;
+  `;
+
+  db.query(query, [bookId], (err, results) => {
+    if (err) {
+      console.error("Error:", err);
+      res.status(500).json({ error: "서버오류" });
+    } else {
+      if (results.length > 0) {
+        res.json({ reviewCount: results[0].REVIEW_COUNT });
+      } else {
+        res.json({ reviewCount });
+      }
+    }
+  });
+});
+
 module.exports = router;

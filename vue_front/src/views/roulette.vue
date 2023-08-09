@@ -94,9 +94,9 @@ export default {
             this.modalBody = `${this.selectedValue}P 당첨되었습니다!`;
             setTimeout(() => {
               this.showModal = true;
-              setTimeout(() => {
-                window.location.reload();
-              }, 10000);
+              // setTimeout(() => {
+              //   window.location.reload();
+              // }, 10000);
             }, 8000);
           })
           .catch((error) => {
