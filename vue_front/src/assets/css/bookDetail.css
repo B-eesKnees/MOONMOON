@@ -382,3 +382,8 @@
     display: flex;
     justify-content: space-between;
 }
+
+.exc_return_con_title {
+    font-size: 1.2em;
+    margin-bottom: 3%;
+}
