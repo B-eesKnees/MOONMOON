@@ -1,4 +1,6 @@
 <template>
+  <GnbBar />
+
   <div class="moonroul">
     <div class="roultitle">MOONMOON 룰렛 이벤트</div>
     <div class="roultitle1">꽝 없는 100% 당첨! 포인트 받고 책 읽자!</div>
@@ -9,14 +11,21 @@
   <div id="app">
     <div class="rouletter">
       <div class="rouletter-bg">
-        <div class="rouletter-wacu"></div>
+        <div class="rouletter-wacu" ref="panel"></div>
       </div>
       <div class="rouletter-arrow"></div>
-      <button class="rouletter-btn" @click="startRoulette()">GO!</button>
+      <button class="rouletter-btn" @click="startRoulette()" ref="btn">
+        GO!
+      </button>
     </div>
 
     <input type="hidden" class="hidden-input" ref="hiddenInput" />
-    <div class="modal" id="resultModal" v-if="showModal">
+    <div
+      class="modal"
+      id="resultModal"
+      :class="{ 'modal-show': showModal }"
+      ref="resultModal"
+    >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-title" v-if="modalTitle">{{ modalTitle }}</div>
@@ -61,12 +70,16 @@
   </div>
 </template>
 <script>
+import GnbBar from "../components/gnbBar.vue";
+
 import axios from "axios";
 
 export default {
+  components: { GnbBar },
   data() {
     return {
       userEmail: localStorage.getItem("userID"),
+
       value: [100, 500, 1000, 500, 3000, 5000],
       //룰렛 돌리고 받는 포인트
       //룰렛 이미지 assets/룰.png보면 0~5 적어놨는데 이 배열임
@@ -82,6 +95,7 @@ export default {
       modalBody: "", // 모달 본문을 동적으로 표시할 변수
 
       selectedValue: null,
+      modalMessage: "",
     };
   },
 
@@ -153,10 +167,8 @@ export default {
       //이건 혹시 모를 에러 처리 부분같음
     },
     rRotate() {
-      var panel = document.querySelector(".rouletter-wacu");
-      //룰렛 돌아가는 판 부분
-      var btn = document.querySelector(".rouletter-btn");
-      //룰렛 돌리는 버튼 부분
+      var panel = this.$refs.panel; // 이 부분 수정
+      var btn = this.$refs.btn; // 이 부분 수정
 
       var deg = [];
       for (var i = 1, len = this.rolLength; i <= len; i++) {
@@ -170,7 +182,8 @@ export default {
 
       var num = 0;
 
-      this.$refs.hiddenInput.value = this.rRandom();
+      //this.$el.append(this.$refs.hiddenInput);
+      this.$refs.panel.appendChild(this.$refs.hiddenInput);
       //   this.setNum = this.$refs.hiddenInput.value = this.rRandom();
       this.modalMessage = "";
 
@@ -212,21 +225,14 @@ export default {
 
       this.modalMessage = prizes[num];
       //모달 메세지에 rRandom()을 실행하여 받은 0~5 에 해당하는 값을 보여줌
-      this.showModal = true;
-      this.modalTitle = "축하합니다!";
-      this.modalBody = `${this.modalMessage}P 당첨되었습니다!`;
-
-      setTimeout(() => {
-        this.showModal = false; // 일정 시간 후 모달을 숨김
-        window.location.reload();
-      }, 10000);
+      var modal = this.$refs.resultModal;
+      modal.style.display = "block";
       //모달 css
     },
 
     hideModal() {
       var modal = this.$refs.resultModal;
       modal.style.display = "none";
-      this.showModal = false;
     },
   },
 };
