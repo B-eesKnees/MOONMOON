@@ -96,9 +96,7 @@ export default {
   name: "qnaList",
   data() {
     return {
-      currentTagName: "all",
-     
-      currentTagName: "전체",
+      currentTagName: "전체(11)",
       showQnaContent: true,
       repWaiting: true,
       repDone: false,
@@ -108,6 +106,11 @@ export default {
       qnaAll: [], 
     };
   },
+    created() {
+      this.email = localStorage.getItem("userID");  
+     
+      this.qnaAllList();
+    },
     methods: {
     toggleContent() {
       this.showQnaContent = !this.showQnaContent;
@@ -118,9 +121,10 @@ export default {
         this.conOpenBotton = require("../assets/img/qna-open.png");
       }
     },  
-    async qnaAlldata() {
+    async qnaAllList() {
+      this.nodata = false;
     try {
-      const response = await axios.get('/qna/qnaAll');
+      const response = await axios.get("/qna/qnaAll", { email: this.email });
       this.qnaAll = response.data.qnaAll;
       console.log(this.qnaAll);
     } catch (error) {
@@ -133,9 +137,6 @@ export default {
     currentList() {
       return this.repList.filter((el) => el.tag == this.currentTagName);
     },
-  },
-  mounted() {
-    this.qnaAlldata();
   },
 };
 </script>
