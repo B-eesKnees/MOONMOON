@@ -23,7 +23,7 @@ router.post("/getRecBook", async (req, res) => {
             const search4 = `%${sur4}%`;
             const search5 = `%${sur5}%`;
 
-            const query = `select BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, '%Y.%m.%d') as PUBDATE, BOOK_PRICE, BOOK_DESCRIPTION, BOOK_COVER 
+            const query = `select BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, '%Y.%m.%d') as PUBDATE, BOOK_PRICE, BOOK_DESCRIPTION, BOOK_COVER, BOOK_PUBLISHER 
             from book 
             where BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? 
             order by BOOK_SALESPOINT desc 
@@ -42,7 +42,7 @@ router.post("/getRecBook", async (req, res) => {
 //베스트셀러
 router.post("/getBestBook", async (req, res) => {
     db.query(
-        `select BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, "%Y.%m.%d") as PUBDATE, BOOK_PRICE, BOOK_DESCRIPTION, BOOK_COVER 
+        `select BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, "%Y.%m.%d") as PUBDATE, BOOK_PRICE, BOOK_DESCRIPTION, BOOK_COVER, BOOK_PUBLISHER 
         from book 
         order by BOOK_SALESPOINT DESC
         limit 5`,
@@ -58,7 +58,7 @@ router.post("/getBestBook", async (req, res) => {
 //신책
 router.post("/getNewestBook", async (req, res) => {
     db.query(
-        `select BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, "%Y.%m.%d") as PUBDATE, BOOK_PRICE, BOOK_DESCRIPTION, BOOK_COVER  
+        `select BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, "%Y.%m.%d") as PUBDATE, BOOK_PRICE, BOOK_DESCRIPTION, BOOK_COVER, BOOK_PUBLISHER  
         from book order 
         by BOOK_PUBDATE ASC
         limit 5`,

@@ -84,6 +84,10 @@ export default {
       }
     },
     getUserAtt() {
+      if (!this.userEmail) {
+        return;
+      }
+
       axios({
         url: `http://localhost:3000/att`,
         method: "GET",
@@ -98,6 +102,11 @@ export default {
     },
     attendance() {
       const today1 = new Date().getDate();
+
+      if (!localStorage.getItem("userID")) {
+        alert("로그인해주세요");
+        return;
+      }
 
       if (this.userAtt.includes(today1)) {
         //버튼 연속으로 누르면 거부하는 조건문
