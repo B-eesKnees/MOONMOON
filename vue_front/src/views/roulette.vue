@@ -31,7 +31,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      userEmail: "user3@example.com",
+      userEmail: "user6@example.com",
       value: [100, 500, 1000, 500, 3000, 5000],
       //룰렛 돌리고 받는 포인트
       //룰렛 이미지 assets/룰.png보면 0~5 적어놨는데 이 배열임
