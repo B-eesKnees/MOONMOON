@@ -186,42 +186,39 @@
   <div class="exc_return_set">
     <div class="exc_return_top">
       <div class="review_con_title">교환/반품/품절 안내</div>
-      <button class="go_to_review">1:1 문의</button>
+      <RouterLink to="/qna/write" class="go_to_review">1:1 문의</RouterLink>
     </div>
     <hr class="review_title_next_hr" />
     <div class="exc_return_con_title">반품/교환 방법</div>
     <div class="exc_return_con_text">
       마이룸 > 주문관리 > 주문/배송내역 > 주문조회 > 반품/교환 신청, [1:1 상담 >
-      반품/교환/환불] 또는 고객센터 (1544-1900) * 오픈마켓, 해외배송 주문,
+      반품/교환/환불] 또는 고객센터 (1544-1900)<br />* 오픈마켓, 해외배송 주문,
       기프트 주문시 [1:1 상담>반품/교환/환불] 또는 고객센터 (1544-1900)
     </div>
     <hr />
     <div class="exc_return_con_title">반품/교환가능 기간</div>
     <div class="exc_return_con_text">
-      마이룸 > 주문관리 > 주문/배송내역 > 주문조회 > 반품/교환 신청, [1:1 상담 >
-      반품/교환/환불] 또는 고객센터 (1544-1900) * 오픈마켓, 해외배송 주문,
-      기프트 주문시 [1:1 상담>반품/교환/환불] 또는 고객센터 (1544-1900)
+      변심반품의 경우 수령 후 7일 이내,<br />상품의 결함 및 계약내용과 다를 경우
+      문제점 발견 후 30일 이내
     </div>
     <hr />
     <div class="exc_return_con_title">반품/교환비용</div>
     <div class="exc_return_con_text">
-      마이룸 > 주문관리 > 주문/배송내역 > 주문조회 > 반품/교환 신청, [1:1 상담 >
-      반품/교환/환불] 또는 고객센터 (1544-1900) * 오픈마켓, 해외배송 주문,
-      기프트 주문시 [1:1 상담>반품/교환/환불] 또는 고객센터 (1544-1900)
+      변심 혹은 구매착오로 인한 반품/교환은 반송료 고객 부담
     </div>
     <hr />
     <div class="exc_return_con_title">반품/교환 불가 사유</div>
     <div class="exc_return_con_text">
-      1) 소비자의 책임 있는 사유로 상품 등이 손실 또는 훼손된 경우 (단지 확인을
-      위한 포장 훼손은 제외) <br />2) 소비자의 사용, 포장 개봉에 의해 상품 등의
-      가치가 현저히 감소한 경우 예) 화장품, 식품, 가전제품(악세서리 포함) 등
-      <br />3) 복제가 가능한 상품 등의 포장을 훼손한 경우 예) 음반/DVD/비디오,
-      소프트웨어, 만화책, 잡지, 영상 화보집 <br />4) 소비자의 요청에 따라
-      개별적으로 주문 제작되는 상품의 경우 ((1)해외주문도서) <br />5) 디지털
-      컨텐츠인 eBook, 오디오북 등을 1회 이상 다운로드를 받았을 경우 <br />6)
-      시간의 경과에 의해 재판매가 곤란한 정도로 가치가 현저히 감소한 경우
-      <br />7) 전자상거래 등에서의 소비자보호에 관한 법률이 정하는 소비자
-      청약철회 제한 내용에 해당되는 경우
+      1) 소비자의 책임 있는 사유로 상품 등이 손실 또는 훼손된 경우<br />(단지
+      확인을 위한 포장 훼손은 제외) <br />2) 소비자의 사용, 포장 개봉에 의해
+      상품 등의 가치가 현저히 감소한 경우 <br />예) 화장품, 식품,
+      가전제품(악세서리 포함) 등 <br />3) 복제가 가능한 상품 등의 포장을 훼손한
+      경우 <br />예) 음반/DVD/비디오, 소프트웨어, 만화책, 잡지, 영상 화보집
+      <br />4) 소비자의 요청에 따라 개별적으로 주문 제작되는 상품의 경우
+      ((1)해외주문도서) <br />5) 디지털 컨텐츠인 eBook, 오디오북 등을 1회 이상
+      다운로드를 받았을 경우 <br />6) 시간의 경과에 의해 재판매가 곤란한 정도로
+      가치가 현저히 감소한 경우 <br />7) 전자상거래 등에서의 소비자보호에 관한
+      법률이 정하는 소비자 청약철회 제한 내용에 해당되는 경우
     </div>
   </div>
 </template>
@@ -258,10 +255,25 @@ export default {
         console.error("Error fetching book information:", error);
       }
     },
+
+    // 최신순 리스트 불러오기-------------------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------------------------------
+    async recentBoardListData() {
+      this.norecentData = false;
+      try {
+        const response = await axios.post("/mypage/recentCourse", {
+          userEmail: this.email,
+        });
+        this.recentBoardList = response.data;
+        if (this.norecentData.length != 0) {
+          this.norecentData = false;
+        } else {
+          this.norecentData = true;
+        }
+      } catch {
+        this.norecentData = true;
+      }
+    },
   },
-  // created() {
-  //   const bookNum = this.$route.params.bookNum;
-  //   this.fetchBookInfo(bookNum);
-  // },
 };
 </script>
