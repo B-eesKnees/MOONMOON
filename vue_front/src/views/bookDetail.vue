@@ -169,13 +169,58 @@
       </div>
     </div>
     <hr class="review_title_next_hr" />
-    <div class="rev_sec_title">구매 리뷰</div>
-    <div class="review_filltering">
-      <!-- <select @change="reviewFillter()" v-model="sortvalue" name="items1">
+    <div class="title_fillter">
+      <div class="rev_sec_title">구매 리뷰</div>
+      <select
+        @change="reviewFillter()"
+        v-model="sortvalue"
+        name="items1"
+        class="review_filltering"
+      >
         <option :value="'최신순'">최신순</option>
         <option :value="'평점 높은 순'">평점 높은 순</option>
         <option :value="'평점 낮은 순'">평점 낮은 순</option>
-      </select> -->
+      </select>
+    </div>
+  </div>
+  <div class="exc_return_set">
+    <div class="exc_return_top">
+      <div class="review_con_title">교환/반품/품절 안내</div>
+      <button class="go_to_review">1:1 문의</button>
+    </div>
+    <hr class="review_title_next_hr" />
+    <div class="exc_return_con_title">반품/교환 방법</div>
+    <div class="exc_return_con_text">
+      마이룸 > 주문관리 > 주문/배송내역 > 주문조회 > 반품/교환 신청, [1:1 상담 >
+      반품/교환/환불] 또는 고객센터 (1544-1900) * 오픈마켓, 해외배송 주문,
+      기프트 주문시 [1:1 상담>반품/교환/환불] 또는 고객센터 (1544-1900)
+    </div>
+    <hr />
+    <div class="exc_return_con_title">반품/교환가능 기간</div>
+    <div class="exc_return_con_text">
+      마이룸 > 주문관리 > 주문/배송내역 > 주문조회 > 반품/교환 신청, [1:1 상담 >
+      반품/교환/환불] 또는 고객센터 (1544-1900) * 오픈마켓, 해외배송 주문,
+      기프트 주문시 [1:1 상담>반품/교환/환불] 또는 고객센터 (1544-1900)
+    </div>
+    <hr />
+    <div class="exc_return_con_title">반품/교환비용</div>
+    <div class="exc_return_con_text">
+      마이룸 > 주문관리 > 주문/배송내역 > 주문조회 > 반품/교환 신청, [1:1 상담 >
+      반품/교환/환불] 또는 고객센터 (1544-1900) * 오픈마켓, 해외배송 주문,
+      기프트 주문시 [1:1 상담>반품/교환/환불] 또는 고객센터 (1544-1900)
+    </div>
+    <hr />
+    <div class="exc_return_con_title">반품/교환 불가 사유</div>
+    <div class="exc_return_con_text">
+      1) 소비자의 책임 있는 사유로 상품 등이 손실 또는 훼손된 경우 (단지 확인을
+      위한 포장 훼손은 제외) 2) 소비자의 사용, 포장 개봉에 의해 상품 등의 가치가
+      현저히 감소한 경우 예) 화장품, 식품, 가전제품(악세서리 포함) 등 3) 복제가
+      가능한 상품 등의 포장을 훼손한 경우 예) 음반/DVD/비디오, 소프트웨어,
+      만화책, 잡지, 영상 화보집 4) 소비자의 요청에 따라 개별적으로 주문 제작되는
+      상품의 경우 ((1)해외주문도서) 5) 디지털 컨텐츠인 eBook, 오디오북 등을 1회
+      이상 다운로드를 받았을 경우 6) 시간의 경과에 의해 재판매가 곤란한 정도로
+      가치가 현저히 감소한 경우 7) 전자상거래 등에서의 소비자보호에 관한 법률이
+      정하는 소비자 청약철회 제한 내용에 해당되는 경우
     </div>
   </div>
 </template>
@@ -186,33 +231,33 @@ import "../assets/css/bookDetail.css";
 import GnbBar from "../components/gnbBar.vue";
 
 export default {
-  // components: {
-  //   GnbBar,
-  // },
-  // data() {
-  //   return {
-  //     bookDetail: {}, // 책 상세 정보를 저장할 데이터
-  //     isLiked: false,
-  //     // sortvalue: "최신순",
-  //   };
-  // },
+  components: {
+    GnbBar,
+  },
+  data() {
+    return {
+      bookDetail: {}, // 책 상세 정보를 저장할 데이터
+      isLiked: false,
+      sortvalue: "최신순",
+    };
+  },
   // mounted: {
   //   // reviewFillter() {},
   //   // this.sortvalue = '최신순'
   // },
-  // methods: {
-  //   // reviewFillter() {
-  //   //   // ...
-  //   // },
-  //   async fetchBookInfo(bookNum) {
-  //     try {
-  //       const response = await axios.get(`/detail/${bookNum}`);
-  //       this.bookDetail = response.data; // 받아온 정보를 데이터에 할당
-  //     } catch (error) {
-  //       console.error("Error fetching book information:", error);
-  //     }
-  //   },
-  // },
+  methods: {
+    // reviewFillter() {
+    //   // ...
+    // },
+    async fetchBookInfo(bookNum) {
+      try {
+        const response = await axios.get(`/detail/${bookNum}`);
+        this.bookDetail = response.data; // 받아온 정보를 데이터에 할당
+      } catch (error) {
+        console.error("Error fetching book information:", error);
+      }
+    },
+  },
   // created() {
   //   const bookNum = this.$route.params.bookNum;
   //   this.fetchBookInfo(bookNum);
