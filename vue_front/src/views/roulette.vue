@@ -31,7 +31,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      userEmail: "user3@example.com",
+      userEmail: localStorage.getItem("userID"),
       value: [100, 500, 1000, 500, 3000, 5000],
       //룰렛 돌리고 받는 포인트
       //룰렛 이미지 assets/룰.png보면 0~5 적어놨는데 이 배열임
@@ -222,12 +222,14 @@ export default {
 }
 .rouletter-arrow {
   position: absolute;
+  display: inline-block;
   top: -5px; /* 핀이 룰렛 위에 약간 걸치도록 조정 */
-  left: 50%;
-  transform: translateX(-50%);
+  /* left: 50%;
+  transform: translateX(-50%); */
   width: 50px; /* 이미지의 가로 길이에 맞게 조정하세요 */
+  height: 100px;
 
-  background-image: url("../assets/룰렛핀.png");
+  background-image: url("../assets/img/roulette_pin.png");
   background-size: contain;
   background-repeat: no-repeat;
 }
@@ -236,7 +238,7 @@ export default {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-70%, -50%);
+  transform: translate(-50%, -50%);
   width: 80px;
   height: 80px;
   border-radius: 80px;
