@@ -2,7 +2,8 @@
   <GnbBar />
   <div class="title_wri_sum">
     <div class="detail_title">
-      제목 제목 제목 제목제목제목{{ bookDetail.BOOK_TITLE }}
+      제목 제목 제목 제목제목제목
+      <!-- {{ bookDetail.BOOK_TITLE }} -->
     </div>
     <div class="writer_date">글쓴이 | 2023.02.26</div>
     <div class="book_summary">
@@ -120,8 +121,10 @@
   <hr class="detail_main_next_hr" />
 
   <div class="detail_review_set">
-    <div class="review_con_title">책 리뷰 (43)</div>
-    <button class="go_to_review">리뷰 작성</button>
+    <div class="rev_top">
+      <div class="review_con_title">책 리뷰 (43)</div>
+      <button class="go_to_review">리뷰 작성</button>
+    </div>
     <div class="total_rec">
       <div class="total_rec_title">구매자 총점</div>
       <div class="total_star_rec">
@@ -159,11 +162,21 @@
             fill="#D9D9D9"
           />
         </svg>
+        <div class="total_rec_num">
+          9.3
+          <span class="total_rec_num_10">/10</span>
+        </div>
       </div>
-      <div class="total_rec_num">9.3</div>
-      <div class="total_rec_num_10">/ 10</div>
     </div>
-    <hr class="" />
+    <hr class="review_title_next_hr" />
+    <div class="rev_sec_title">구매 리뷰</div>
+    <div class="review_filltering">
+      <!-- <select @change="reviewFillter()" v-model="sortvalue" name="items1">
+        <option :value="'최신순'">최신순</option>
+        <option :value="'평점 높은 순'">평점 높은 순</option>
+        <option :value="'평점 낮은 순'">평점 낮은 순</option>
+      </select> -->
+    </div>
   </div>
 </template>
 
@@ -173,28 +186,36 @@ import "../assets/css/bookDetail.css";
 import GnbBar from "../components/gnbBar.vue";
 
 export default {
-  components: {
-    GnbBar,
-  },
-  data() {
-    return {
-      bookDetail: {}, // 책 상세 정보를 저장할 데이터
-      isLiked: false,
-    };
-  },
-  methods: {
-    async fetchBookInfo(bookNum) {
-      try {
-        const response = await axios.get(`/detail/${bookNum}`);
-        this.bookDetail = response.data; // 받아온 정보를 데이터에 할당
-      } catch (error) {
-        console.error("Error fetching book information:", error);
-      }
-    },
-  },
-  created() {
-    const bookNum = this.$route.params.bookNum;
-    this.fetchBookInfo(bookNum);
-  },
+  // components: {
+  //   GnbBar,
+  // },
+  // data() {
+  //   return {
+  //     bookDetail: {}, // 책 상세 정보를 저장할 데이터
+  //     isLiked: false,
+  //     // sortvalue: "최신순",
+  //   };
+  // },
+  // mounted: {
+  //   // reviewFillter() {},
+  //   // this.sortvalue = '최신순'
+  // },
+  // methods: {
+  //   // reviewFillter() {
+  //   //   // ...
+  //   // },
+  //   async fetchBookInfo(bookNum) {
+  //     try {
+  //       const response = await axios.get(`/detail/${bookNum}`);
+  //       this.bookDetail = response.data; // 받아온 정보를 데이터에 할당
+  //     } catch (error) {
+  //       console.error("Error fetching book information:", error);
+  //     }
+  //   },
+  // },
+  // created() {
+  //   const bookNum = this.$route.params.bookNum;
+  //   this.fetchBookInfo(bookNum);
+  // },
 };
 </script>

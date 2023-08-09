@@ -276,8 +276,77 @@
 
 
 
+
+
 .detail_review_set {
     width: 60%;
     border: #000 1px solid;
     margin: 0 auto;
+}
+
+.rev_top {
+    display: flex;
+    justify-content: space-between;
+}
+.review_con_title {
+    font-size: 1.7em;
+    font-weight: 500;
+}
+
+.go_to_review {
+    border-radius: 5px;
+    background: rgba(89, 89, 254, 0.30);
+    border: none;
+    color: #4E4EFF;
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: 600;
+    position: relative;
+    top: -10px;
+}
+
+.total_rec {
+    /* border: #000 1px solid; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.total_rec_title {
+    font-size: 1em;
+    font-weight: 400;
+    margin-bottom: 1.5%;
+}
+
+
+
+
+.total_star_rec {
+    display: flex;
+    margin-left: 50px;
+}
+
+
+
+.total_rec_num {
+    margin-left: 20px;
+    position: relative;
+    top: 5px;
+    color: #4E4EFF;
+    font-size: 1.5em;
+}
+
+.total_rec_num_10 {
+    font-size: 0.8em;
+    color: #000;
+    position: relative;
+    top: -2px;
+    left: 0;
+}
+
+
+
+.review_title_next_hr {
+    margin-top: 3%;
+    margin-bottom: 2%;
 }
