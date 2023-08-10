@@ -10,6 +10,7 @@ import SearchList from "../views/searchList.vue";
 import BestList from "../views/bestList.vue";
 import NewList from "../views/newList.vue";
 import bookDetail from "../views/bookDetail.vue";
+import startest from "@/views/test.vue";
 import Goods from "../views/goods.vue";
 
 import booktestPage from "../views/bookTest.vue";
@@ -113,6 +114,11 @@ const routes = [
     path: "/detail/:bookNum",
     name: "bookDetail",
     component: bookDetail,
+  },
+  {
+    path: "/startest",
+    name: "writeStar",
+    component: startest,
   },
   {
     path: "/goods",
