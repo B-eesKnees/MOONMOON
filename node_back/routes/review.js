@@ -2,32 +2,87 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 
-// 리뷰 작성 라우터 ok
+// // 리뷰 작성 라우터 ok
+// router.post("/postreview", (req, res) => {
+//   const reviewData = req.body;
+
+//   const reviewRow = {
+//     REV_ORDERITEM_BOOK: reviewData.REV_ORDERITEM_BOOK,
+//     REV_WRITER: reviewData.REV_WRITER,
+//     REV_NICK: reviewData.REV_NICK,
+//     REV_COMMENT: reviewData.REV_COMMENT,
+//     REV_RATING: reviewData.REV_RATING,
+//   };
+
+//   const query = "INSERT INTO REVIEW SET ?";
+//   db.query(query, reviewRow, (err, results) => {
+//     if (err) {
+//       console.error(err);
+//       res.status(500).json({ error: "서버 에러" });
+//     } else {
+//       res.status(200).json({
+//         message: "INSERT COMPLETE",
+//         review: reviewRow, // 삽입된 데이터를 반환
+//       });
+//     }
+//   });
+// });
+//구매확정한 사람만 리뷰 작성 가능
 router.post("/postreview", (req, res) => {
   const reviewData = req.body;
 
-  const reviewRow = {
-    REV_ORDERITEM_BOOK: reviewData.REV_ORDERITEM_BOOK,
-    REV_WRITER: reviewData.REV_WRITER,
-    REV_NICK: reviewData.REV_NICK,
-    REV_COMMENT: reviewData.REV_COMMENT,
-    REV_RATING: reviewData.REV_RATING,
-  };
+  // Check if the user has bought the product (ORDERITEM_BUYCHECK is 1)
+  const checkBuyQuery = `
+    SELECT oi.ORDERITEM_BUYCHECK
+    FROM orderitem oi
+    WHERE oi.ORDERITEM_ORDERID IN (
+      SELECT o.ORDER_ID
+      FROM \`order\` o
+      WHERE o.ORDER_USEREMAIL = ? AND o.ORDER_STATE = '배송 완료'
+    )
+    AND oi.ORDERITEM_BOOKID = ?
+  `;
 
-  const query = "INSERT INTO REVIEW SET ?";
-  db.query(query, reviewRow, (err, results) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: "서버 에러" });
-    } else {
-      res.status(200).json({
-        message: "INSERT COMPLETE",
-        review: reviewRow, // 삽입된 데이터를 반환
-      });
+  db.query(
+    checkBuyQuery,
+    [reviewData.REV_WRITER, reviewData.REV_ORDERITEM_BOOK],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: "서버 에러" });
+      } else {
+        if (result.length > 0 && result[0].ORDERITEM_BUYCHECK === 1) {
+          // User has bought the product, proceed with inserting the review
+          const reviewRow = {
+            REV_ORDERITEM_BOOK: reviewData.REV_ORDERITEM_BOOK,
+            REV_WRITER: reviewData.REV_WRITER,
+            REV_COMMENT: reviewData.REV_COMMENT,
+            REV_RATING: reviewData.REV_RATING,
+            REV_CREATED_AT: new Date(),
+          };
+
+          const insertReviewQuery = "INSERT INTO REVIEW SET ?";
+          db.query(insertReviewQuery, reviewRow, (err, results) => {
+            if (err) {
+              console.error(err);
+              res.status(500).json({ error: "서버 에러" });
+            } else {
+              res.status(200).json({
+                message: "INSERT COMPLETE",
+                review: reviewRow,
+              });
+            }
+          });
+        } else {
+          // User has not bought the product, cannot post review
+          res.status(400).json({
+            error: "해당 상품을 구매하지 않아 리뷰를 작성할 수 없습니다.",
+          });
+        }
+      }
     }
-  });
+  );
 });
-
 //리뷰 데이터 받아오기ok (기본(최신순))
 router.get("/reviewdata", (req, res) => {
   const { bookId } = req.query;
