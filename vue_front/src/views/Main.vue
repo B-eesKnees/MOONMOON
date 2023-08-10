@@ -33,16 +33,16 @@
     </div>
     <div class="main_container">
       <h2 class="recommend_title">
-        <span class="recommend_username">{{name}}</span> 님에게 추천하는 책이예요
+        <span class="recommend_username">{{ name }}</span> 님에게 추천하는 책이예요
       </h2>
       <div ref="mainBlur" class="main_item_wrap blur">
         <div class="recommend_item" v-for="(item, i) in recBook" :key="i">
           <img class="main_item_img" :src="item.BOOK_COVER" alt="" />
           <div class="main_item_info">
-            <h5 class="main_item_title">{{item.BOOK_TITLE}}</h5>
-            <span class="main_item_writer">{{item.BOOK_AUTHOR}}</span>
+            <h5 class="main_item_title">{{ item.BOOK_TITLE }}</h5>
+            <span class="main_item_writer">{{ item.BOOK_AUTHOR }}</span>
             •
-            <span class="main_item_publisher">{{item.BOOK_PUBLISHER}}</span>
+            <span class="main_item_publisher">{{ item.BOOK_PUBLISHER }}</span>
           </div>
         </div>
       </div>
@@ -58,10 +58,10 @@
         <div class="main_contents_item" v-for="(item, i) in bestBook" :key="i">
           <img class="main_item_img2" :src="item.BOOK_COVER" alt="" />
           <div class="main_item_info">
-            <h5 class="main_item_title">{{item.BOOK_TITLE}}</h5>
-            <span class="main_item_writer">{{item.BOOK_AUTHOR}}</span>
+            <h5 class="main_item_title">{{ item.BOOK_TITLE }}</h5>
+            <span class="main_item_writer">{{ item.BOOK_AUTHOR }}</span>
             •
-            <span class="main_item_publisher">{{item.BOOK_PUBLISHER}}</span>
+            <span class="main_item_publisher">{{ item.BOOK_PUBLISHER }}</span>
           </div>
         </div>
       </div>
@@ -77,10 +77,10 @@
         <div class="main_contents_item" v-for="(item, i) in newestBook" :key="i">
           <img class="main_item_img2" :src="item.BOOK_COVER" alt="" />
           <div class="main_item_info">
-            <h5 class="main_item_title">{{item.BOOK_TITLE}}</h5>
-            <span class="main_item_writer">{{item.BOOK_AUTHOR}}</span>
+            <h5 class="main_item_title">{{ item.BOOK_TITLE }}</h5>
+            <span class="main_item_writer">{{ item.BOOK_AUTHOR }}</span>
             •
-            <span class="main_item_publisher">{{item.BOOK_PUBLISHER}}</span>
+            <span class="main_item_publisher">{{ item.BOOK_PUBLISHER }}</span>
           </div>
         </div>
       </div>
@@ -106,87 +106,7 @@
     </div>
 
     <!-- 플로팅-->
-    <div @click="openFloating" class="floating_btn">
-      <img src="../assets/img/floating.png" alt="" />
-      <span class="floating_num">0</span>
-    </div>
-    <div ref="float" class="floating_modal_wrap display_none">
-      <div class="floating_modal">
-        <div class="floating_modal_header">
-          <h2 ref="floatRecent" class="floating_modal_heart_btn current" @click="floatingMenuRecent(), getRecentBook()">
-            최근 본
-          </h2>
-          <h2 ref="floatHeart" class="floating_modal_recent_btn" @click="floatingMenuHeart">
-            찜 목록
-          </h2>
-          <span @click="closeFloating" class="cursor">✖</span>
-        </div>
-        <!-- 최근 본 -->
-        <div v-if="floatingState == 'recent'" class="floating_modal_recent_wrap">
-          <div class="floating_modal_list_header">
-            <div class="floating_modal_list_header_left">
-              <span>1</span>
-              <span>건</span>
-            </div>
-            <div class="floating_modal_list_header_right cursor">
-              <img src="../assets/img/trash.png" alt="" />
-              <span>전체삭제</span>
-            </div>
-          </div>
-          <div class="floating_modal_list">
-            <div v-for="i in 2" class="floating_modal_item">
-              <a class="floating_modal_item_img" href=""><img src="../assets/img/book4.jpg" alt="" /></a>
-              <div class="floating_modal_item_info">
-                <a href="">
-                  <h2>세이노의 가르침</h2>
-                </a>
-                <p>세이노(SayNo)</p>
-                <div class="floating_modal_item_info_price">
-                  <span>10%</span>
-                  <span>16,200</span>원
-                </div>
-              </div>
-              <div class="floating_modal_item_control">
-                <img class="cursor" src="../assets/img/heart.png" alt="" />
-                <span class="cursor">✖</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- 찜 목록 -->
-        <div v-if="floatingState == 'heart'" class="floating_modal_heart_wrap">
-          <div class="floating_modal_list_header">
-            <div class="floating_modal_list_header_left">
-              <span>2</span>
-              <span>건</span>
-            </div>
-            <div class="floating_modal_list_header_right cursor">
-              <img src="../assets/img/trash.png" alt="" />
-              <span>전체삭제</span>
-            </div>
-          </div>
-          <div class="floating_modal_list">
-            <div v-for="i in 2" class="floating_modal_item">
-              <a class="floating_modal_item_img" href=""><img src="../assets/img/book4.jpg" alt="" /></a>
-              <div class="floating_modal_item_info">
-                <a href="">
-                  <h2>세이노의 가르침</h2>
-                </a>
-                <p>세이노(SayNo)</p>
-                <div class="floating_modal_item_info_price">
-                  <span>10%</span>
-                  <span>16,200</span>원
-                </div>
-              </div>
-              <div class="floating_modal_item_control">
-                <img class="cursor" src="../assets/img/heart.png" alt="" />
-                <span class="cursor">✖</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Floating />
   </div>
 
   <!-- toTop -->
@@ -204,12 +124,13 @@ axios.defaults.headers.post["Content-Type"] = "application/json;charset=utf-8";
 axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 
 import GnbBar from "../components/gnbBar.vue";
+import Floating from "../components/floating.vue"
 import { ref, reactive, onMounted, onUnmounted } from "vue";
 import { isLogindDisplay } from "../mixins/main.js";
 
 export default {
   mixins: [isLogindDisplay],
-  components: { GnbBar },
+  components: { GnbBar, Floating },
   data() {
     return {
       images: [
@@ -321,32 +242,6 @@ export default {
       this.currentIndex = index;
       this.transitionDuration = "0.3s";
     },
-    openFloating() {
-      const floatdiv = this.$refs.float.classList;
-      floatdiv.toggle("display_none");
-    },
-    closeFloating() {
-      const floatdiv = this.$refs.float.classList;
-      floatdiv.toggle("display_none");
-    },
-    floatingMenuRecent() {
-      const floatRecentBtn = this.$refs.floatRecent;
-      const floatHeartBtn = this.$refs.floatHeart;
-      this.floatingState = "recent";
-      if (this.floatingState == "recent") {
-        floatRecentBtn.classList.add("current");
-        floatHeartBtn.classList.remove("current");
-      }
-    },
-    floatingMenuHeart() {
-      const floatRecentBtn = this.$refs.floatRecent;
-      const floatHeartBtn = this.$refs.floatHeart;
-      this.floatingState = "heart";
-      if (this.floatingState == "heart") {
-        floatHeartBtn.classList.add("current");
-        floatRecentBtn.classList.remove("current");
-      }
-    },
     async getRecBook() {
       await axios({
         url: "http://localhost:3000/main/getRecBook",
@@ -360,7 +255,7 @@ export default {
             this.recBook.push(res.data[i]);
           }
           console.log(this.recBook);
-          
+
         })
         .catch((err) => {
           alert(err);
@@ -377,7 +272,7 @@ export default {
             this.bestBook.push(res.data[i]);
           }
           console.log(this.bestBook);
-          
+
         })
         .catch((err) => {
           alert(err);
@@ -394,7 +289,7 @@ export default {
             this.newestBook.push(res.data[i]);
           }
           console.log(this.newestBook);
-          
+
         })
         .catch((err) => {
           alert(err);

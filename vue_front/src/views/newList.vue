@@ -1,48 +1,30 @@
 <style src="../assets/css/newList.css"></style>
 
 <template>
-    <GnbBar />
+    <GnbBar ref="childComponent" />
     <div class="new">
         <div class="new_header">
             <h2>신상품</h2>
         </div>
         <div class="new_items">
-            <div v-for="i in 4" class="new_item">
+            <div v-for="(item, i) in newListData" :key="i" class="new_item">
                 <div class="new_item_img">
-                    <a href=""><img src="../assets/img/book4.jpg" alt="" /></a>
+                    <a href=""><img :src="item.BOOK_COVER" alt="" /></a>
                 </div>
                 <div class="new_item_info">
-                    <h2 class="best_item_info_title"><a href="">2023 시나공 정보처리기사 실기</a></h2>
-                    <span class="new_item_info_author">김정준 | 2023.06.24</span>
+                    <h2 class="best_item_info_title"><a href="">{{ item.BOOK_TITLE }}</a></h2>
+                    <span class="new_item_info_author">{{ item.BOOK_AUTHOR }} | {{ item.BOOK_PUBDATE }}</span>
                     <div class="new_item_info_price">
-                        <span>23.000</span>
+                        <span>{{ formatNumber(item.BOOK_PRICE) }}</span>
                         <span>원</span>
                     </div>
-                    <p class="new_item_info_summary">간단 요약 설명 간단 요약 설명 간단 요약 설명 간단 요약 설명 간단 요약 설명 간단 요약 설명 간단 요약 설명 간단 요약
-                        설명 간단
-                        요약 설명 간단 요약 설명 간단 요약 설명 간단 요약 설명 간단 요약 설명 </p>
+                    <p class="best_item_info_summary">
+                        {{ item.BOOK_DESCRIPTION }}
+                    </p>
                     <div class="new_item_info_star">
-                        <span class="new_item_info_star_num">9.3</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="87" height="14" viewBox="0 0 87 14" fill="none">
-                            <path
-                                d="M6.16109 0.615969C6.50269 -0.205324 7.66614 -0.205323 8.00773 0.61597L9.23038 3.55556C9.37439 3.9018 9.7 4.13837 10.0738 4.16833L13.2473 4.42275C14.134 4.49384 14.4935 5.60035 13.818 6.17901L11.4001 8.2502C11.1153 8.49416 10.9909 8.87693 11.0779 9.24169L11.8166 12.3385C12.023 13.2037 11.0818 13.8876 10.3227 13.4239L7.60567 11.7644C7.28565 11.569 6.88317 11.569 6.56316 11.7644L3.84617 13.4239C3.08707 13.8876 2.14582 13.2037 2.3522 12.3385L3.09091 9.24169C3.17792 8.87693 3.05355 8.49416 2.76876 8.2502L0.350858 6.17901C-0.324678 5.60034 0.0348489 4.49384 0.921503 4.42275L4.09504 4.16833C4.46883 4.13837 4.79444 3.9018 4.93845 3.55556L6.16109 0.615969Z"
-                                fill="#4E4EFF" />
-                            <path
-                                d="M24.1611 0.615969C24.5027 -0.205324 25.6661 -0.205323 26.0077 0.61597L27.2304 3.55556C27.3744 3.9018 27.7 4.13837 28.0738 4.16833L31.2473 4.42275C32.134 4.49384 32.4935 5.60035 31.818 6.17901L29.4001 8.2502C29.1153 8.49416 28.9909 8.87693 29.0779 9.24169L29.8166 12.3385C30.023 13.2037 29.0818 13.8876 28.3227 13.4239L25.6057 11.7644C25.2857 11.569 24.8832 11.569 24.5632 11.7644L21.8462 13.4239C21.0871 13.8876 20.1458 13.2037 20.3522 12.3385L21.0909 9.24169C21.1779 8.87693 21.0535 8.49416 20.7688 8.2502L18.3509 6.17901C17.6753 5.60034 18.0348 4.49384 18.9215 4.42275L22.095 4.16833C22.4688 4.13837 22.7944 3.9018 22.9384 3.55556L24.1611 0.615969Z"
-                                fill="#4E4EFF" />
-                            <path
-                                d="M42.1611 0.615969C42.5027 -0.205324 43.6661 -0.205323 44.0077 0.61597L45.2304 3.55556C45.3744 3.9018 45.7 4.13837 46.0738 4.16833L49.2473 4.42275C50.134 4.49384 50.4935 5.60035 49.818 6.17901L47.4001 8.2502C47.1153 8.49416 46.9909 8.87693 47.0779 9.24169L47.8166 12.3385C48.023 13.2037 47.0818 13.8876 46.3227 13.4239L43.6057 11.7644C43.2857 11.569 42.8832 11.569 42.5632 11.7644L39.8462 13.4239C39.0871 13.8876 38.1458 13.2037 38.3522 12.3385L39.0909 9.24169C39.1779 8.87693 39.0535 8.49416 38.7688 8.2502L36.3509 6.17901C35.6753 5.60034 36.0348 4.49384 36.9215 4.42275L40.095 4.16833C40.4688 4.13837 40.7944 3.9018 40.9384 3.55556L42.1611 0.615969Z"
-                                fill="#4E4EFF" />
-                            <path
-                                d="M60.1611 0.615969C60.5027 -0.205324 61.6661 -0.205323 62.0077 0.61597L63.2304 3.55556C63.3744 3.9018 63.7 4.13837 64.0738 4.16833L67.2473 4.42275C68.134 4.49384 68.4935 5.60035 67.818 6.17901L65.4001 8.2502C65.1153 8.49416 64.9909 8.87693 65.0779 9.24169L65.8166 12.3385C66.023 13.2037 65.0818 13.8876 64.3227 13.4239L61.6057 11.7644C61.2857 11.569 60.8832 11.569 60.5632 11.7644L57.8462 13.4239C57.0871 13.8876 56.1458 13.2037 56.3522 12.3385L57.0909 9.24169C57.1779 8.87693 57.0535 8.49416 56.7688 8.2502L54.3509 6.17901C53.6753 5.60034 54.0348 4.49384 54.9215 4.42275L58.095 4.16833C58.4688 4.13837 58.7944 3.9018 58.9384 3.55556L60.1611 0.615969Z"
-                                fill="#4E4EFF" />
-                            <path
-                                d="M78.1611 0.615969C78.5027 -0.205324 79.6661 -0.205323 80.0077 0.61597L81.2304 3.55556C81.3744 3.9018 81.7 4.13837 82.0738 4.16833L85.2473 4.42275C86.134 4.49384 86.4935 5.60035 85.818 6.17901L83.4001 8.2502C83.1153 8.49416 82.9909 8.87693 83.0779 9.24169L83.8166 12.3385C84.023 13.2037 83.0818 13.8876 82.3227 13.4239L79.6057 11.7644C79.2857 11.569 78.8832 11.569 78.5632 11.7644L75.8462 13.4239C75.0871 13.8876 74.1458 13.2037 74.3522 12.3385L75.0909 9.24169C75.1779 8.87693 75.0535 8.49416 74.7688 8.2502L72.3509 6.17901C71.6753 5.60034 72.0348 4.49384 72.9215 4.42275L76.095 4.16833C76.4688 4.13837 76.7944 3.9018 76.9384 3.55556L78.1611 0.615969Z"
-                                fill="#4E4EFF" />
-                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                d="M79 11.6178C79.1806 11.6178 79.3612 11.6667 79.5213 11.7644L82.2382 13.4239C82.9973 13.8876 83.9386 13.2037 83.7322 12.3385L82.9935 9.24169C82.9065 8.87693 83.0309 8.49415 83.3157 8.2502L85.7336 6.17901C86.4091 5.60035 86.0496 4.49384 85.1629 4.42275L81.9894 4.16833C81.6156 4.13837 81.29 3.9018 81.146 3.55556L79.9233 0.61597C79.7525 0.205324 79.3763 1.79289e-07 79 0V11.6178Z"
-                                fill="#D9D9D9" />
-                        </svg>
+                        <span v-if="item.reviewpoint == 0" class="best_item_info_star_num">0.0</span>
+                        <span v-else class="best_item_info_star_num">{{ formatReviewScore(item.reviewpoint) }}</span>
+                        <StarIcon :rating="convertRatingToHalfStars(reviewScore[i])" />
                     </div>
                 </div>
                 <div class="new_item_order">
@@ -50,31 +32,116 @@
                     <p><span>내일(7/28)</span> 도착예정</p>
                 </div>
                 <div class="new_item_btn">
-                    <a href=""><img src="../assets/img/heart.png" alt=""></a>
-                    <a href=""><img src="../assets/img/cart2.png" alt=""></a>
+                    <img src="../assets/img/heart.png" alt="" />
+                    <img @click="addToCart(item.BOOK_ID)" src="../assets/img/cart2.png" alt="" />
                 </div>
             </div>
-
         </div>
+        <!-- 플로팅-->
+        <Floating />
+
     </div>
 </template>
 
 <script>
-import GnbBar from '../components/gnbBar.vue'
+import GnbBar from "../components/gnbBar.vue";
+import Floating from "../components/floating.vue"
+import StarIcon from "../components/star.vue"; // 별점 아이콘 컴포넌트의 경로를 수정해주세요.
+
+import axios from "axios";
+axios.defaults.baseURL = "http://localhost:3000";
+axios.defaults.headers.post["Contents-Type"] = "application/json;charset=utf-8";
+axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 
 export default {
-    name: '',
-    components: { GnbBar },
+
+    name: "",
+    components: { GnbBar, StarIcon, Floating },
     data() {
         return {
-            sampleData: ''
+            newListData: [],
+            reviewScore: [], // 리뷰 점수를 얻어온다고 가정
+            email: "",
+            bookId: "",
         };
     },
 
     setup() { },
-    created() { },
+    created() {
+        (this.email = localStorage.getItem("userID"));
+        this.getNewList();
+    },
     mounted() { },
     unmounted() { },
-    methods: {}
-}
+
+    methods: {
+        async getNewList() {
+            await axios({
+                url: "http://localhost:3000/booklist/getNew",
+                method: "POST",
+                data: {
+                },
+            })
+                .then((res) => {
+                    for (var i in res.data) {
+                        this.newListData.push(res.data[i]);
+                        //별이 5개이므로 총점10점을 2로 나눔
+                        this.reviewScore.push((res.data[i].reviewpoint) / 2)
+                    }
+                    console.log(res)
+
+                })
+                .catch((err) => {
+                    alert(err);
+                });
+        },
+        //입력된 숫자를 주어진 범위에 따라 적절한 별점으로 변환
+        convertRatingToHalfStars(number) {
+            if (Number.isInteger(number)) {
+                if (number >= 1 && number <= 5) {
+                    return number;
+                } else {
+                    return 0; // 범위를 벗어나는 경우
+                }
+            } else {
+                const integerPart = Math.floor(number);
+                const decimalPart = number - integerPart;
+
+                if (decimalPart < 0.5) {
+                    return integerPart;
+                } else {
+                    return integerPart + 0.5;
+                }
+            }
+        },
+        formatReviewScore(number) {
+            if (Number.isInteger(number)) {
+                return number.toFixed(1); // 정수인 경우 소수점 자리를 1로 설정하여 변환
+            } else {
+                return number.toString(); // 소수인 경우 그대로 문자열로 변환
+            }
+        },
+        formatNumber(number) {
+            // 숫자를 천 단위마다 쉼표가 있는 형식으로 변환
+            return new Intl.NumberFormat().format(number);
+        },
+        //장바구니에 추가
+        async addToCart(bookId) {
+            console.log(this.bookId);
+            this.bookId = bookId;
+            await axios({
+                url: "http://localhost:3000/detail/gotoCart",
+                method: "POST",
+                data: {
+                    email: this.email,
+                    bookId: this.bookId
+                }
+            })
+                .then((res) => {
+                    alert("장바구니에 추가되었습니다.");
+                    this.$refs.childComponent.getCartNum();
+                })
+        },
+    },
+};
 </script>

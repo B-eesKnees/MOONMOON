@@ -99,7 +99,7 @@
 
 }
 
-.new_item_btn img,
-.new_item_btn a {
+.new_item_btn img {
     margin-bottom: 50%;
+    cursor: pointer;
 }
