@@ -17,14 +17,14 @@
             </a>
             
             <div class="qna-all">
-              <div v-if="qnaAll.length === 0">
+              <div v-if="qnaAllList.length === 0">
                 <div id="nodata" class="nodata">작성한 문의글이 없습니다</div>
               </div>
               <qnaAll
-                v-if="!nodata && qnaAll.length > 0"
-                :qnaAll="qnaAll"
-                :showQnaContent="showQnaContent"
-                :key="qnaAll[0].QNA_ID"
+                v-if="!nodata && qnaAllList.length > 0"
+                :qnaAllList="qnaAllList"
+                :showQnaContent="showQnaContent"                  
+                :toggleContent="toggleContent"              
                 :editMode="editMode"
               ></qnaAll>
             </div>
@@ -36,17 +36,17 @@
               </div>
             </a>
 
-            <div class="qna-all">
-              <div v-if="qnaAll.length === 0">
+            <div class="qna-wait">
+              <div v-if="qnaWaitList.length === 0">
                 <div id="nodata" class="nodata">답변 대기중인 문의글이 없습니다</div>
               </div>
-              <qnaWaiting
-                v-if="!nodata && qnaAll.length > 0"
-                :qnaAll="qnaAll"
+              <qnaWait
+                v-if="!nodata && qnaWaitList.length > 0"
+                :qnaWaitList="qnaWaitList"
                 :showQnaContent="showQnaContent"
-                :key="qnaAll[0].QNA_ID"
+                :toggleContent="toggleContent"
                 :editMode="editMode"
-              ></qnaWaiting>
+              ></qnaWait>
             </div>
           </TabItem>
           <TabItem title="답변 완료(9)">
@@ -56,15 +56,15 @@
               </div>
             </a>
 
-            <div class="qna-all">
-              <div v-if="qnaAll.length === 0">
+            <div class="qna-done">
+              <div v-if="qnaDoneList.length === 0">
                 <div id="nodata" class="nodata">답변 완료된 문의글이 없습니다</div>
               </div>
               <qnaDone
-                v-if="!nodata && qnaAll.length > 0"
-                :qnaAll="qnaAll"
+                v-if="!nodata && qnaDoneList.length > 0"
+                :qnaDoneList="qnaDoneList"
                 :showQnaContent="showQnaContent"
-                :key="qnaAll[0].QNA_ID"
+                :toggleContent="toggleContent"
                 :editMode="editMode"
               ></qnaDone>
             </div>
@@ -81,7 +81,7 @@ import GnbBar from "../components/gnbBar.vue";
 import TabsWrapper from "../components/TabsWrapper.vue";
 import TabItem from "../components/TabItem.vue";
 import qnaAll from "../components/qnaAll.vue";
-import qnaWaiting from "../components/qnaWaiting.vue";
+import qnaWait from "../components/qnaWait.vue";
 import qnaDone from "../components/qnaDone.vue";
 
 export default {
@@ -90,26 +90,30 @@ export default {
     TabsWrapper,
     TabItem,
     qnaAll,
-    qnaWaiting,
+    qnaWait,
     qnaDone,
   },
   name: "qnaList",
   data() {
     return {
+      email: "",
+      editMode: false,
       currentTagName: "전체(11)",
-      showQnaContent: true,
-      repWaiting: true,
-      repDone: false,
+      showQnaContent: false,
       conOpenBotton: require("../assets/img/qna-open.png"),
       conCloseBotton: require("../assets/img/qna-close.png"),
       nodata: false,     
-      qnaAll: [], 
+      qnaAllList: [],
+      qnaWaitList: [],
+      qnaDoneList: [], 
     };
   },
     created() {
       this.email = localStorage.getItem("userID");  
      
-      this.qnaAllList();
+      this.getQnaAllList();
+      this.getQnaWaitList();
+      this.getQnaDoneList();
     },
     methods: {
     toggleContent() {
@@ -121,22 +125,73 @@ export default {
         this.conOpenBotton = require("../assets/img/qna-open.png");
       }
     },  
-    async qnaAllList() {
-      this.nodata = false;
-    try {
-      const response = await axios.get("/qna/qnaAll", { email: this.email });
-      this.qnaAll = response.data.qnaAll;
-      console.log(this.qnaAll);
-    } catch (error) {
-      console.log(error);
-    }
-  },  
-    
-  },
-  computed: {
-    currentList() {
-      return this.repList.filter((el) => el.tag == this.currentTagName);
-    },
-  },
+    async getQnaAllList() {
+      try {
+        const url = "/qna/qnaAll";
+        const data = { email: this.email };
+
+        const qnaAllList = (await axios({
+          method: 'post',
+          url,
+          data
+        }).catch(error => {
+          console.log(error);
+        })).data;
+
+        if (qnaAllList.length > 0) {
+        this.qnaAllList = qnaAllList;
+
+      }
+      console.log(this.qnaAllList);
+      } catch (error) {
+        console.log(error);
+      }      
+      },
+      async getQnaWaitList() {
+      try {
+        const url = "/qna/qnaWait";
+        const data = { email: this.email };
+
+        const qnaWaitList = (await axios({
+          method: 'post',
+          url,
+          data
+        }).catch(error => {
+          console.log(error);
+        })).data;
+
+        if (qnaWaitList.length > 0) {
+        this.qnaWaitList = qnaWaitList;
+
+      }
+      console.log(this.qnaWaitList);
+      } catch (error) {
+        console.log(error);
+      }      
+      },
+      async getQnaDoneList() {
+      try {
+        const url = "/qna/qnaDone";
+        const data = { email: this.email };
+
+        const qnaDoneList = (await axios({
+          method: 'post',
+          url,
+          data
+        }).catch(error => {
+          console.log(error);
+        })).data;
+
+        if (qnaDoneList.length > 0) {
+        this.qnaDoneList = qnaDoneList;
+
+      }
+      console.log(this.qnaDoneList);
+      } catch (error) {
+        console.log(error);
+      }      
+      }
+    }, 
+ 
 };
 </script>

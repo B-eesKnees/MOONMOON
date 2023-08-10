@@ -3,25 +3,83 @@ const db = require("../db");
 
 const router = express.Router();
 
+const queries = {
+  qnaAllQuery: `select QNA_ID, QNA_REP, QNA_TITLE, QNA_DATE, QNA_CON, QNA_REPLY
+                from qna
+                where QNA_USER_EMAIL = ?
+                order by QNA_DATE desc`,
 
-// 문의 내역 출력  --ok
-router.get('/qnaAll', (req, res) => {
-  
-    const userEmail = req.body.email;  // req.body.userEmail? req.body.email?
-    
-    const query = `select QNA_ID, QNA_REP, QNA_TITLE, QNA_DATE, QNA_CON, QNA_REPLY
-                   from qna
-                   where QNA_USER_EMAIL = ?
-                   order by QNA_DATE desc`;
+  qnaWaitQuery: `select QNA_ID, QNA_TITLE, QNA_DATE, QNA_CON, QNA_REPLY
+                    from qna
+                    where QNA_USER_EMAIL = ? and QNA_REP = 0
+                    order by QNA_DATE desc;`,
 
-   db.query(query, [userEmail], (error, result) => {
-    if (error) {
-      return console.log(error);
-    } 
-    if (result) {
-      res.json({qnaAll: result});  // res.render?-x  res.json?
-    }
-   })
+  qnaDoneQuery: `select QNA_ID, QNA_TITLE, QNA_DATE, QNA_CON, QNA_REPLY
+                 from qna
+                 where QNA_USER_EMAIL = ? and QNA_REP = 1
+                 order by QNA_DATE desc;`,
+}
+
+// 데이터베이스 작업 함수
+const req = async (query, params) => {
+  return new Promise((resolve, reject) => {
+    db.query(query, params, (error, rows) => {
+      if (error) {
+        console.log(error);
+        resolve({ error });
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+};
+
+
+// 문의 내역 출력_all  --ok
+router.post('/qnaAll', async (request, res) => {
+
+  try {
+    const userEmail = request.body.email;
+
+    res.send(await req(queries.qnaAllQuery, [userEmail]));
+    console.log(userEmail);    
+  } catch (err) {
+    res.status(500).send({
+      error:err
+    });
+  }
+  });
+
+
+  // 문의 내역 출력_wait 
+router.post('/qnaWait', async (request, res) => {
+
+  try {
+    const userEmail = request.body.email;
+
+    res.send(await req(queries.qnaWaitQuery, [userEmail]));
+    console.log(userEmail);    
+  } catch (err) {
+    res.status(500).send({
+      error:err
+    });
+  }
+  });
+
+
+  // 문의 내역 출력_done  
+router.post('/qnaDone', async (request, res) => {
+
+  try {
+    const userEmail = request.body.email;
+
+    res.send(await req(queries.qnaDoneQuery, [userEmail]));
+    console.log(userEmail);    
+  } catch (err) {
+    res.status(500).send({
+      error:err
+    });
+  }
   });
 
 
@@ -41,7 +99,7 @@ router.post('/qnaView', async (req, res) => {
 
 // 문의글 작성 --ok
 // get 요청이 왜 같이 들어오지..(아무래도 redirect 부분인 듯..)
-router.post('/qnaWrite', (req, res) => {
+router.post('/qnaWrite', async (req, res) => {
   const QNA_USER_EMAIL = 'user1@example.com';  // req.body.email
   const { QNA_TITLE, QNA_CON } = req.body;
   const QNA_REP = 0;
@@ -65,7 +123,7 @@ router.post('/qnaWrite', (req, res) => {
 
 
 // 문의 내용 수정  --ok
-router.post('/qnaEdit', (req, res) => {
+router.post('/qnaEdit', async (req, res) => {
   let { QNA_ID } = req.body;
    QNA_ID = Number(QNA_ID);
   const { QNA_TITLE, QNA_CON } = req.body;
@@ -86,7 +144,7 @@ router.post('/qnaEdit', (req, res) => {
 
 
 // 문의 삭제  --ok
-router.get('/qnaDel', (req, res) => {
+router.get('/qnaDel', async (req, res) => {
   let { QNA_ID } = req.body;
    QNA_ID = Number(QNA_ID); 
 
