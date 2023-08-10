@@ -31,7 +31,7 @@
                 />
                 <label :for="'book_checkbox_' + index"></label>
                 <img class="cart_img" :src="book.img" />
-                <span class="book_name">{{ book.title }}</span
+                <span class="cart_book_name">{{ book.title }}</span
                 >&nbsp;
                 <span class="book_price">{{ book.price }} 원</span>
                 <span class="book_point"
