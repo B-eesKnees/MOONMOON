@@ -1,7 +1,7 @@
 <style src="../assets/css/Login.css"></style>
 
 <template>
-    <!-- <gnbBar /> -->
+    <gnbBar />
     <div class="login">
         <div class="title-bar">
             <div class="login_header_logo">
@@ -57,7 +57,7 @@
 </template>
   
 <script>
-//   import gnbBar from "../components/gnbBar.vue";
+  import gnbBar from "../components/gnbBar.vue";
 //   import Footer from '../components/footer.vue';
 
 import axios from "axios";
@@ -86,7 +86,7 @@ export default {
             allcheck2: true,
         };
     },
-    // components: { gnbBar, Footer },
+    components: { gnbBar },
 
     watch: {
         email: function () {

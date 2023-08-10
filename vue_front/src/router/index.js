@@ -97,7 +97,7 @@ const routes = [
     component: RecommendList,
   },
   {
-    path: "/search",
+    path: "/search/:keyword",
     name: "SearchList",
     component: SearchList,
   },

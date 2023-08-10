@@ -1,6 +1,7 @@
 <style src="../assets/css/Join.css"></style>
 
 <template>
+    <gnbBar />
     <div class="join">
         <div class="title-bar">
             <div class="join_header_logo">
@@ -101,6 +102,7 @@
 </template>
 
 <script>
+  import gnbBar from "../components/gnbBar.vue";
 // import Footer from '../components/footer.vue'
 
 import axios from 'axios'
@@ -109,7 +111,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
 axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 
 export default {
-    // components: { gnbBar, Footer },
+    components: { gnbBar },
     data() {
         return {
             // 회원 입력정보

@@ -120,7 +120,7 @@
   justify-content: flex-start;
 }
 
-.best_item_btn img,
-.best_item_btn a {
+.best_item_btn img {
   margin-bottom: 50%;
+  cursor: pointer;
 }
