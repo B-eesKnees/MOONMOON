@@ -2,31 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 
-// // 리뷰 작성 라우터 ok
-// router.post("/postreview", (req, res) => {
-//   const reviewData = req.body;
 
-//   const reviewRow = {
-//     REV_ORDERITEM_BOOK: reviewData.REV_ORDERITEM_BOOK,
-//     REV_WRITER: reviewData.REV_WRITER,
-//     REV_NICK: reviewData.REV_NICK,
-//     REV_COMMENT: reviewData.REV_COMMENT,
-//     REV_RATING: reviewData.REV_RATING,
-//   };
-
-//   const query = "INSERT INTO REVIEW SET ?";
-//   db.query(query, reviewRow, (err, results) => {
-//     if (err) {
-//       console.error(err);
-//       res.status(500).json({ error: "서버 에러" });
-//     } else {
-//       res.status(200).json({
-//         message: "INSERT COMPLETE",
-//         review: reviewRow, // 삽입된 데이터를 반환
-//       });
-//     }
-//   });
-// });
 //구매확정한 사람만 리뷰 작성 가능
 router.post("/postreview", (req, res) => {
   const reviewData = req.body;

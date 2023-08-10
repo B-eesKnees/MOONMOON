@@ -2,14 +2,14 @@
   <GnbBar />
   <div class="title_wri_sum">
     <div class="detail_title">
-      제목 제목 제목 제목제목제목
-      <!-- {{ bookDetail.BOOK_TITLE }} -->
+      {{ reviewData.REV_COMMENT }}
+      {{ bookDetailData.BOOK_TITLE }}
     </div>
-    <div class="writer_date">글쓴이 | 2023.02.26</div>
+    <div class="writer_date">
+      {{ bookDetailData.BOOK_AUTHOR }} | {{ bookDetailData.BOOK_PUBDATE }}
+    </div>
     <div class="book_summary">
-      책소개 책소개 책소개 책소개 책소개 책소개 책소개 책소개 책소개 책소개
-      책소개 책소개 책소개 책소개 책소개 책소개 책소개 책소개 책소개 책소개
-      책소개 책소개 책소개
+      {{ bookDetailData.BOOK_DESCRIPTION }}
     </div>
   </div>
   <div class="img_price_btn">
@@ -27,13 +27,13 @@
       <div class="price_point_set_1">
         <div class="price_point_title_1">판매가</div>
         <div class="price_point_detail_1">
-          23,000
+          {{ bookDetailData.BOOK_PRICE }}
           <div class="won">원</div>
         </div>
       </div>
       <div class="price_point_set_2">
         <div class="price_point_title_2">포인트</div>
-        <div class="price_point_detail_2">1,150</div>
+        <div class="price_point_detail_2">{{ bookDetailData.BOOK_POINT }}</div>
       </div>
       <div class="price_point_set_3">
         <div class="price_point_title_3">배송비</div>
@@ -164,6 +164,8 @@
         </button>
       </div>
     </div>
+    <div class="review_con"></div>
+
     <!-- 댓글 작성-------------------------------------------------------------------------------------------------------
     --------------------------------------------------------------------------------------------------------------------- -->
     <br />
@@ -245,51 +247,57 @@ export default {
   },
   data() {
     return {
-      bookDetail: {}, // 책 상세 정보를 저장할 데이터
+      bookDetailData: [], // 책 상세 정보를 저장할 데이터
+      reviewData: [],
       isLiked: false,
       sortvalue: "최신순",
       showBtn: true,
     };
   },
   mounted() {
-    // reviewFillter() {},
-    // this.sortvalue = '최신순'
+    this.bookDetail();
+    this.DetailReview();
   },
 
   methods: {
-    // reviewFillter() {
-    //   // ...
-    // },
     toggleBtn() {
       this.showBtn = !this.showBtn; // showBtn 데이터 값을 토글
     },
-
-    async fetchBookInfo(bookNum) {
-      try {
-        const response = await axios.get(`/detail/${bookNum}`);
-        this.bookDetail = response.data; // 받아온 정보를 데이터에 할당
-      } catch (error) {
-        console.error("Error fetching book information:", error);
-      }
-    },
-
     // 최신순 리스트 불러오기-------------------------------------------------------------------------------------------------------
     // ---------------------------------------------------------------------------------------------------------------------
-    async recentBoardListData() {
-      this.norecentData = false;
-      try {
-        const response = await axios.post("/mypage/recentCourse", {
-          userEmail: this.email,
+    bookDetail() {
+      axios({
+        url: "http://localhost:3000/detail/",
+        method: "get",
+        params: {
+          bookNum: 2, // 원하는 책 번호로 수정
+        },
+      })
+        .then((response) => {
+          // 서버 응답 처리
+          this.bookDetailData = response.data[0]; // 책 상세 정보 저장 (첫 번째 결과 객체 선택)
+        })
+        .catch((error) => {
+          console.error("Error fetching book detail:", error);
         });
-        this.recentBoardList = response.data;
-        if (this.norecentData.length != 0) {
-          this.norecentData = false;
-        } else {
-          this.norecentData = true;
-        }
-      } catch {
-        this.norecentData = true;
-      }
+    },
+    // 최신순 리스트 불러오기-------------------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------------------------------
+    DetailReview() {
+      axios({
+        url: "http://localhost:3000/review/reviewdata",
+        method: "get",
+        params: {
+          bookId: 2,
+        },
+      })
+        .then((response) => {
+          // 서버 응답 처리
+          this.reviewdata = response.data[0]; // 책 상세 정보 저장 (첫 번째 결과 객체 선택)
+        })
+        .catch((error) => {
+          console.error("Error fetching book detail:", error);
+        });
     },
   },
 };
