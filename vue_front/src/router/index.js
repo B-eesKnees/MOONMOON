@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Main from "../views/Main.vue";
 import Login from "../views/Login.vue";
-import NaverLogin from "../views/NaverLogin.vue"
+import NaverLogin from "../views/NaverLogin.vue";
 import Join from "../views/Join.vue";
 import Survey from "../views/survey.vue";
 
@@ -26,6 +26,7 @@ import eventPage from "../views/event.vue";
 import eventPage1 from "../views/event_1.vue";
 import roulette from "../views/roulette.vue";
 import attendance from "../views/attendance.vue";
+import mypage from "../views/mypage.vue";
 import axios from "axios";
 
 const requireLogin = () => (to, from, next) => {
@@ -62,7 +63,7 @@ const routes = [
     path: "/",
     name: "Main",
     component: Main,
-    beforeEnter: requireSurvey()
+    beforeEnter: requireSurvey(),
   },
   {
     path: "/login",
@@ -189,6 +190,11 @@ const routes = [
     path: "/attendance",
     name: "attendanceEventPage",
     component: attendance,
+  },
+  {
+    path: "/mypage",
+    name: "mypage",
+    component: mypage,
   },
 ];
 
