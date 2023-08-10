@@ -1,7 +1,7 @@
 /* GNB 공용 스타일 */
 .display_none {
     display: none;
-  }
+}
 
 .gnb {
     width: 100%;
@@ -9,7 +9,7 @@
 
 .gnb_bar {
     width: 100%;
-    background-color: #F4F4F4;
+    background-color: #f4f4f4;
 }
 
 /* 최상단 서비스바 */
@@ -61,7 +61,7 @@
 }
 
 .gnb_bar_header_search_input {
-    border: 1px solid #4E4EFF;
+    border: 1px solid #4e4eff;
     border-radius: 32px;
     padding: 1% 6% 1% 2%;
     width: 45%;
@@ -95,7 +95,7 @@
     left: 60%;
     top: 9%;
     color: white;
-    background-color: #4E4EFF;
+    background-color: #4e4eff;
     padding: 9% 18% 12% 18%;
     border-radius: 100px;
 }
@@ -198,7 +198,6 @@
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-
 }
 .nav_modal_main_category_list_main_wrap {
     width: 200%;
@@ -226,7 +225,7 @@
 .nav_modal_category_btn span {
     display: flex;
     justify-content: center;
-    align-items:center;
+    align-items: center;
     margin-left: 1%;
     font-size: x-small;
     color: #ccc;
@@ -242,4 +241,29 @@
     font-size: small;
     font-weight: normal;
     color: #676767;
+}
+.rec_search_back {
+    position: relative;
+}
+.rec_search_area {
+    position: absolute;
+    border: 1px solid #4e4eff;
+    width: 80%;
+
+    margin-top: 1%;
+    border-radius: 32px;
+    background-color: #ffffff;
+    padding-bottom: 1%;
+    padding-top: 1%;
+}
+.search_results {
+    position: relative;
+    width: 80%;
+    margin: 2px 0 0 4%;
+    padding: 15px;
+    cursor: pointer;
+}
+.search_results:hover {
+    font-weight: bold;
+    color: #4e4eff;
 }

@@ -23,11 +23,11 @@ router.post("/getRecBook", async (req, res) => {
             const search4 = `%${sur4}%`;
             const search5 = `%${sur5}%`;
 
-            const query = `select BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, '%Y.%m.%d') as PUBDATE, BOOK_PRICE, BOOK_DESCRIPTION, BOOK_COVER, BOOK_PUBLISHER 
+            const query = `select BOOK_ID, BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, '%Y.%m.%d') as PUBDATE, BOOK_PRICE, BOOK_DESCRIPTION, BOOK_COVER, BOOK_PUBLISHER 
             from book 
             where BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? 
             order by BOOK_SALESPOINT desc 
-            limit 5`;
+            limit 8`;
             console.log([search1, search2, search3, search4, search5]);
             db.query(query, [search1, search2, search3, search4, search5], (err, results) => {
                 if (err) {
@@ -42,7 +42,7 @@ router.post("/getRecBook", async (req, res) => {
 //베스트셀러
 router.post("/getBestBook", async (req, res) => {
     db.query(
-        `select BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, "%Y.%m.%d") as PUBDATE, BOOK_PRICE, BOOK_DESCRIPTION, BOOK_COVER, BOOK_PUBLISHER 
+        `select BOOK_ID, BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, "%Y.%m.%d") as PUBDATE, BOOK_PRICE, BOOK_DESCRIPTION, BOOK_COVER, BOOK_PUBLISHER 
         from book 
         order by BOOK_SALESPOINT DESC
         limit 5`,
@@ -58,7 +58,7 @@ router.post("/getBestBook", async (req, res) => {
 //신책
 router.post("/getNewestBook", async (req, res) => {
     db.query(
-        `select BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, "%Y.%m.%d") as PUBDATE, BOOK_PRICE, BOOK_DESCRIPTION, BOOK_COVER, BOOK_PUBLISHER  
+        `select BOOK_ID, BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, "%Y.%m.%d") as PUBDATE, BOOK_PRICE, BOOK_DESCRIPTION, BOOK_COVER, BOOK_PUBLISHER  
         from book order 
         by BOOK_PUBDATE ASC
         limit 5`,
@@ -83,17 +83,69 @@ router.post("/getCart", async (req, res) => {
         }
     });
 });
-//검색
-router.get("/", async (req, res) => {
+//판매량 순 검색
+router.get("/best", async (req, res) => {
     try {
         const searchKeyword = req.query.searchKeyword;
-        console.log(searchKeyword);
 
-        const search_query = "SELECT * FROM book WHERE BOOK_TITLE LIKE ? OR BOOK_AUTHOR LIKE ?";
+        const search_query = `SELECT b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, date_format(b.BOOK_PUBDATE, '%Y.%m.%d') as PUBDATE, b.BOOK_PRICE, b.BOOK_DESCRIPTION, b.BOOK_COVER, b.BOOK_PUBLISHER, COALESCE(ROUND(AVG(r.REV_RATING), 1), 0) AS reviewpoint
+                                FROM book b 
+                                left join review r on b.BOOK_ID = r.REV_ORDERITEM_BOOK 
+                                WHERE BOOK_TITLE LIKE ? OR BOOK_AUTHOR LIKE ?
+                                group by b.BOOK_ID
+                                order by b.BOOK_SALESPOINT desc`;
         const search_word = `%${searchKeyword}%`;
-        console.log(search_word);
 
         db.query(search_query, [search_word, search_word], (err, results) => {
+            if (err) {
+                res.status(200).json({ error: "Database query error" });
+            } else {
+                res.status(200).json(results);
+            }
+        });
+    } catch (error) {
+        res.status(200).json({ error: error.message });
+    }
+});
+//신상품 순 검색
+router.get("/new", async (req, res) => {
+    try {
+        const searchKeyword = req.query.searchKeyword;
+
+        const search_query = `SELECT b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, date_format(b.BOOK_PUBDATE, '%Y.%m.%d') as PUBDATE, b.BOOK_PRICE, b.BOOK_DESCRIPTION, b.BOOK_COVER, b.BOOK_PUBLISHER, COALESCE(ROUND(AVG(r.REV_RATING), 1), 0) AS reviewpoint
+                                FROM book b 
+                                left join review r on b.BOOK_ID = r.REV_ORDERITEM_BOOK 
+                                WHERE BOOK_TITLE LIKE ? OR BOOK_AUTHOR LIKE ?
+                                group by b.BOOK_ID
+                                order by b.BOOK_PUBDATE desc`;
+        const search_word = `%${searchKeyword}%`;
+
+        db.query(search_query, [search_word, search_word], (err, results) => {
+            if (err) {
+                res.status(200).json({ error: "Database query error" });
+            } else {
+                res.status(200).json(results);
+            }
+        });
+    } catch (error) {
+        res.status(200).json({ error: error.message });
+    }
+});
+//검색 미리생성
+router.get("/searchBest", async (req, res) => {
+    try {
+        const searchKeyword = req.query.searchKeyword;
+
+        const search_query = `SELECT b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, date_format(b.BOOK_PUBDATE, '%Y.%m.%d') as PUBDATE, b.BOOK_PRICE, b.BOOK_DESCRIPTION, b.BOOK_COVER, b.BOOK_PUBLISHER, COALESCE(ROUND(AVG(r.REV_RATING), 1), 0) AS reviewpoint
+                                FROM book b 
+                                left join review r on b.BOOK_ID = r.REV_ORDERITEM_BOOK 
+                                WHERE BOOK_TITLE LIKE ?
+                                group by b.BOOK_ID
+                                order by b.BOOK_SALESPOINT desc
+                                limit 10`;
+        const search_word = `%${searchKeyword}%`;
+
+        db.query(search_query, search_word, (err, results) => {
             if (err) {
                 res.status(200).json({ error: "Database query error" });
             } else {

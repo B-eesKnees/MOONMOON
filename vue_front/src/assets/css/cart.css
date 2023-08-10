@@ -1,7 +1,8 @@
 .cart_img {
     text-align: center;
-    max-height: 200px;
+    height: 200px;
     margin-top: 20px;
+    width: 150px;
 }
 
 .footer {
@@ -52,13 +53,13 @@
     padding-left: 10px;
 }
 
-.book_name {
+.cart_book_name {
     position: absolute;
     margin-left: 15px;
     margin-top: 20px;
     font-weight: 700;
     font-size: 1.1em;
-    width: 450px;
+    width: 425px;
     line-height: 20px;
 }
 

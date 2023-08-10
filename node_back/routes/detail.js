@@ -8,7 +8,7 @@ router.get("/", async (req, res) => {
     const bookId = req.query.bookNum;
     const id = parseInt(bookId);
 
-    db.query(`select * from book where BOOK_ID = ?`, id, (err, result) => {
+    db.query(`select BOOK_TITLE, BOOK_AUTHOR, BOOK_DESCRIPTION, BOOK_PRICE, BOOK_POINT, date_format(BOOK_PUBDATE, '%Y.%m.%d') as BOOK_PUBDATE from book where BOOK_ID = ?`, id, (err, result) => {
         if (err) {
             res.send(err).status(200);
         } else {
@@ -45,17 +45,13 @@ router.post("/gotoPay", async (req, res) => {
                 ORDERITEM_POINT: point,
             };
 
-            db.query(
-                `insert into orderitem set ?`,
-                orderItem_info,
-                (err, result) => {
-                    if (err) {
-                        res.send(err).status(200);
-                    } else {
-                        res.status(200).send("ok");
-                    }
+            db.query(`insert into orderitem set ?`, orderItem_info, (err, result) => {
+                if (err) {
+                    res.send(err).status(200);
+                } else {
+                    res.status(200).send("ok");
                 }
-            );
+            });
         }
     });
 });
@@ -92,41 +88,29 @@ router.post("/likeOrDislike", async (req, res) => {
         //책 고유번호
     };
 
-    db.query(
-        `select * from LIKEDBOOK where LIKE_USER_EMAIL = ? and LIKE_BOOK_ID = ?`,
-        [LIKE_USER_EMAIL, LIKE_BOOK_ID],
-        (err, result) => {
-            if (err) {
-                res.status(200).send(err);
+    db.query(`select * from LIKEDBOOK where LIKE_USER_EMAIL = ? and LIKE_BOOK_ID = ?`, [LIKE_USER_EMAIL, LIKE_BOOK_ID], (err, result) => {
+        if (err) {
+            res.status(200).send(err);
+        } else {
+            if (result.length == 0) {
+                db.query(`insert into LIKEDBOOK set ?`, likeInfo, (err, result) => {
+                    if (err) {
+                        res.send(err).status(200);
+                    } else {
+                        res.status(200).send("추가완료");
+                    }
+                });
             } else {
-                if (result.length == 0) {
-                    db.query(
-                        `insert into LIKEDBOOK set ?`,
-                        likeInfo,
-                        (err, result) => {
-                            if (err) {
-                                res.send(err).status(200);
-                            } else {
-                                res.status(200).send("ok");
-                            }
-                        }
-                    );
-                } else {
-                    db.query(
-                        `delete from LIKEDBOOK where LIKE_USER_EMAIL = ? and LIKE_BOOK_ID = ?`,
-                        [LIKE_USER_EMAIL, LIKE_BOOK_ID],
-                        (err, result) => {
-                            if (err) {
-                                res.send(err).status(200);
-                            } else {
-                                res.status(200).send("ok");
-                            }
-                        }
-                    );
-                }
+                db.query(`delete from LIKEDBOOK where LIKE_USER_EMAIL = ? and LIKE_BOOK_ID = ?`, [LIKE_USER_EMAIL, LIKE_BOOK_ID], (err, result) => {
+                    if (err) {
+                        res.send(err).status(200);
+                    } else {
+                        res.status(200).send("삭제완료");
+                    }
+                });
             }
         }
-    );
+    });
 });
 //성공
 router.post("/checkLike", async (req, res) => {
@@ -134,21 +118,17 @@ router.post("/checkLike", async (req, res) => {
     const LIKE_BOOK_ID = req.body.bookId;
     const LIKE_USER_EMAIL = req.body.email;
 
-    db.query(
-        `select * from LIKEDBOOK where LIKE_USER_EMAIL = ? and LIKE_BOOK_ID =?`,
-        [LIKE_USER_EMAIL, LIKE_BOOK_ID],
-        (err, result) => {
-            if (err) {
-                res.status(200).send(err);
+    db.query(`select * from LIKEDBOOK where LIKE_USER_EMAIL = ? and LIKE_BOOK_ID =?`, [LIKE_USER_EMAIL, LIKE_BOOK_ID], (err, result) => {
+        if (err) {
+            res.status(200).send(err);
+        } else {
+            if (result.length > 0) {
+                res.status(200).send("등록된 책입니다.");
             } else {
-                if (result.length > 0) {
-                    res.status(200).send("등록된 책입니다.");
-                } else {
-                    res.status(200).send("등록 안된 책입니다.");
-                }
+                res.status(200).send("등록 안된 책입니다.");
             }
         }
-    );
+    });
 });
 //성공
 router.post("/gotoRecent", async (req, res) => {
@@ -156,41 +136,29 @@ router.post("/gotoRecent", async (req, res) => {
     const REC_USER_EMAIL = req.body.email;
     const REC_BOOK_ID = req.body.bookId;
     const REC_VIEWED_AT = new Date();
-    db.query(
-        `select * from RECENTBOOK where REC_USER_EMAIL = ? and REC_BOOK_ID = ?`,
-        [REC_USER_EMAIL, REC_BOOK_ID],
-        (err, result) => {
-            if (err) {
-                res.send(err).status(200);
+    db.query(`select * from RECENTBOOK where REC_USER_EMAIL = ? and REC_BOOK_ID = ?`, [REC_USER_EMAIL, REC_BOOK_ID], (err, result) => {
+        if (err) {
+            res.send(err).status(200);
+        } else {
+            if (result.length > 0) {
+                db.query(`update RECENTBOOK set REC_VIEWED_AT = ? where REC_USER_EMAIL = ? and REC_BOOK_ID = ?`, [REC_VIEWED_AT, REC_USER_EMAIL, REC_BOOK_ID], (err, result) => {
+                    if (err) {
+                        res.send(err).status(200);
+                    } else {
+                        res.status(200).send("ok");
+                    }
+                });
             } else {
-                if (result.length > 0) {
-                    db.query(
-                        `update RECENTBOOK set REC_VIEWED_AT = ? where REC_USER_EMAIL = ? and REC_BOOK_ID = ?`,
-                        [REC_VIEWED_AT, REC_USER_EMAIL, REC_BOOK_ID],
-                        (err, result) => {
-                            if (err) {
-                                res.send(err).status(200);
-                            } else {
-                                res.status(200).send("ok");
-                            }
-                        }
-                    );
-                } else {
-                    db.query(
-                        `INSERT INTO RECENTBOOK (REC_USER_EMAIL, REC_BOOK_ID, REC_VIEWED_AT) VALUES (?, ?, ?)`,
-                        [REC_USER_EMAIL, REC_BOOK_ID, REC_VIEWED_AT],
-                        (err, result) => {
-                            if (err) {
-                                res.send(err).status(200);
-                            } else {
-                                res.status(200).send("ok");
-                            }
-                        }
-                    );
-                }
+                db.query(`INSERT INTO RECENTBOOK (REC_USER_EMAIL, REC_BOOK_ID, REC_VIEWED_AT) VALUES (?, ?, ?)`, [REC_USER_EMAIL, REC_BOOK_ID, REC_VIEWED_AT], (err, result) => {
+                    if (err) {
+                        res.send(err).status(200);
+                    } else {
+                        res.status(200).send("ok");
+                    }
+                });
             }
         }
-    );
+    });
 });
 
 module.exports = router;
