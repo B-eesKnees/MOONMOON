@@ -1,10 +1,22 @@
 <script>
+import axios from 'axios';
+
 export default {
   props: {
     qnaDoneList: Object,
-    toggleContent: Boolean,
-    showQnaContent: Boolean,
+    toggleContent3: Boolean,
+    showQnaDoneContent: {
+      type: Array,
+      default: () => []
+    },
   },
+  methods: {
+    async toggleContent3(index) {
+      this.showQnaDoneContent[index] =!this.showQnaDoneContent[index];
+      await this.$emit('update:showQnaDoneContent', this.showQnaDoneContent);
+    }
+  }
+  
   /* computed: {
     truncatedContents() {
       const maxChars = 30;
@@ -32,10 +44,10 @@ export default {
         <div class="qna_date">{{ done.QNA_DATE }}</div>
       <!-- 버튼 토글-문의 내용/답변 -->
         <div>
-          <button @click="toggleContent" class="con-open">
+          <button @click="toggleContent3(i)" class="con-open">
             <img :src="conOpenBotton" alt="con-open/close" />
           </button>
-          <div v-if="showQnaContent">
+          <div v-if="showQnaDoneContent[i]">
             <div class="qna_con">{{ done.QNA_CON }}</div>0
             <div class="qna_reply">{{ done.QNA_REPLY }}</div>
           </div>

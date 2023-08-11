@@ -3,20 +3,21 @@ import axios from 'axios';
 
 export default {
   props: {
-    showQnaContent: Boolean,
-    toggleContent: Boolean,
+    showQnaAllContent: {
+      type: Array,
+      default: () => []
+    },
+    toggleContent1: Function,
     qnaAllList: Array,
-  },
-  data() {
-    return {
-      showQnaContent: [],
-    };
+    conOpenBotton: String,
+    conCloseBotton: String,
   },
   methods: {
-    toggleContent(index) {
-      this.$set(this.showQnaContent, index, !this.showQnaContent[index]);
-    },
-  },
+    async toggleContent1(index) {
+      this.showQnaAllContent[index] =!this.showQnaAllContent[index];
+      await this.$emit('update:showQnaAllContent', this.showQnaAllContent);
+    }
+  }
   /* computed: {
     truncatedContents() {
       const maxChars = 30;
@@ -33,27 +34,30 @@ export default {
 <template>
 
   <div class="qna-list">
-    <div :key="i" v-for="(all, i) in qnaAllList">
-      <!-- 대기중/완료 아이콘 -->
-      <div v-if="all.QNA_REP === 0">
-        <img src="../assets/img/waiting.png" alt="waiting-img">
-      </div>
-      <div v-else>
-        <img src="../assets/img/done.png" alt="done-img">
-      </div>
-      <!-- 문의 제목/날짜 -->
-      <div class="qna_title">{{ all.QNA_TITLE }}</div>
-      <div class="qna_date">{{ all.QNA_DATE }}</div>
-      <!-- 버튼 토글-문의 내용/답변 -->
-      <div>
-        <button @click="toggleContent(i)" class="con-open">
-          <img :src="conOpenBotton" alt="con-open/close" />
-        </button>
-        <div v-if="showQnaContent[i]">
-          <div class="qna_con">{{ all.QNA_CON }}</div>
-          <div class="qna_reply">{{ all.QNA_REPLY }}</div>
+    <div class="qna-box" :key="i" v-for="(all, i) in qnaAllList">
+      <div class="qna-box-up">
+        <!-- 대기중/완료 아이콘 -->
+        <div v-if="all.QNA_REP === 0">
+          <img class="wait-icon" src="../assets/img/waiting.png" alt="waiting-img">
         </div>
+        <div v-else>
+          <img class="done-icon" src="../assets/img/done.png" alt="done-img">
+        </div>
+        <!-- 문의 제목/날짜 -->
+        <div class="qna-title">{{ all.QNA_TITLE }}</div>
+        <div class="qna-date">{{ all.QNA_DATE }}</div>
       </div>
+        <!-- 버튼 토글-문의 내용/답변 -->
+        <div>
+          <button @click="toggleContent1(i)" class="con-open/close">
+            <img :src="conOpenBotton" alt="con-open" />
+            <img class="con-close" :src="conCloseBotton" alt="con-close" />
+          </button>
+          <div v-if="showQnaAllContent[i]">
+            <div class="qna-con">{{ all.QNA_CON }}</div>
+            <div class="qna-reply">{{ all.QNA_REPLY }}</div>
+          </div>
+        </div>
     </div>
   </div>
   
