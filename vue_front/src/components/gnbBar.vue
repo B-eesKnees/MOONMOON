@@ -21,16 +21,17 @@
             <div class="gnb_bar_header_logo">
                 <a href="/"><img src="../assets/img/logo.png" alt="" /></a>
             </div>
-            <div class="gnb_bar_header_search">
+            <div class="gnb_bar_header_search" ref="search_box">
                 <input
                     class="gnb_bar_header_search_input"
                     type="text"
                     placeholder="검색어를 입력하세요"
                     @keyup.enter="sendSearchKeyword"
-                    v-model="searchKeyword"
-                    @input="rec_search(searchKeyword)"
+                    :value="keyword"
+                    @input="rec_search"
                 />
-                <div v-show="rec_show" class="rec_search_back">
+                <!-- 검색 결과 미리보기 창 모달 -->
+                <div v-show="rec_show" class="rec_search_back" ref="search_result_box">
                     <div class="rec_search_area">
                         <div v-for="searchBook in book_title" class="search_results" @click="go_detail_page(searchBook)">
                             {{ searchBook.BOOK_TITLE }}
@@ -389,6 +390,7 @@ export default {
             rec_text: "",
             book_title: [],
             searchKeyword: "",
+            keyword: "",
         };
     },
     mounted() {
@@ -397,6 +399,7 @@ export default {
             (this.image = localStorage.getItem("userImage")),
             (this.provider = localStorage.getItem("userProvider"));
         this.getCartNum();
+        window.addEventListener("click", this.onClick);
     },
     methods: {
         // 생략
@@ -482,8 +485,9 @@ export default {
             // localStorage.clear(); // localStorage의 모든 항목 제거
             window.location.href = "/"; // 메인
         },
-        rec_search() {
-            if (this.searchKeyword.length == 0) {
+        rec_search(e) {
+            this.keyword = e.target.value;
+            if (this.keyword.length == 0) {
                 this.rec_show = false;
                 return;
             }
@@ -492,18 +496,29 @@ export default {
             axios({
                 url: "/main/searchBest",
                 method: "GET",
-                params: { searchKeyword: this.searchKeyword },
+                params: { searchKeyword: this.keyword },
             })
                 .then((res) => {
-                    console.log(res.data.length);
                     if (res.data.length == 0) {
                         return (this.book_title = [{ BOOK_TITLE: "검색 결과가 없습니다." }]);
                     }
                     this.book_title = res.data;
+                    this.cutTitle();
                 })
                 .catch((error) => {
                     console.log(error);
                 });
+        },
+        cutTitle() {
+            const max_title = 35;
+
+            for (var i = 0; i < this.book_title.length; i++) {
+                if (this.book_title[i].BOOK_TITLE.length > max_title) {
+                    this.book_title[i].BOOK_TITLE = this.book_title[i].BOOK_TITLE.slice(0, max_title) + "...";
+                } else {
+                    this.book_title[i].BOOK_TITLE = this.book_title[i].BOOK_TITLE;
+                }
+            }
         },
         go_detail_page(book) {
             if (book.BOOK_TITLE == "검색 결과가 없습니다.") {
@@ -511,9 +526,19 @@ export default {
             }
             window.location.href = `/detail/${book.BOOK_ID}`;
         },
-        sendSearchKeyword() {
-            window.location.href = `/search/${this.searchKeyword}`;
+        sendSearchKeyword(e) {
+            this.keyword = e.target.value;
+
+            window.location.href = `/search/${this.keyword}`;
         },
+        onClick(e) {
+            if (e.target.parentNode !== this.$refs.search_result_box && e.target.parentNode !== this.$refs.search_box) {
+                this.rec_show = false;
+            }
+        },
+    },
+    beforeUnmount() {
+        window.removeEventListener("click", this.onClick);
     },
 };
 </script>
