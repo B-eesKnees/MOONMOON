@@ -248,7 +248,7 @@
 .rec_search_area {
     position: absolute;
     border: 1px solid #4e4eff;
-    width: 80%;
+    width: 45%;
 
     margin-top: 1%;
     border-radius: 32px;
@@ -262,8 +262,8 @@
     margin: 2px 0 0 4%;
     padding: 15px;
     cursor: pointer;
+    font-size: 0.8em;
 }
 .search_results:hover {
-    font-weight: bold;
     color: #4e4eff;
 }
