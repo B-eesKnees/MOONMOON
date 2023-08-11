@@ -32,7 +32,10 @@
                     <p><span>내일(7/28)</span> 도착예정</p>
                 </div>
                 <div class="new_item_btn">
-                    <img src="../assets/img/heart.png" alt="" />
+                    <img v-if="item.isLiked == true" @click="likeToggle(item.BOOK_ID)" src="../assets/img/heartFill.png"
+                        alt="Heart Filled" />
+                    <img v-else-if="item.isLiked == false" @click="likeToggle(item.BOOK_ID)" src="../assets/img/heart.png"
+                        alt="Heart" />
                     <img @click="addToCart(item.BOOK_ID)" src="../assets/img/cart2.png" alt="" />
                 </div>
             </div>
@@ -63,12 +66,17 @@ export default {
             reviewScore: [], // 리뷰 점수를 얻어온다고 가정
             email: "",
             bookId: "",
+
+            //좋아요 여부
+            isLiked: false,
+            likeBook: [],
         };
     },
 
     setup() { },
     created() {
-        (this.email = localStorage.getItem("userID"));
+        this.email = localStorage.getItem("userID");
+        this.getLikeBook();
         this.getNewList();
     },
     mounted() { },
@@ -83,17 +91,77 @@ export default {
                 },
             })
                 .then((res) => {
-                    for (var i in res.data) {
-                        this.newListData.push(res.data[i]);
-                        //별이 5개이므로 총점10점을 2로 나눔
-                        this.reviewScore.push((res.data[i].reviewpoint) / 2)
+                    if (localStorage.getItem("userID")) {
+                        this.newListData = res.data.map(book => {
+                            return {
+                                ...book,
+                                isLiked: this.likeBook.includes(book.BOOK_ID) // 해당 책의 BOOK_ID가 likeBook 배열에 포함되어 있는지 확인하여 isLiked 값을 설정
+                            };
+                        });
+                        for (var i in res.data) {
+                            //별이 5개이므로 총점10점을 2로 나눔
+                            this.reviewScore.push((res.data[i].reviewpoint) / 2)
+                        }
+                    } else {
+                        this.newListData = res.data.map(book => {
+                            return {
+                                ...book,
+                                isLiked: false // 해당 책의 BOOK_ID가 likeBook 배열에 포함되어 있는지 확인하여 isLiked 값을 설정
+                            };
+                        });
+                        for (var i in res.data) {
+                            this.newListData.push(res.data[i]);
+                            //별이 5개이므로 총점10점을 2로 나눔
+                            this.reviewScore.push((res.data[i].reviewpoint) / 2)
+                        }
                     }
-                    console.log(res)
+                    // for (var i in res.data) {
+                    //     this.newListData.push(res.data[i]);
+                    //     //별이 5개이므로 총점10점을 2로 나눔
+                    //     this.reviewScore.push((res.data[i].reviewpoint) / 2)
+                    // }
+                    // console.log(res)
 
                 })
                 .catch((err) => {
                     alert(err);
                 });
+        },
+        //회원이 좋아요한 책 ID 가져오기
+        async getLikeBook() {
+            await axios({
+                url: "http://localhost:3000/bookList/checkLikeList",
+                method: "POST",
+                data: {
+                    email: this.email
+                }
+            })
+                .then((res) => {
+                    this.likeBook = res.data;
+                })
+        },
+        async likeToggle(bookId) {
+            if (localStorage.getItem("userID")) {
+                this.bookId = bookId;
+                await axios({
+                    url: "http://localhost:3000/detail/likeOrDislike",
+                    method: "POST",
+                    data: {
+                        email: this.email,
+                        bookId: this.bookId
+                    }
+                })
+                    .then((res) => {
+                        console.log(res.data, "좋아요 추가삭제")
+                        this.getLikeBook();
+                        this.getNewList();
+                    })
+
+            } else {
+                const conResult = confirm("로그인이 필요합니다. \n 로그인 하시겠습니까?");
+                conResult ? window.location.href = "/login" : null;
+            }
+
         },
         //입력된 숫자를 주어진 범위에 따라 적절한 별점으로 변환
         convertRatingToHalfStars(number) {
@@ -127,20 +195,24 @@ export default {
         },
         //장바구니에 추가
         async addToCart(bookId) {
-            console.log(this.bookId);
-            this.bookId = bookId;
-            await axios({
-                url: "http://localhost:3000/detail/gotoCart",
-                method: "POST",
-                data: {
-                    email: this.email,
-                    bookId: this.bookId
-                }
-            })
-                .then((res) => {
-                    alert("장바구니에 추가되었습니다.");
-                    this.$refs.childComponent.getCartNum();
+            if (localStorage.getItem("userID")) {
+                this.bookId = bookId;
+                await axios({
+                    url: "http://localhost:3000/detail/gotoCart",
+                    method: "POST",
+                    data: {
+                        email: this.email,
+                        bookId: this.bookId
+                    }
                 })
+                    .then((res) => {
+                        alert("장바구니에 추가되었습니다.");
+                        this.$refs.childComponent.getCartNum();
+                    })
+            } else {
+                const conResult = confirm("로그인이 필요합니다. \n 로그인 하시겠습니까?");
+                conResult ? window.location.href = "/login" : null;
+            }
         },
     },
 };
