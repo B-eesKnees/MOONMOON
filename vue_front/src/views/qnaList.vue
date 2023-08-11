@@ -99,7 +99,7 @@ export default {
       email: "",
       editMode: false,
       currentTagName: "전체(11)",
-      showQnaContent: false,
+      showQnaContent: [],
       conOpenBotton: require("../assets/img/qna-open.png"),
       conCloseBotton: require("../assets/img/qna-close.png"),
       nodata: false,     
@@ -117,7 +117,7 @@ export default {
     },
     methods: {
     toggleContent() {
-      this.showQnaContent = !this.showQnaContent;
+      this.$set(this.showQnaContent, index, !this.showQnaContent[index]);
 
       if (this.conOpenBotton === require("../assets/img/qna-open.png")) {
         this.conOpenBotton = this.conCloseBotton;
