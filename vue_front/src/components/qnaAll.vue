@@ -7,6 +7,16 @@ export default {
     toggleContent: Boolean,
     qnaAllList: Array,
   },
+  data() {
+    return {
+      showQnaContent: [],
+    };
+  },
+  methods: {
+    toggleContent(index) {
+      this.$set(this.showQnaContent, index, !this.showQnaContent[index]);
+    },
+  },
   /* computed: {
     truncatedContents() {
       const maxChars = 30;
@@ -36,10 +46,10 @@ export default {
       <div class="qna_date">{{ all.QNA_DATE }}</div>
       <!-- 버튼 토글-문의 내용/답변 -->
       <div>
-        <button @click="toggleContent" class="con-open">
+        <button @click="toggleContent(i)" class="con-open">
           <img :src="conOpenBotton" alt="con-open/close" />
         </button>
-        <div v-if="showQnaContent">
+        <div v-if="showQnaContent[i]">
           <div class="qna_con">{{ all.QNA_CON }}</div>
           <div class="qna_reply">{{ all.QNA_REPLY }}</div>
         </div>
