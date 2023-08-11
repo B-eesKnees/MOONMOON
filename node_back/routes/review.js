@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 
-
 //구매확정한 사람만 리뷰 작성 가능
 router.post("/postreview", (req, res) => {
   const reviewData = req.body;
@@ -63,7 +62,12 @@ router.post("/postreview", (req, res) => {
 router.get("/reviewdata", (req, res) => {
   const { bookId } = req.query;
   const query =
-    "SELECT r.REVIEW_ID, r.REV_COMMENT, r.REV_CREATED_AT, r.REV_RATING, b.BOOK_ID FROM review r INNER JOIN book b ON r.REV_ORDERITEM_BOOK = b.BOOK_ID WHERE b.BOOK_ID = ? ORDER BY r.REV_CREATED_AT DESC;";
+    "SELECT r.REVIEW_ID, r.REV_COMMENT,r.REV_COMMENT, DATE_FORMAT(r.REV_CREATED_AT, '%Y-%m-%d') AS REV_CREATED_AT, r.REV_RATING, b.BOOK_ID, u.user_email AS review_writer " +
+    "FROM review r " +
+    "INNER JOIN book b ON r.REV_ORDERITEM_BOOK = b.BOOK_ID " +
+    "INNER JOIN user u ON r.REV_WRITER = u.user_email " +
+    "WHERE b.BOOK_ID = ? " +
+    "ORDER BY r.REV_CREATED_AT DESC";
   db.query(query, [bookId], (err, results) => {
     if (err) {
       console.error(err);
@@ -78,7 +82,12 @@ router.get("/reviewdata", (req, res) => {
 router.get("/reviewrating", (req, res) => {
   const { bookId } = req.query;
   const query =
-    "SELECT r.REVIEW_ID, r.REV_COMMENT, r.REV_CREATED_AT, r.REV_RATING, b.BOOK_ID FROM review r INNER JOIN book b ON r.REV_ORDERITEM_BOOK = b.BOOK_ID WHERE b.BOOK_ID = ? ORDER BY r.REV_RATING DESC";
+    "SELECT r.REVIEW_ID, r.REV_COMMENT, r.REV_COMMENT, DATE_FORMAT(r.REV_CREATED_AT, '%Y-%m-%d') AS REV_CREATED_AT, r.REV_RATING, b.BOOK_ID, u.user_email AS review_writer " +
+    "FROM review r " +
+    "INNER JOIN book b ON r.REV_ORDERITEM_BOOK = b.BOOK_ID " +
+    "INNER JOIN user u ON r.REV_USER_EMAIL = u.user_email " +
+    "WHERE b.BOOK_ID = ? " +
+    "ORDER BY r.REV_RATING DESC";
   db.query(query, [bookId], (err, results) => {
     if (err) {
       console.error(err);
@@ -93,7 +102,12 @@ router.get("/reviewrating", (req, res) => {
 router.get("/lowreviewrating", (req, res) => {
   const { bookId } = req.query;
   const query =
-    "SELECT r.REVIEW_ID, r.REV_COMMENT, r.REV_CREATED_AT, r.REV_RATING, b.BOOK_ID FROM review r INNER JOIN book b ON r.REV_ORDERITEM_BOOK = b.BOOK_ID WHERE b.BOOK_ID = ? ORDER BY r.REV_RATING";
+    "SELECT r.REVIEW_ID, r.REV_COMMENT, r.REV_COMMENT, DATE_FORMAT(r.REV_CREATED_AT, '%Y-%m-%d') AS REV_CREATED_AT, r.REV_RATING, b.BOOK_ID, u.user_email AS review_writer " +
+    "FROM review r " +
+    "INNER JOIN book b ON r.REV_ORDERITEM_BOOK = b.BOOK_ID " +
+    "INNER JOIN user u ON r.REV_USER_EMAIL = u.user_email " +
+    "WHERE b.BOOK_ID = ? " +
+    "ORDER BY r.REV_RATING DESC";
   db.query(query, [bookId], (err, results) => {
     if (err) {
       console.error(err);
@@ -109,7 +123,7 @@ router.put("/updatereview/:reviewId", (req, res) => {
   const { reviewId } = req.params;
   const review = req.body.review;
 
-  const query = `UPDATE review SET REV_CREATED_AT=now(), REV_COMMENT=?, REV_RATING=? WHERE REVIEW_ID=?`;
+  const query = `UPDATE review SET r.REV_COMMENT, DATE_FORMAT(r.REV_CREATED_AT, '%Y-%m-%d') AS REV_CREATED_AT, REV_COMMENT=?, REV_RATING=? WHERE REVIEW_ID=?`;
   db.query(
     query,
     [review.REV_COMMENT, review.REV_RATING, reviewId],
