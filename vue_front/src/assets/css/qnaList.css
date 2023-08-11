@@ -8,6 +8,7 @@
 
 }
 
+/* qnaList ----------------------------------------------------- */
 .mypage_menu {
   position: relative;
   display: inline-block;
@@ -26,11 +27,11 @@
   margin-left: 60px;
   width: 55%;
   height: 1010px;
-  /* border: 1px solid #000; */
+  border: 1px solid #000;
   /* background-color: aquamarine; */
 }
 
-.qna_title {  
+.qna_title_big {  
   font-size: 23pt;
   font-weight: 500;
   margin-top: 18px;
@@ -56,7 +57,40 @@
   font-weight: 500;
 }
 
+/* qnaAll ------------------------------------------------ */
+.qna-all {
+  /* border: 1px solid #000; */
+  border-top: 1px solid #000;
+  background-color: aquamarine;
+  margin-top: 115px;
+  width: 100%;
+}
 
+.qna-box {
+  display: flex;
+  width: 100%;
+  border: 1px solid #000;
+}
+
+
+.wait-icon {
+  margin-top: 32px;
+  margin-left: 20px;
+  width: 88px;
+
+}
+
+.done-icon {
+  margin-top: 32px;
+  margin-left: 20px;
+  width: 88px;
+}
+
+.con-close {
+  display: none;
+}
+
+/* tab --------------------------------------------------- */
 .tabs {
   max-width: 60vw;
   margin: 0 auto;
@@ -101,9 +135,9 @@
   background-color: #FAFAFA;
   min-height: 300px;
   display: grid;
-  place-items: center;
+  /* place-items: center; */
   border-radius: 0 0 5px 5px;
   border-top: #000 1px solid;
-  padding: 10px;
+  padding: 0px;
 }
 

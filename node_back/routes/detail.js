@@ -8,9 +8,10 @@ router.get("/", async (req, res) => {
     const bookId = req.query.bookNum;
     const id = parseInt(bookId);
 
-    db.query(`select BOOK_TITLE, BOOK_AUTHOR, BOOK_DESCRIPTION, BOOK_PRICE, BOOK_POINT, date_format(BOOK_PUBDATE, '%Y.%m.%d') as BOOK_PUBDATE from book where BOOK_ID = ?`, id, (err, result) => {
+    db.query(`select BOOK_COVER, BOOK_TITLE, BOOK_AUTHOR, BOOK_DESCRIPTION, BOOK_PRICE, BOOK_POINT, date_format(BOOK_PUBDATE, '%Y.%m.%d') as BOOK_PUBDATE from book where BOOK_ID = ?`, id, (err, result) => {
         if (err) {
             res.send(err).status(200);
+            console.log(bookId);
         } else {
             res.status(200).send(result);
         }
