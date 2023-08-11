@@ -5,7 +5,7 @@
 
     <div class="mypage_menu"></div>
     <div class="right_box">
-      <h1 class="qna_title">1:1 문의</h1>
+      <h1 class="qna_title_big">1:1 문의</h1>
       <!-- 탭시작 -->
       <section class="tabWrap">
         <TabsWrapper>
@@ -23,8 +23,10 @@
               <qnaAll
                 v-if="!nodata && qnaAllList.length > 0"
                 :qnaAllList="qnaAllList"
-                :showQnaContent="showQnaContent"                  
-                :toggleContent="toggleContent"              
+                :showQnaAllContent="showQnaAllContent"                  
+                :toggleContent1="toggleContent1"      
+                :conOpenBotton="conOpenBotton"
+                :conCloseBotton="conCloseBotton"        
                 :editMode="editMode"
               ></qnaAll>
             </div>
@@ -43,8 +45,8 @@
               <qnaWait
                 v-if="!nodata && qnaWaitList.length > 0"
                 :qnaWaitList="qnaWaitList"
-                :showQnaContent="showQnaContent"
-                :toggleContent="toggleContent"
+                :showQnaWaitContent="showQnaWaitContent"
+                :toggleContent2="toggleContent2"
                 :editMode="editMode"
               ></qnaWait>
             </div>
@@ -63,8 +65,8 @@
               <qnaDone
                 v-if="!nodata && qnaDoneList.length > 0"
                 :qnaDoneList="qnaDoneList"
-                :showQnaContent="showQnaContent"
-                :toggleContent="toggleContent"
+                :showQnaDoneContent="showQnaDoneContent"
+                :toggleContent3="toggleContent3"
                 :editMode="editMode"
               ></qnaDone>
             </div>
@@ -99,7 +101,9 @@ export default {
       email: "",
       editMode: false,
       currentTagName: "전체(11)",
-      showQnaContent: [],
+      showQnaAllContent: [],
+      showQnaWaitContent: [],
+      showQnaDoneContent: [],
       conOpenBotton: require("../assets/img/qna-open.png"),
       conCloseBotton: require("../assets/img/qna-close.png"),
       nodata: false,     
@@ -115,16 +119,7 @@ export default {
       this.getQnaWaitList();
       this.getQnaDoneList();
     },
-    methods: {
-    toggleContent() {
-      this.$set(this.showQnaContent, index, !this.showQnaContent[index]);
-
-      if (this.conOpenBotton === require("../assets/img/qna-open.png")) {
-        this.conOpenBotton = this.conCloseBotton;
-      } else {
-        this.conOpenBotton = require("../assets/img/qna-open.png");
-      }
-    },  
+    methods: {    
     async getQnaAllList() {
       try {
         const url = "/qna/qnaAll";
