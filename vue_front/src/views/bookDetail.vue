@@ -1,5 +1,5 @@
 <template>
-    <GnbBar />
+    <GnbBar ref="gnbBarComponent" />
     <div class="title_wri_sum">
         <div class="detail_title">
             {{ bookDetailData.BOOK_TITLE }}
@@ -11,7 +11,7 @@
     </div>
     <div class="img_price_btn">
         <div class="detail_img">
-            <img src="@/assets/img/detail_img_sample.png" alt="detail_img_sample" />
+            <img :src="bookDetailData.BOOK_COVER" alt="detail_img_sample" />
         </div>
         <div class="img_right">
             <div class="det_top_star">
@@ -44,22 +44,22 @@
             <div class="count_price">
                 <div class="count_btn_ib">
                     <div class="count_btn">
-                        <button class="count_minus">
+                        <button class="count_minus" @click="decreaseCount">
                             <img src="@/assets/img/count_minus.png" alt="count_minus" />
                         </button>
-                        <div class="count_num">1</div>
-                        <button class="count_plus">
+                        <div class="count_num">{{ countNum }}</div>
+                        <button class="count_plus" @click="increaseCount">
                             <img src="@/assets/img/count_plus.png" alt="count_plus" />
                         </button>
                     </div>
                 </div>
-                <div class="payment_price">23,000</div>
+                <div class="payment_price">{{ paymentPrice }}</div>
                 <div class="won_4">원</div>
             </div>
             <div id="likeButton" class="pay_cart_like">
                 <button class="pay_btn">결제하러 가기</button>
                 <button class="go_to_cart">
-                    <img src="@/assets/img/detail_cart.png" alt="detail_cart" />
+                    <img @click="addToCart(bookDetailData.BOOK_ID)" src="@/assets/img/detail_cart.png" alt="detail_cart" />
                 </button>
                 <button class="detail_like_btn" @click="isLiked = !isLiked">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" viewBox="0 0 22 20">
@@ -110,16 +110,6 @@
                 </button>
             </div>
         </div>
-        <div class="review_con">
-            <div v-for="review in reviewData" :key="review.REVIEW_ID" class="single_review">
-                <div class="single_review_id">{{ review.review_writer }}</div>
-                <div class="single_review_rating_star"><star :rating="review.REV_RATING" /></div>
-                <div class="single_review_rating_num">{{ review.REV_RATING }}</div>
-                <div class="review_comment">{{ review.REV_CREATED_AT }}</div>
-                <div class="review_comment">{{ review.REV_COMMENT }}</div>
-                <!-- 여기에 리뷰의 다른 정보도 표시하거나 스타 등급 표시 등을 추가할 수 있습니다. -->
-            </div>
-        </div>
 
         <!-- 댓글 작성-------------------------------------------------------------------------------------------------------
     --------------------------------------------------------------------------------------------------------------------- -->
@@ -129,7 +119,7 @@
             <div class="total_star_rec">
                 <star :rating="rating" />
                 <div class="total_rec_num">
-                    9.3
+                    <!-- {{ averageRating(review.average_rating) }} -->
                     <span class="total_rec_num_10">/10</span>
                 </div>
             </div>
@@ -142,6 +132,21 @@
                 <option :value="'평점 높은 순'">평점 높은 순</option>
                 <option :value="'평점 낮은 순'">평점 낮은 순</option>
             </select>
+        </div>
+        <div class="review_con">
+            <div v-for="review in reviewData" :key="review.REVIEW_ID" class="single_review">
+                <div class="single_rev_top">
+                    <div class="review_created_at_flex">
+                        <div class="single_review_writer">{{ review.review_writer }}</div>
+                        <div class="single_review_rating_star"><star :rating="convertRatingToHalfStars(review.REV_RATING)" /></div>
+                        <div class="single_review_rating_num">{{ review.REV_RATING }}</div>
+                    </div>
+                    <div class="review_created_at">{{ review.REV_CREATED_AT }}</div>
+                </div>
+                <div class="review_comment">{{ review.REV_COMMENT }}</div>
+
+                <!-- 여기에 리뷰의 다른 정보도 표시하거나 스타 등급 표시 등을 추가할 수 있습니다. -->
+            </div>
         </div>
     </div>
     <div class="exc_return_set">
@@ -175,7 +180,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios, { Axios } from "axios";
 import "../assets/css/bookDetail.css";
 import GnbBar from "../components/gnbBar.vue";
 import star from "@/components/review_star.vue";
@@ -189,16 +194,22 @@ export default {
         return {
             bookDetailData: [], // 책 상세 정보를 저장할 데이터
             reviewData: [],
+            reviewAverageData: [],
             isLiked: false,
             sortvalue: "최신순",
             showBtn: true,
+            countNum: 1,
         };
     },
     mounted() {
         this.bookDetail();
         this.DetailReview();
     },
-
+    computed: {
+        paymentPrice() {
+            return this.bookDetailData.BOOK_PRICE * this.countNum;
+        },
+    },
     methods: {
         toggleBtn() {
             this.showBtn = !this.showBtn; // showBtn 데이터 값을 토글
@@ -221,7 +232,7 @@ export default {
                     console.error("Error fetching book detail:", error);
                 });
         },
-        // 최신순 리스트 불러오기-------------------------------------------------------------------------------------------------------
+        // 리뷰 데이터 리스트 불러오기-------------------------------------------------------------------------------------------------------
         // ---------------------------------------------------------------------------------------------------------------------
         DetailReview() {
             axios({
@@ -238,6 +249,72 @@ export default {
                 .catch((error) => {
                     console.error("Error fetching review data:", error);
                 });
+        },
+        averageRating() {
+            axios({
+                url: "http://localhost:3000/review/averagerating/:bookId",
+                method: "get",
+                params: {
+                    bookId: 2,
+                },
+            })
+                .then((response) => {
+                    this.reviewAverageData = response.data.averageRating;
+                })
+                .catch((error) => {
+                    console.error("Error fetching review data:", error);
+                });
+        },
+        averageRating(averageRating) {
+            return averageRating.toFixed(1);
+        },
+        convertRatingToHalfStars(number) {
+            if (Number.isInteger(number)) {
+                if (number >= 1 && number <= 10) {
+                    return number;
+                } else {
+                    return 0; // 범위를 벗어나는 경우
+                }
+            } else {
+                const integerPart = Math.floor(number);
+                const decimalPart = number - integerPart;
+
+                if (decimalPart === 0) {
+                    return integerPart;
+                } else if (decimalPart < 0.25) {
+                    return integerPart + 0.25;
+                } else if (decimalPart >= 0.25 && decimalPart < 0.75) {
+                    return integerPart + 0.5;
+                } else {
+                    return integerPart + 0.75;
+                }
+            }
+        },
+        formatReviewScore(number) {
+            if (Number.isInteger(number)) {
+                return number.toFixed(1); // 정수인 경우 소수점 자리를 1로 설정하여 변환
+            } else {
+                return number.toString(); // 소수인 경우 그대로 문자열로 변환
+            }
+        },
+        decreaseCount() {
+            if (this.countNum > 1) {
+                this.countNum--; // 현재 카운트 값이 1보다 큰 경우에만 1 감소
+            }
+        },
+        increaseCount() {
+            this.countNum++; // countNum 값을 1 증가
+        },
+        updateCartNum() {
+            // 자식 컴포넌트의 메소드를 호출하여 장바구니 수량을 업데이트합니다.
+            this.$refs.gnbBarComponent.getCartNum();
+        },
+        formatReviewScore(number) {
+            if (Number.isInteger(number)) {
+                return number.toFixed(1); // 정수인 경우 소수점 자리를 1로 설정하여 변환
+            } else {
+                return number.toString(); // 소수인 경우 그대로 문자열로 변환
+            }
         },
     },
 };
