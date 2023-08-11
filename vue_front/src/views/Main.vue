@@ -33,10 +33,22 @@
     </div>
     <div class="main_container">
       <h2 class="recommend_title">
-        <span class="recommend_username">{{ name }}</span> 님에게 추천하는 책이예요
+        <p v-if="logined == true"><span class="recommend_username">{{ name }}</span> 님에게 추천하는 책이예요</p>
+        <p v-else-if="logined == false"><span class="recommend_username">사용자</span> 님에게 추천하는 책이예요</p>
       </h2>
       <div ref="mainBlur" class="main_item_wrap blur">
-        <div class="recommend_item" v-for="(item, i) in recBook" :key="i">
+        <!-- 로그인시 추천출력 -->
+        <div v-if="logined == true" class="recommend_item" v-for="(item, i) in recBook" :key="i">
+          <img class="main_item_img" :src="item.BOOK_COVER" alt="" />
+          <div class="main_item_info">
+            <h5 class="main_item_title">{{ item.BOOK_TITLE }}</h5>
+            <span class="main_item_writer">{{ item.BOOK_AUTHOR }}</span>
+            •
+            <span class="main_item_publisher">{{ item.BOOK_PUBLISHER }}</span>
+          </div>
+        </div>
+        <!-- 비로그인시 베스트출력 -->
+        <div v-else-if="logined == false" class="recommend_item" v-for="(item, i) in bestBook">
           <img class="main_item_img" :src="item.BOOK_COVER" alt="" />
           <div class="main_item_info">
             <h5 class="main_item_title">{{ item.BOOK_TITLE }}</h5>

@@ -63,7 +63,7 @@ const routes = [
     path: "/",
     name: "Main",
     component: Main,
-    beforeEnter: requireSurvey(),
+    beforeEnter: requireSurvey()
   },
   {
     path: "/login",
@@ -84,6 +84,7 @@ const routes = [
     path: "/survey",
     name: "Survey",
     component: Survey,
+    beforeEnter: requireLogin()
   },
   {
     path: "/test",

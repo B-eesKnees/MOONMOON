@@ -41,13 +41,16 @@
                     <p><span>내일(7/28)</span> 도착예정</p>
                 </div>
                 <div class="search_item_btn">
-                    <img src="../assets/img/heart.png" alt="" />
+                    <img v-if="item.isLiked == true" @click="likeToggle(item.BOOK_ID)" src="../assets/img/heartFill.png"
+                        alt="Heart Filled" />
+                    <img v-else-if="item.isLiked == false" @click="likeToggle(item.BOOK_ID)" src="../assets/img/heart.png"
+                        alt="Heart" />
                     <img @click="addToCart(item.BOOK_ID)" src="../assets/img/cart2.png" alt="" />
                 </div>
             </div>
         </div>
-            <!-- 플로팅-->
-    <Floating />
+        <!-- 플로팅-->
+        <Floating />
     </div>
 </template>
 
@@ -74,12 +77,17 @@ export default {
             bookId: "",
             searchKeyword: "",
             filterValue: "판매순",
+
+            //좋아요 여부
+            isLiked: false,
+            likeBook: [],
         };
     },
 
     setup() { },
     created() {
         this.email = localStorage.getItem("userID");
+        this.getLikeBook();
         this.getSearchList();
     },
     mounted() { },
@@ -97,34 +105,62 @@ export default {
 
             if (this.filterValue === "판매순") {
                 try {
-                    const response = await axios.get("http://localhost:3000/main/best", {
+                    const res = await axios.get("http://localhost:3000/main/best", {
                         params: {
                             searchKeyword: userKeyword
                         }
                     });
+                    if (localStorage.getItem("userID")) {
+                        this.searchListData = res.data;
+                        this.searchListData = res.data.map(book => {
+                            return {
+                                ...book,
+                                isLiked: this.likeBook.includes(book.BOOK_ID) // 해당 책의 BOOK_ID가 likeBook 배열에 포함되어 있는지 확인하여 isLiked 값을 설정
+                            };
+                        });
+                        for (var i in res.data) {
+                            //별이 5개이므로 총점10점을 2로 나눔
+                            this.reviewScore.push((res.data[i].reviewpoint) / 2)
+                        }
+                    } else {
+                        this.searchListData = res.data.map(book => {
+                            return {
+                                ...book,
+                                isLiked: false // 해당 책의 BOOK_ID가 likeBook 배열에 포함되어 있는지 확인하여 isLiked 값을 설정
+                            };
+                        });
 
-                    console.log(response.data);
-
-                    this.searchListData = response.data;
-                    for (var i in response.data) {
-                        this.reviewScore.push((response.data[i].reviewpoint) / 2);
                     }
                 } catch (error) {
                     console.error("Error fetching search results:", error);
                 }
             } else if (this.filterValue === "신상품순") {
                 try {
-                    const response = await axios.get("http://localhost:3000/main/new", {
+                    const res = await axios.get("http://localhost:3000/main/new", {
                         params: {
                             searchKeyword: userKeyword
                         }
                     });
+                    if (localStorage.getItem("userID")) {
+                        this.searchListData = res.data;
+                        this.searchListData = res.data.map(book => {
+                            return {
+                                ...book,
+                                isLiked: this.likeBook.includes(book.BOOK_ID) // 해당 책의 BOOK_ID가 likeBook 배열에 포함되어 있는지 확인하여 isLiked 값을 설정
+                            };
+                        });
+                        for (var i in res.data) {
+                            //별이 5개이므로 총점10점을 2로 나눔
+                            this.reviewScore.push((res.data[i].reviewpoint) / 2)
+                        }
+                    } else {
+                        this.searchListData = res.data.map(book => {
+                            return {
+                                ...book,
+                                isLiked: false // 해당 책의 BOOK_ID가 likeBook 배열에 포함되어 있는지 확인하여 isLiked 값을 설정
+                            };
+                        });
 
-                    console.log(response.data);
-
-                    this.searchListData = response.data;
-                    for (var i in response.data) {
-                        this.reviewScore.push((response.data[i].reviewpoint) / 2);
                     }
                 } catch (error) {
                     console.error("Error fetching search results:", error);
@@ -132,6 +168,42 @@ export default {
             }
 
 
+
+        },
+        //회원이 좋아요한 책 ID 가져오기
+        async getLikeBook() {
+            await axios({
+                url: "http://localhost:3000/bookList/checkLikeList",
+                method: "POST",
+                data: {
+                    email: this.email
+                }
+            })
+                .then((res) => {
+                    this.likeBook = res.data;
+                })
+        },
+        async likeToggle(bookId) {
+            if (localStorage.getItem("userID")) {
+                this.bookId = bookId;
+                await axios({
+                    url: "http://localhost:3000/detail/likeOrDislike",
+                    method: "POST",
+                    data: {
+                        email: this.email,
+                        bookId: this.bookId
+                    }
+                })
+                    .then((res) => {
+                        console.log(res.data, "좋아요 추가삭제")
+                        this.getLikeBook();
+                        this.getSearchList();
+                    })
+
+            } else {
+                const conResult = confirm("로그인이 필요합니다. \n 로그인 하시겠습니까?");
+                conResult ? window.location.href = "/login" : null;
+            }
 
         },
         //입력된 숫자를 주어진 범위에 따라 적절한 별점으로 변환
@@ -166,19 +238,24 @@ export default {
         },
         //장바구니에 추가
         async addToCart(bookId) {
-            this.bookId = bookId;
-            await axios({
-                url: "http://localhost:3000/detail/gotoCart",
-                method: "POST",
-                data: {
-                    email: this.email,
-                    bookId: this.bookId
-                }
-            })
-                .then((res) => {
-                    alert("장바구니에 추가되었습니다.");
-                    this.$refs.childComponent.getCartNum();
+            if (localStorage.getItem("userID")) {
+                this.bookId = bookId;
+                await axios({
+                    url: "http://localhost:3000/detail/gotoCart",
+                    method: "POST",
+                    data: {
+                        email: this.email,
+                        bookId: this.bookId
+                    }
                 })
+                    .then((res) => {
+                        alert("장바구니에 추가되었습니다.");
+                        this.$refs.childComponent.getCartNum();
+                    })
+            } else {
+                const conResult = confirm("로그인이 필요합니다. \n 로그인 하시겠습니까?");
+                conResult ? window.location.href = "/login" : null;
+            }
         },
     },
 };
