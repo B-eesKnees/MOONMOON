@@ -4,7 +4,9 @@ import axios from 'axios';
 export default {
   props: {
     qnaWaitList: Object,    
-    toggleContent2: Boolean,
+    toggleContent2: Function,    
+    conOpenBotton: String,
+    conCloseBotton: String,
     showQnaWaitContent: {
       type: Array,
       default: () => []
@@ -32,25 +34,21 @@ export default {
 <template>
 
   <div class="qna-list">
-    <div :key="i" v-for="(wait, i) in qnaWaitList">
+    <div class="qna-box" :key="i" v-for="(wait, i) in qnaWaitList">
       <!-- 대기중 아이콘 -->
       <div>
-        <img src="../assets/img/waiting.png" alt="waiting-img">
+        <img class="wait-icon" src="../assets/img/waiting.png" alt="waiting-img">
       </div>
-      <!-- 문의 제목/날짜 -->
-      <div>
-        <div class="qna_tilte">{{ wait.QNA_TITLE }}</div>
-        <div class="qna_date">{{ wait.QNA_DATE }}</div>
-      <!-- 버튼 토글-문의 내용/답변 -->
-        <div>
-          <button @click="toggleContent2(i)" class="con-open">
+      <!-- 문의 제목/날짜 -->      
+        <div class="qna-tilte">{{ wait.QNA_TITLE }}</div>
+        <div class="qna-date">{{ wait.QNA_DATE }}</div>
+      <!-- 버튼 토글-문의 내용/답변 -->        
+          <button @click="toggleContent2(i)" class="con-open_close">
             <img :src="conOpenBotton" alt="con-open/close" />
           </button>
-          <div v-if="showQnaWaitContent[i]">
-            <div class="qna_con">{{ wait.QNA_CON }}</div>
-          </div>
-        </div>
-      </div>
+          <div class="younju" v-if="showQnaWaitContent[i]">
+            <div class="qna-con">{{ wait.QNA_CON }}</div>
+          </div>       
     </div>
   </div>
   
