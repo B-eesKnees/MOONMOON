@@ -71,7 +71,21 @@ router.post("/addroul", (req, res) => {
                   console.error(updateErr);
                   res.status(500).json({ error: "서버에러" });
                 } else {
-                  res.status(200).json({ message: selectedValue });
+                  // 사용자 포인트 업데이트
+                  const updatePointQuery =
+                    "UPDATE user SET user_point = user_point + ? WHERE user_email = ?";
+                  db.query(
+                    updatePointQuery,
+                    [selectedValue, userEmail],
+                    (updatePointErr) => {
+                      if (updatePointErr) {
+                        console.error(updatePointErr);
+                        res.status(500).json({ error: "서버에러" });
+                      } else {
+                        res.status(200).json({ message: selectedValue });
+                      }
+                    }
+                  );
                 }
               }
             );
