@@ -69,6 +69,7 @@
 .qna-box {
   display: flex;
   width: 100%;
+  height: 300px;
   border: 1px solid #000;
 }
 
@@ -88,6 +89,51 @@
 
 .con-close {
   display: none;
+}
+
+.younju {
+  position: absolute;
+  left: 120px;
+  margin-top: 130px;
+  width: 80%;
+  border: #000 solid 1px;
+  padding: 30px;
+  border-radius: 5px;
+}
+
+.con-open_close {
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: none;
+}
+
+.con-open_close > img {
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+
+/* qna-wait ------------------------------------------------------------ */
+
+.qna-wait {
+  /* border: 1px solid #000; */
+  border-top: 1px solid #000;
+  background-color: aquamarine;
+  margin-top: 115px;
+  width: 100%;
+}
+
+
+/* qna-done ------------------------------------------------------------------- */
+
+.qna-done {
+  /* border: 1px solid #000; */
+  border-top: 1px solid #000;
+  background-color: aquamarine;
+  margin-top: 115px;
+  width: 100%;
 }
 
 /* tab --------------------------------------------------- */

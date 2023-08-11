@@ -46,7 +46,9 @@
                 v-if="!nodata && qnaWaitList.length > 0"
                 :qnaWaitList="qnaWaitList"
                 :showQnaWaitContent="showQnaWaitContent"
-                :toggleContent2="toggleContent2"
+                :toggleContent2="toggleContent2"                      
+                :conOpenBotton="conOpenBotton"
+                :conCloseBotton="conCloseBotton"  
                 :editMode="editMode"
               ></qnaWait>
             </div>
@@ -66,7 +68,9 @@
                 v-if="!nodata && qnaDoneList.length > 0"
                 :qnaDoneList="qnaDoneList"
                 :showQnaDoneContent="showQnaDoneContent"
-                :toggleContent3="toggleContent3"
+                :toggleContent3="toggleContent3"                      
+                :conOpenBotton="conOpenBotton"
+                :conCloseBotton="conCloseBotton"  
                 :editMode="editMode"
               ></qnaDone>
             </div>
