@@ -7,14 +7,12 @@
         <div v-if="currentPage == 1" class="survey_container">
             <div class="survey_container_header">
                 <div class="survey_state_dots">
-                    <span v-for="i in 2" :key="i"
-                        :class="['survey_state_dot', { 'survey_selected': i === currentPage }]"></span>
+                    <span v-for="i in 2" :key="i" :class="['survey_state_dot', { survey_selected: i === currentPage }]"></span>
                 </div>
                 <h2 class="state_title">추천 받고싶은 대분류를 선택하세요 (최대 5개)</h2>
             </div>
             <div class="survey_container_main">
-                <button @click="selectKeyword" class="survey_select_btn" v-for="(item, i) in category" :key="item.id">{{
-                    item.top }}</button>
+                <button @click="selectKeyword" class="survey_select_btn" v-for="(item, i) in category" :key="item.id">{{ item.top }}</button>
             </div>
             <div class="survey_container_footer">
                 <button @click="nextPage" class="survey_next_btn">다음</button>
@@ -24,8 +22,7 @@
         <div v-if="currentPage == 2" class="survey_container">
             <div class="survey_container_header">
                 <div class="survey_state_dots">
-                    <span v-for="i in 2" :key="i"
-                        :class="['survey_state_dot', { 'survey_selected': i === currentPage }]"></span>
+                    <span v-for="i in 2" :key="i" :class="['survey_state_dot', { survey_selected: i === currentPage }]"></span>
                 </div>
                 <h2 class="state_title">추천 받고싶은 키워드를 선택하세요 (최대 5개)</h2>
                 <div class="state_myselect_keyword">
@@ -33,9 +30,7 @@
                 </div>
             </div>
             <div class="survey_container_main">
-                <button @click="selectSubKeyword" class="survey_select_btn" v-for="(item, i) in selectedMiddleKeywords"
-                    :key="i">{{
-                        item }}</button>
+                <button @click="selectSubKeyword" class="survey_select_btn" v-for="(item, i) in selectedMiddleKeywords" :key="i">{{ item }}</button>
             </div>
             <div class="survey_container_footer">
                 <button @click="prevPage" class="survey_next_btn">이전</button>
@@ -48,13 +43,13 @@
 <script>
 import GnbBar from "../components/gnbBar.vue";
 
-import axios from 'axios'
-axios.defaults.baseURL = 'http://localhost:3000';
-axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
-axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+import axios from "axios";
+axios.defaults.baseURL = "http://localhost:3000";
+axios.defaults.headers.post["Content-Type"] = "application/json;charset=utf-8";
+axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 
 export default {
-    name: '',
+    name: "",
     components: { GnbBar },
     data() {
         return {
@@ -70,7 +65,7 @@ export default {
                 { id: 1, top: "경제경영", middle: ["경제학/경제일반", "기업 경영", "재테크/투자"], expanded: false },
                 { id: 2, top: "과학", middle: ["기초과학/교양과학", "의학", "화학", "공학"], expanded: false },
                 { id: 3, top: "사회과학", middle: ["비평/칼럼", "기업 사회문제", " 정치학/외교학/행정학"], expanded: false },
-                { id: 4, top: "소설/시/희곡", middle: ["한국소설", "일본소설", "영미소설", "추리/미스터리소설", "과학소설(SF)", "호러/공포소설", " 액션/스릴러소설", "로맨스소설", "시", "희곡", "영미소설", "영미소설"], expanded: false },
+                { id: 4, top: "소설/시/희곡", middle: ["한국소설", "일본소설", "영미소설", "추리/미스터리소설", "과학소설(SF)", "호러/공포소설", " 액션/스릴러소설", "로맨스소설", "시", "희곡"], expanded: false },
                 { id: 5, top: "수험서/자격증", middle: ["국가기술자격", "국가전문자격", " 공무원 수험서", "한국사능력검정시험", "공인중개사/주택관리사", "운전면허", "컴퓨터 활용능력", "편입/검정고시/독학사"], expanded: false },
                 { id: 6, top: "에세이", middle: ["한국에세이", "외국에세이", "여행에세이", "사랑/연애 에세이", "자연에세이"], expanded: false },
                 { id: 7, top: "여행", middle: ["서울/수도권 여행가이드", "국내 여행가이드", "캠핑여행", "유럽여행", "일본여행", "중국여행", "동남아시아여행", "세계일주여행"], expanded: false },
@@ -82,18 +77,19 @@ export default {
                 { id: 13, top: "자기계발", middle: ["성공", "리더십", "인간관계", "창의적사고/두뇌계발", "취업/진로/유망직업", "20대의자기계발"], expanded: false },
                 { id: 14, top: "장르소설", middle: ["추리/미스터리소설", " 판타지/환상문학", "호러/공포", "액션/스릴러", "로맨스"], expanded: false },
                 { id: 15, top: "컴퓨터/모바일", middle: ["웹디자인/홈페이지", "인공지능", "프로그래밍 개발/방법론", "프로그래밍 언어", "PC/게임/디지털 카메라"], expanded: false },
-            ]
+            ],
         };
     },
 
-    setup() { },
-    created() { },
-    mounted() { 
-        (this.email = localStorage.getItem("userID"))
-     },
-    unmounted() { },
+    setup() {},
+    created() {},
+    mounted() {
+        this.email = localStorage.getItem("userID");
+    },
+    unmounted() {},
     methods: {
-        selectKeyword(event) { // 대분류 버튼의 선택 상태를 관리
+        selectKeyword(event) {
+            // 대분류 버튼의 선택 상태를 관리
             const buttonElement = event.target;
             const buttonText = buttonElement.innerText; //클릭한 버튼의 텍스트를 가져와서 buttonText 변수에 저장
 
@@ -112,7 +108,8 @@ export default {
                 this.selectedCount++;
             }
         },
-        selectSubKeyword(event) { // 소분류 버튼의 선택 상태를 관리
+        selectSubKeyword(event) {
+            // 소분류 버튼의 선택 상태를 관리
             const buttonElement = event.target;
             const buttonText = buttonElement.innerText; //클릭한 버튼의 텍스트를 가져와서 buttonText 변수에 저장
 
@@ -129,10 +126,11 @@ export default {
                 this.selectedKeyword.push(buttonText);
             }
         },
-        getSelectedMiddleKeywords() { // 선택한 대분류에 해당하는 소분류 키워드를 selectedMiddleKeywords 배열에 업데이트
+        getSelectedMiddleKeywords() {
+            // 선택한 대분류에 해당하는 소분류 키워드를 selectedMiddleKeywords 배열에 업데이트
             //flatMap()은 배열의 각 요소에 대해 주어진 함수를 실행하고, 그 함수의 결과를 모두 하나의 배열로 합침
-            this.selectedMiddleKeywords = this.selectedMainKeywords.flatMap(mainKeyword => {
-                const selectedCategory = this.category.find(item => item.top === mainKeyword);
+            this.selectedMiddleKeywords = this.selectedMainKeywords.flatMap((mainKeyword) => {
+                const selectedCategory = this.category.find((item) => item.top === mainKeyword);
                 if (selectedCategory) {
                     return selectedCategory.middle;
                 }
@@ -152,26 +150,28 @@ export default {
             this.selectedCount = 0;
         },
         async sendSelectedKeyword() {
-                await axios({
-                    url: "http://localhost:3000/sur",
-                    method: "POST",
-                    data: {
-                        email: this.email,
-                        sur1: this.selectedKeyword[0],
-                        sur2: this.selectedKeyword[1],
-                        sur3: this.selectedKeyword[2],
-                        sur4: this.selectedKeyword[3],
-                        sur5: this.selectedKeyword[4],
-                    },
-                }).then(async (res) => {
-                    if(res.data == "저장 성공") {
+            await axios({
+                url: "http://localhost:3000/sur",
+                method: "POST",
+                data: {
+                    email: this.email,
+                    sur1: this.selectedKeyword[0],
+                    sur2: this.selectedKeyword[1],
+                    sur3: this.selectedKeyword[2],
+                    sur4: this.selectedKeyword[3],
+                    sur5: this.selectedKeyword[4],
+                },
+            })
+                .then(async (res) => {
+                    if (res.data == "저장 성공") {
                         alert("키워드가 저장되었습니다.");
                     }
-                    location.replace('/');
-                }).catch(error => {
-                    alert(error);
+                    location.replace("/");
                 })
-        }
-    }
-}
+                .catch((error) => {
+                    alert(error);
+                });
+        },
+    },
+};
 </script>
