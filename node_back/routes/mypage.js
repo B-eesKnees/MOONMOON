@@ -421,4 +421,94 @@ router.get("/orderpaydate", (req, res) => {
   });
 });
 
+//bookTitle, bookCover, orderPay,orderCnt
+
+router.get("/paybookinfo/:orderId", (req, res) => {
+  const orderId = req.params.orderId;
+
+  const query =
+    "SELECT b.BOOK_TITLE, o.ORDER_PAY, b.BOOK_COVER, o.ORDER_CNT " +
+    "FROM orderitem oi " +
+    "INNER JOIN `order` o ON oi.ORDERITEM_ORDERID = o.ORDER_ID " +
+    "INNER JOIN book b ON oi.ORDERITEM_BOOKID = b.BOOK_ID " +
+    "WHERE o.ORDER_ID = ? " +
+    "LIMIT 1";
+
+  db.query(query, [orderId], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: "서버 에러" });
+    } else {
+      const orderInfo = results[0];
+      res.json({
+        bookTitle: orderInfo.BOOK_TITLE,
+        bookCover: orderInfo.BOOK_COVER,
+        orderPay: orderInfo.ORDER_PAY,
+        orderCnt: orderInfo.ORDER_CNT,
+      });
+    }
+  });
+});
+
+//구매확정처리
+router.put("/updatebuycheck/:orderItemId", (req, res) => {
+  const orderItemId = req.params.orderItemId;
+
+  const selectQuery =
+    "SELECT o.ORDER_STATE, oi.ORDERITEM_BUYCHECK FROM `order` o JOIN orderitem oi ON o.ORDER_ID =oi.ORDERITEM_ORDERID WHERE oi.ORDERITEM_ID = ? ";
+  db.query(selectQuery, [orderItemId], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: "서버에러" });
+      return;
+    }
+    if (results.length === 0) {
+      res.status(400).json({ error: "주문 상품을 찾을 수 없습니다." });
+      return;
+    }
+    const orderState = results[0].ORDER_STATE;
+    const buyCheck = results[0].ORDERITEM_BUYCHECK;
+
+    if (orderState !== "배송완료") {
+      res
+        .status(400)
+        .json({ error: "배송완료 상태가 아닙니다. 구매확정 할 수 없습니다." });
+      return;
+    }
+
+    if (buyCheck === 1) {
+      res.status(400).json({ error: "이미 구매확정 처리된 상품입니다." });
+      return;
+    }
+
+    const updateQuery =
+      "UPDATE orderitem SET ORDERITEM_BUYCHECK =1 WHERE ORDERITEM_ID =?";
+    db.query(updateQuery, [orderItemId], (updateErr, results) => {
+      if (updateErr) {
+        console.error(updateErr);
+        res.status(500).json({ error: "서버에러" });
+      } else {
+        res.json({ message: "구매확정 처리 되었습니다." });
+      }
+    });
+  });
+});
+
+//신간 책 가져오기
+router.post(`/getNew`, async (req, res) => {
+  db.query(
+    `select b.BOOK_COVER, b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, date_format(b.BOOK_PUBDATE, '%Y.%m.%d') as BOOK_PUBDATE, b.BOOK_PRICE, b.BOOK_DESCRIPTION, COALESCE(ROUND(AVG(r.REV_RATING), 1), 0) AS reviewpoint
+      from book b left join review r on b.BOOK_ID = r.REV_ORDERITEM_BOOK
+      group by b.BOOK_ID
+      order by b.BOOK_PUBDATE LIMIT 8;`,
+    (err, result) => {
+      if (err) {
+        res.status(200).send(err);
+      } else {
+        res.status(200).send(result);
+      }
+    }
+  );
+});
+
 module.exports = router;

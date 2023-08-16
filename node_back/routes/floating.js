@@ -24,7 +24,7 @@ router.get("/recentbook", (req, res) => {
   if (userEmail) {
     // 회원인 경우에는 회원의 최근 본 책 목록 조회
     query =
-      "SELECT rb.REC_VIEWED_AT, b.BOOK_TITLE, b.BOOK_COVER, b.BOOK_AUTHOR, b.BOOK_PRICE " +
+      "SELECT rb.REC_VIEWED_AT, b.BOOK_TITLE, b.BOOK_COVER, b.BOOK_AUTHOR, b.BOOK_PRICE, b.BOOK_ID " +
       "FROM recentbook rb " +
       "INNER JOIN book b ON rb.REC_BOOK_ID = b.BOOK_ID " +
       "WHERE rb.REC_USER_EMAIL=? ORDER BY rb.REC_VIEWED_AT DESC LIMIT 10";
@@ -132,7 +132,7 @@ router.get("/likebook", (req, res) => {
   }
 
   const query =
-    "SELECT lb.LIKE_CREATED_AT, b.BOOK_TITLE, b.BOOK_COVER, b.BOOK_AUTHOR, b.BOOK_PRICE " +
+    "SELECT lb.LIKE_CREATED_AT, b.BOOK_TITLE, b.BOOK_COVER, b.BOOK_AUTHOR, b.BOOK_PRICE, b.BOOK_ID " +
     "FROM likedbook lb " +
     "INNER JOIN book b ON lb.LIKE_BOOK_ID = b.BOOK_ID " +
     "WHERE lb.LIKE_USER_EMAIL=? ORDER BY lb.LIKE_CREATED_AT DESC LIMIT 10";
@@ -258,6 +258,58 @@ router.post("/cancellikebooks", (req, res) => {
           } else {
             res.json({ message: "책이 찜 목록에서 제거되었습니다." });
           }
+        });
+      }
+    }
+  });
+});
+
+//찜 전체 삭제
+router.delete("/delAllLike", (req, res) => {
+  const userEmail = req.query.userEmail; // 쿼리 파라미터에서 userEmail 가져오기
+
+  if (!userEmail) {
+    res.status(400).json({ error: "사용자 이메일이 필요합니다." });
+    return;
+  }
+
+  const query = "DELETE FROM likedbook WHERE LIKE_USER_EMAIL=?";
+  db.query(query, [userEmail], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: "서버에러" });
+    } else {
+      if (result.affectedRows > 0) {
+        res.json({ message: "사용자의 모든 좋아요가 삭제되었습니다." });
+      } else {
+        res.json({ message: "해당 사용자의 좋아요를 찾을 수 없습니다." });
+      }
+    }
+  });
+});
+
+//최근 본 전체 삭제
+router.delete("/delAllRec", (req, res) => {
+  const userEmail = req.query.userEmail; // 쿼리 파라미터에서 userEmail 가져오기
+
+  if (!userEmail) {
+    res.status(400).json({ error: "사용자 이메일이 필요합니다." });
+    return;
+  }
+
+  const query = "DELETE FROM recentbook WHERE REC_USER_EMAIL=?";
+  db.query(query, [userEmail], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: "서버에러" });
+    } else {
+      if (result.affectedRows > 0) {
+        res.json({
+          message: "사용자의 모든 최근 본 책 데이터가 삭제되었습니다.",
+        });
+      } else {
+        res.json({
+          message: "해당 사용자의 최근 본 책 데이터를 찾을 수 없습니다.",
         });
       }
     }
