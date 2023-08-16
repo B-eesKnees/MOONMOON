@@ -314,7 +314,7 @@ router.post("/updatecoupon/:userEmail", (req, res) => {
   });
 });
 
-//배송 상태별 조회
+//배송 상태별 조회  + 배송 상세 표시
 const ORDER_STATE = {
   ready: "배송준비",
   delivering: "배송중",
@@ -369,22 +369,27 @@ router.get("/ordersearchbook", (req, res) => {
     res.json(results);
   });
 });
-//주문검색(주문번호)
-router.get("/ordersearchnumber", (req, res) => {
-  const userEmail = req.query.userEmail;
-  const orderId = req.query.orderId;
 
-  let query = "SELECT * FROM `order` WHERE 1"; // 기본 쿼리
+//날짜별로 (기간 검색)
+router.get("/orderdate", (req, res) => {
+  const { startDate, endDate, userEmail } = req.query;
+
+  if (!startDate || !endDate) {
+    return res.status(400).json({ error: "해당 결과가 없습니다." });
+  }
+
+  const formattedStartDate = `${startDate} 00:00:00`;
+  const formattedEndDate = `${endDate} 23:59:59`;
+
+  let query = "SELECT * FROM `order` WHERE ORDER_DATE BETWEEN ? AND ?";
+  const queryParams = [formattedStartDate, formattedEndDate];
 
   if (userEmail) {
-    query += ` AND ORDER_USEREMAIL = '${userEmail}'`;
+    query += " AND ORDER_USEREMAIL = ?";
+    queryParams.push(userEmail);
   }
 
-  if (orderId) {
-    query += ` AND CAST(ORDER_ID AS CHAR) LIKE '${orderId}%'`; // 부분적으로 일치하도록 변경
-  }
-
-  db.query(query, (err, results) => {
+  db.query(query, queryParams, (err, results) => {
     if (err) {
       console.error("Error fetching orders:", err);
       res.status(500).json({ error: "Error fetching orders" });
@@ -394,6 +399,26 @@ router.get("/ordersearchnumber", (req, res) => {
   });
 });
 
-//날짜별로 (기간 검색)
+//결제 날짜
+router.get("/orderpaydate", (req, res) => {
+  const { userEmail } = req.query;
+
+  if (!userEmail) {
+    return res.status(400).json({ error: "유저 이메일이 없어요요" });
+  }
+
+  const query =
+    "SELECT ORDER_USEREMAIL, DATE_FORMAT(ORDER_DATE, '%m-%d') AS ORDER_DATE FROM `order` WHERE ORDER_USEREMAIL = ?";
+
+  db.query(query, [userEmail], (err, results) => {
+    if (err) {
+      console.error("Error fetching orders:", err);
+      res.status(500).json({ error: "Error fetching orders" });
+      return;
+    }
+
+    res.json(results);
+  });
+});
 
 module.exports = router;
