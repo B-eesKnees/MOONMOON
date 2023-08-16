@@ -57,7 +57,7 @@ const requireSurvey = () => (to, from, next) => {
       console.log(err);
     });
 };
-// beforeEnter: requireLogin(),  <<로그인 한사람만 들어갈 수 있는 페이지 component아래에 붙여넣으면됨
+// beforeEnter: requireLogin(),  <<로그인한 사람만 들어갈 수 있는 페이지 component아래에 붙여넣으면됨
 const routes = [
   {
     path: "/",
@@ -116,6 +116,7 @@ const routes = [
     path: "/detail/:bookNum",
     name: "bookDetail",
     component: bookDetail,
+    props: true // 라우트 파라미터를 컴포넌트의 프롭스로 전달
   },
   {
     path: "/startest",
