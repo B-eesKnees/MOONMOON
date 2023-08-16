@@ -134,7 +134,10 @@
             </select>
         </div>
         <div class="review_con">
-            <div v-for="review in reviewData" :key="review.REVIEW_ID" class="single_review">
+            <!-- 댓글 표시 -->
+            <div v-for="review in paginatedReviewData[currentPage - 1]" :key="review.REVIEW_ID" class="single_review">
+                <!-- 댓글 내용 표시 -->
+
                 <div class="single_rev_top">
                     <div class="review_created_at_flex">
                         <div class="single_review_writer">{{ review.review_writer }}</div>
@@ -144,6 +147,12 @@
                     <div class="review_created_at">{{ review.REV_CREATED_AT }}</div>
                 </div>
                 <div class="review_comment">{{ review.REV_COMMENT }}</div>
+            </div>
+            <!-- 페이징 UI -->
+            <div class="pagination">
+                <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1">이전</button>
+                <span>{{ currentPage }} / {{ paginatedReviewData.length }}</span>
+                <button @click="changePage(currentPage + 1)" :disabled="currentPage === paginatedReviewData.length">다음</button>
             </div>
         </div>
     </div>
@@ -197,6 +206,10 @@ export default {
             sortvalue: "최신순",
             showBtn: true,
             countNum: 1,
+            // 댓글 데이터를 페이지별로 나눈 배열
+            paginatedReviewData: [],
+            currentPage: 1, // 현재 페이지
+            itemsPerPage: 5, // 페이지당 댓글 수
         };
     },
     mounted() {
@@ -235,7 +248,15 @@ export default {
                 });
         },
         // 리뷰 시작-------------------------------------------------------------------------------------------------------
+        DetailReview() {
+            // 서버에서 받아온 댓글 데이터
+            const allReviews = response.data.review;
 
+            // 페이지별로 댓글 데이터 분할하여 저장
+            for (let i = 0; i < allReviews.length; i += this.itemsPerPage) {
+                this.paginatedReviewData.push(allReviews.slice(i, i + this.itemsPerPage));
+            }
+        },
         // 리뷰 데이터 최신순 리스트 불러오기-------------------------------------------------------------------------------------------------------
         // ---------------------------------------------------------------------------------------------------------------------
 
@@ -308,6 +329,13 @@ export default {
                     console.error("Error fetching review data:", error);
                 });
         },
+        // 리뷰 -------------------------------------------------------------------------------------------------------
+        changePage(page) {
+            if (page >= 1 && page <= this.paginatedReviewData.length) {
+                this.currentPage = page;
+            }
+        },
+
         averageRating() {
             axios({
                 url: "http://localhost:3000/review/averagerating/:bookId",
