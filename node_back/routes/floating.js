@@ -264,6 +264,58 @@ router.post("/cancellikebooks", (req, res) => {
   });
 });
 
+//찜 전체 삭제
+router.delete("/delAllLike", (req, res) => {
+  const userEmail = req.query.userEmail; // 쿼리 파라미터에서 userEmail 가져오기
+
+  if (!userEmail) {
+    res.status(400).json({ error: "사용자 이메일이 필요합니다." });
+    return;
+  }
+
+  const query = "DELETE FROM likedbook WHERE LIKE_USER_EMAIL=?";
+  db.query(query, [userEmail], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: "서버에러" });
+    } else {
+      if (result.affectedRows > 0) {
+        res.json({ message: "사용자의 모든 좋아요가 삭제되었습니다." });
+      } else {
+        res.json({ message: "해당 사용자의 좋아요를 찾을 수 없습니다." });
+      }
+    }
+  });
+});
+
+//최근 본 전체 삭제
+router.delete("/delAllRec", (req, res) => {
+  const userEmail = req.query.userEmail; // 쿼리 파라미터에서 userEmail 가져오기
+
+  if (!userEmail) {
+    res.status(400).json({ error: "사용자 이메일이 필요합니다." });
+    return;
+  }
+
+  const query = "DELETE FROM recentbook WHERE REC_USER_EMAIL=?";
+  db.query(query, [userEmail], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: "서버에러" });
+    } else {
+      if (result.affectedRows > 0) {
+        res.json({
+          message: "사용자의 모든 최근 본 책 데이터가 삭제되었습니다.",
+        });
+      } else {
+        res.json({
+          message: "해당 사용자의 최근 본 책 데이터를 찾을 수 없습니다.",
+        });
+      }
+    }
+  });
+});
+
 //플로팅에서 삭제만 가능 추가 불가
 //상세페이지에서 추가 혹은 삭제 가능
 module.exports = router;
