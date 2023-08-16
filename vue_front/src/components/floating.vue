@@ -10,7 +10,7 @@
         <div class="floating_modal">
             <div class="floating_modal_header">
                 <h2 ref="floatRecent" class="floating_modal_heart_btn current"
-                    @click="floatingMenuRecent(), getRecentBook()">
+                    @click="floatingMenuRecent(), getFloatRecentBook()">
                     최근 본
                 </h2>
                 <h2 ref="floatHeart" class="floating_modal_recent_btn" @click="floatingMenuHeart">
@@ -31,7 +31,7 @@
                     </div>
                 </div>
                 <div class="floating_modal_list">
-                    <div v-for="i in 2" class="floating_modal_item">
+                    <div v-for="(item, i) in floatingRecent" class="floating_modal_item">
                         <a class="floating_modal_item_img" href=""><img src="../assets/img/book4.jpg" alt="" /></a>
                         <div class="floating_modal_item_info">
                             <a href="">
@@ -99,12 +99,19 @@ export default {
         return {
             // 플로팅 데이터
             floatingState: "recent",
+            floatingRecent: [],
+            email: "",
         };
     },
 
     setup() { },
-    created() { },
-    mounted() { },
+    created() { 
+        this.email = localStorage.getItem("userID");
+    },
+    mounted() {
+        this.getFloatRecentBook();
+
+     },
     unmounted() { },
     methods: {
         openFloating() {
@@ -133,14 +140,16 @@ export default {
                 floatRecentBtn.classList.remove("current");
             }
         },
-        async getRecentBook() {
+        async getFloatRecentBook() {
             await axios({
                 url: "http://localhost:3000/floating/recentbook",
                 method: "GET",
-                data: {},
+                params: {
+                    userEmail: this.email
+                },
             })
                 .then((res) => {
-                    console.log(res);
+                    console.log(res,"최근본책 데이터");
                 })
                 .catch((err) => {
                     alert(err);

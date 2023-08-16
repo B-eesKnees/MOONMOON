@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div class="new_item_order">
-                    <a href="">결제하러 가기</a>
+                    <a @click="goToPay(item.BOOK_ID, item.BOOK_PRICE)" href="#">결제하러 가기</a>
                     <p><span>내일(7/28)</span> 도착예정</p>
                 </div>
                 <div class="new_item_btn">
@@ -213,6 +213,30 @@ export default {
                 const conResult = confirm("로그인이 필요합니다. \n 로그인 하시겠습니까?");
                 conResult ? window.location.href = "/login" : null;
             }
+        },
+        // 결제하기 버튼 클릭시 서버로 보낼 데이터
+        async goToPay(bookId, bookPrice) {
+            const totalPoint = bookPrice * 0.05;
+            const bookfee = bookPrice >= 50000 ? 0 : 2500;
+            await axios({
+                url: "http://localhost:3000/detail/gotoPay",
+                method: "POST",
+                data: {
+                    bookId: bookId,
+                    bookNum: 1,
+                    email: this.email,
+                    total_pay: bookPrice,
+                    total_point: totalPoint,
+                    fee: bookfee
+                },
+            })
+                .then((res) => {
+                    console.log(res.data.payID);
+                    window.location.href = `/pay/${res.data.payID}`;
+                })
+                .catch((error) => {
+                    console.error("Error goToPay :", error);
+                });
         },
     },
 };
