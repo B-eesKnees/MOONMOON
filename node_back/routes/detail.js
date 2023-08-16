@@ -29,15 +29,13 @@ router.post("/gotoPay", async (req, res) => {
         ORDER_ADDPOINT: req.body.total_point, //얻는 포인트
         ORDER_COST: req.body.fee, //배송비
     };
-    const point = req.body.point;
-    const price = req.body.price;
+    const point = req.body.total_point;
+    const price = req.body.total_pay;
 
     db.query(`insert into moonmoon.order set ?`, paymentDate, (err, result) => {
         if (err) {
             res.send(err).status(200);
         } else {
-            const ORDERITEM_ORDER_ID = result.insertId;
-
             const orderItem_info = {
                 ORDERITEM_ORDER_ID: result.insertId,
                 ORDERITEM_BOOK_ID: ORDERITEM_BOOK_ID,
@@ -46,11 +44,11 @@ router.post("/gotoPay", async (req, res) => {
                 ORDERITEM_POINT: point,
             };
 
-            db.query(`insert into orderitem set ?`, orderItem_info, (err, result) => {
+            db.query(`insert into orderitem set ?`, orderItem_info, (err, results) => {
                 if (err) {
                     res.send(err).status(200);
                 } else {
-                    res.status(200).send("ok");
+                    res.status(200).send({ payID: result.insertId });
                 }
             });
         }
