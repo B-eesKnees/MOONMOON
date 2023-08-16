@@ -78,7 +78,7 @@ router.post(`/getBest`, async (req, res) => {
         `select b.BOOK_ID, b.BOOK_COVER, b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, date_format(b.BOOK_PUBDATE, '%Y.%m.%d') as BOOK_PUBDATE, b.BOOK_PRICE, b.BOOK_DESCRIPTION, COALESCE(ROUND(AVG(r.REV_RATING), 1), 0) AS reviewpoint
         from book b left join review r on b.BOOK_ID = r.REV_ORDERITEM_BOOK
         group by b.BOOK_ID
-        order by b.BOOK_SALESPOINT;`,
+        order by b.BOOK_SALESPOINT desc;`,
         (err, result) => {
             if (err) {
                 res.status(200).send(err);
