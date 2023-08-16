@@ -268,9 +268,9 @@
 
 
 .detail_main_next_hr {
-    margin-top: 5%;
+    margin-top: 15%;
     margin-bottom: 8%;
-    display: flex;
+    position: relative;
     justify-content: center;
     align-items: center;
     width: 80%;

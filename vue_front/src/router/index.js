@@ -113,7 +113,7 @@ const routes = [
         component: NewList,
     },
     {
-        path: "/detail/:bookNum",
+        path: "/detail/:id",
         name: "bookDetail",
         component: bookDetail,
         props: true, // 라우트 파라미터를 컴포넌트의 프롭스로 전달

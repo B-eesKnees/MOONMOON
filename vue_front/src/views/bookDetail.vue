@@ -1,8 +1,9 @@
 <template>
     <GnbBar ref="gnbBarComponent" />
+    <div class="detail_top"></div>
     <div class="title_wri_sum">
         <div class="detail_title">
-            {{ bookDetailData.BOOK_TITLE }}
+            {{ bookDetailData ? bookDetailData.BOOK_TITLE : "로딩 중..." }}
         </div>
         <div class="writer_date">{{ bookDetailData.BOOK_AUTHOR }} | {{ bookDetailData.BOOK_PUBDATE }}</div>
         <div class="book_summary">
@@ -134,16 +135,19 @@
             </select>
         </div>
         <div class="review_con">
-            <div v-for="review in reviewData" :key="review.REVIEW_ID" class="single_review">
-                <div class="single_rev_top">
-                    <div class="review_created_at_flex">
-                        <div class="single_review_writer">{{ review.review_writer }}</div>
-                        <div class="single_review_rating_star"><star :rating="convertRatingToHalfStars(review.REV_RATING)" /></div>
-                        <div class="single_review_rating_num">{{ review.REV_RATING }}</div>
+            <div v-if="reviewData.length === 0">리뷰가 없습니다.</div>
+            <div v-else>
+                <div v-for="review in reviewData" :key="review.REVIEW_ID" class="single_review">
+                    <div class="single_rev_top">
+                        <div class="review_created_at_flex">
+                            <div class="single_review_writer">{{ review.review_writer }}</div>
+                            <div class="single_review_rating_star"><star :rating="convertRatingToHalfStars(review.REV_RATING)" /></div>
+                            <div class="single_review_rating_num">{{ review.REV_RATING }}</div>
+                        </div>
+                        <div class="review_created_at">{{ review.REV_CREATED_AT }}</div>
                     </div>
-                    <div class="review_created_at">{{ review.REV_CREATED_AT }}</div>
+                    <div class="review_comment">{{ review.REV_COMMENT }}</div>
                 </div>
-                <div class="review_comment">{{ review.REV_COMMENT }}</div>
             </div>
         </div>
     </div>
@@ -190,25 +194,34 @@ export default {
     },
     data() {
         return {
-            bookDetailData: [], // 책 상세 정보를 저장할 데이터
+            bookDetailData: [],
             reviewData: [],
-            reviewAverageData: [],
+            reviewAverageData: null,
             isLiked: false,
             sortvalue: "최신순",
             showBtn: true,
             countNum: 1,
+            bookId: this.$route.params.id,
+
             // 댓글 데이터를 페이지별로 나눈 배열
         };
+    },
+    created() {
+        this.email = localStorage.getItem("userID");
     },
     mounted() {
         this.bookDetail();
         this.loadRecentReviews();
         this.loadTopRatedReviews();
         this.loadLowRatedReviews();
+        this.averageRating();
     },
     computed: {
         paymentPrice() {
             return this.bookDetailData.BOOK_PRICE * this.countNum;
+        },
+        formattedAverageRating() {
+            return this.reviewAverageData ? this.reviewAverageData.toFixed(1) : "0.0";
         },
     },
     methods: {
@@ -218,22 +231,38 @@ export default {
         // 최신순 리스트 불러오기-------------------------------------------------------------------------------------------------------
         // ---------------------------------------------------------------------------------------------------------------------
         bookDetail() {
-            const bookId = this.bookId;
-
             axios({
                 url: "http://localhost:3000/detail/",
                 method: "get",
                 params: {
-                    bookNum: bookId, // 원하는 책 번호로 수정
+                    bookNum: this.bookId,
                 },
             })
                 .then((response) => {
-                    // 서버 응답 처리
-                    this.bookDetailData = response.data[0]; // 책 상세 정보 저장 (첫 번째 결과 객체 선택)
+                    console.log(response.data); // 가져온 데이터 확인
+                    this.bookDetailData = response.data[0];
                 })
                 .catch((error) => {
-                    console.error("Error fetching book detail:", error);
+                    console.error("책 상세 정보 가져오기 오류:", error);
                 });
+        },
+        async addToCart() {
+            if (localStorage.getItem("userID")) {
+                await axios({
+                    url: "http://localhost:3000/detail/gotoCart",
+                    method: "POST",
+                    data: {
+                        email: this.email,
+                        bookId: this.bookId,
+                    },
+                }).then((res) => {
+                    alert("장바구니에 추가되었습니다.", this.bookId);
+                    this.$refs.gnbBarComponent.getCartNum();
+                });
+            } else {
+                const conResult = confirm("로그인이 필요합니다. \n 로그인 하시겠습니까?");
+                conResult ? (window.location.href = "/login") : null;
+            }
         },
         // 리뷰 시작-------------------------------------------------------------------------------------------------------
 
@@ -256,7 +285,7 @@ export default {
                 url: "http://localhost:3000/review/reviewdata",
                 method: "get",
                 params: {
-                    bookId: bookId,
+                    bookId: this.bookId,
                 },
             })
                 .then((response) => {
@@ -291,7 +320,6 @@ export default {
         // ---------------------------------------------------------------------------------------------------------------------
         loadLowRatedReviews() {
             const bookId = this.$route.params.id;
-
             axios({
                 url: "http://localhost:3000/review/lowreviewrating",
                 method: "get",
@@ -314,18 +342,15 @@ export default {
                 url: "http://localhost:3000/review/averagerating/:bookId",
                 method: "get",
                 params: {
-                    bookId: 2,
+                    bookId: this.bookId,
                 },
             })
                 .then((response) => {
                     this.reviewAverageData = response.data.averageRating;
                 })
                 .catch((error) => {
-                    console.error("Error fetching review data:", error);
+                    console.error("Error fetching average rating:", error);
                 });
-        },
-        averageRating(averageRating) {
-            return averageRating.toFixed(1);
         },
         convertRatingToHalfStars(number) {
             if (Number.isInteger(number)) {
@@ -365,7 +390,6 @@ export default {
             this.countNum++; // countNum 값을 1 증가
         },
         updateCartNum() {
-            // 자식 컴포넌트의 메소드를 호출하여 장바구니 수량을 업데이트합니다.
             this.$refs.gnbBarComponent.getCartNum();
         },
         formatReviewScore(number) {
