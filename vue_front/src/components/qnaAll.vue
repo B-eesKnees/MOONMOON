@@ -46,14 +46,14 @@ export default {
         <div class="qna-title">{{ all.QNA_TITLE }}</div>
         <div class="qna-date">{{ all.QNA_DATE }}</div>
         <!-- 버튼 토글-문의 내용/답변 -->
-          <button @click="toggleContent1(i)" class="con-open_close">
-            <img :src="conOpenBotton" alt="con-open" />
-            <img class="con-close" :src="conCloseBotton" alt="con-close" />
-          </button>
-          <div class="younju" v-if="showQnaAllContent[i]">
-            <div class="qna-con">{{ all.QNA_CON }}</div>
-            <div class="qna-reply">{{ all.QNA_REPLY }}</div>
-          </div>
+        <button @click="toggleContent1(i)" class="con-open_close">
+          <img :src="conOpenBotton" alt="con-open" />
+          <img class="con-close" :src="conCloseBotton" alt="con-close" />
+        </button>
+        <div class="younju" v-if="showQnaAllContent[i]">
+          <div class="qna-con">{{ all.QNA_CON }}</div>
+          <div class="qna-reply">{{ all.QNA_REPLY }}</div>
+        </div>  
     </div>
   </div>
   
