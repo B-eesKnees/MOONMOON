@@ -127,7 +127,7 @@
         <hr class="review_title_next_hr" />
         <div class="title_fillter">
             <div class="rev_sec_title">구매 리뷰</div>
-            <select @change="reviewFillter()" v-model="sortvalue" name="items1" class="review_filltering">
+            <select v-model="sortvalue" @change="fetchReviewData" name="items1" class="review_filltering">
                 <option :value="'최신순'">최신순</option>
                 <option :value="'평점 높은 순'">평점 높은 순</option>
                 <option :value="'평점 낮은 순'">평점 낮은 순</option>
@@ -144,8 +144,6 @@
                     <div class="review_created_at">{{ review.REV_CREATED_AT }}</div>
                 </div>
                 <div class="review_comment">{{ review.REV_COMMENT }}</div>
-
-                <!-- 여기에 리뷰의 다른 정보도 표시하거나 스타 등급 표시 등을 추가할 수 있습니다. -->
             </div>
         </div>
     </div>
@@ -203,7 +201,9 @@ export default {
     },
     mounted() {
         this.bookDetail();
-        this.DetailReview();
+        this.loadRecentReviews();
+        this.loadTopRatedReviews();
+        this.loadLowRatedReviews();
     },
     computed: {
         paymentPrice() {
@@ -234,16 +234,70 @@ export default {
                     console.error("Error fetching book detail:", error);
                 });
         },
-        // 리뷰 데이터 리스트 불러오기-------------------------------------------------------------------------------------------------------
+        // 리뷰 시작-------------------------------------------------------------------------------------------------------
+
+        // 리뷰 데이터 최신순 리스트 불러오기-------------------------------------------------------------------------------------------------------
         // ---------------------------------------------------------------------------------------------------------------------
-        DetailReview() {
+
+        fetchReviewData() {
+            if (this.sortvalue === "최신순") {
+                this.loadRecentReviews();
+            } else if (this.sortvalue === "평점 높은 순") {
+                this.loadTopRatedReviews();
+            } else if (this.sortvalue === "평점 낮은 순") {
+                this.loadLowRatedReviews();
+            }
+        },
+        // 리뷰 데이터 최신순 리스트 불러오기-------------------------------------------------------------------------------------------------------
+        // ---------------------------------------------------------------------------------------------------------------------
+        loadRecentReviews() {
             const bookId = this.$route.params.id;
 
             axios({
                 url: "http://localhost:3000/review/reviewdata",
                 method: "get",
                 params: {
-                    bookId: bookId,
+                    bookId: 2,
+                },
+            })
+                .then((response) => {
+                    // 서버 응답 처리
+                    this.reviewData = response.data.review; // reviewData에 데이터 저장
+                })
+                .catch((error) => {
+                    console.error("Error fetching review data:", error);
+                });
+        },
+        // 리뷰 데이터 평점 높은 순 리스트 불러오기-------------------------------------------------------------------------------------------------------
+        // ---------------------------------------------------------------------------------------------------------------------
+        loadTopRatedReviews() {
+            const bookId = this.$route.params.id;
+
+            axios({
+                url: "http://localhost:3000/review/reviewrating",
+                method: "get",
+                params: {
+                    bookId: 2,
+                },
+            })
+                .then((response) => {
+                    // 서버 응답 처리
+                    this.reviewData = response.data.review; // reviewData에 데이터 저장
+                })
+                .catch((error) => {
+                    console.error("Error fetching review data:", error);
+                });
+        },
+        // 리뷰 데이터 평점 낮은 순 리스트 불러오기-------------------------------------------------------------------------------------------------------
+        // ---------------------------------------------------------------------------------------------------------------------
+        loadLowRatedReviews() {
+            const bookId = this.$route.params.id;
+
+            axios({
+                url: "http://localhost:3000/review/lowreviewrating",
+                method: "get",
+                params: {
+                    bookId: 2,
                 },
             })
                 .then((response) => {
