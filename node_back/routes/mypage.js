@@ -421,4 +421,158 @@ router.get("/orderpaydate", (req, res) => {
   });
 });
 
+//bookTitle, bookCover, orderPay,orderCnt
+
+router.get("/paybookinfo/:orderId", (req, res) => {
+  const orderId = req.params.orderId;
+
+  const query =
+    "SELECT b.BOOK_TITLE, o.ORDER_PAY, b.BOOK_COVER, o.ORDER_CNT " +
+    "FROM orderitem oi " +
+    "INNER JOIN `order` o ON oi.ORDERITEM_ORDERID = o.ORDER_ID " +
+    "INNER JOIN book b ON oi.ORDERITEM_BOOKID = b.BOOK_ID " +
+    "WHERE o.ORDER_ID = ? " +
+    "LIMIT 1";
+
+  db.query(query, [orderId], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: "서버 에러" });
+    } else {
+      const orderInfo = results[0];
+      res.json({
+        bookTitle: orderInfo.BOOK_TITLE,
+        bookCover: orderInfo.BOOK_COVER,
+        orderPay: orderInfo.ORDER_PAY,
+        orderCnt: orderInfo.ORDER_CNT,
+      });
+    }
+  });
+});
+
+//구매확정처리
+router.put("/updatebuycheck/:orderItemId", (req, res) => {
+  const orderItemId = req.params.orderItemId;
+
+  const selectQuery =
+    "SELECT o.ORDER_STATE, oi.ORDERITEM_BUYCHECK FROM `order` o JOIN orderitem oi ON o.ORDER_ID =oi.ORDERITEM_ORDERID WHERE oi.ORDERITEM_ID = ? ";
+  db.query(selectQuery, [orderItemId], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: "서버에러" });
+      return;
+    }
+    if (results.length === 0) {
+      res.status(400).json({ error: "주문 상품을 찾을 수 없습니다." });
+      return;
+    }
+    const orderState = results[0].ORDER_STATE;
+    const buyCheck = results[0].ORDERITEM_BUYCHECK;
+
+    if (orderState !== "배송완료") {
+      res
+        .status(400)
+        .json({ error: "배송완료 상태가 아닙니다. 구매확정 할 수 없습니다." });
+      return;
+    }
+
+    if (buyCheck === 1) {
+      res.status(400).json({ error: "이미 구매확정 처리된 상품입니다." });
+      return;
+    }
+
+    const updateQuery =
+      "UPDATE orderitem SET ORDERITEM_BUYCHECK =1 WHERE ORDERITEM_ID =?";
+    db.query(updateQuery, [orderItemId], (updateErr, results) => {
+      if (updateErr) {
+        console.error(updateErr);
+        res.status(500).json({ error: "서버에러" });
+      } else {
+        res.json({ message: "구매확정 처리 되었습니다." });
+      }
+    });
+  });
+});
+
+router.post("/getRecList", async (req, res) => {
+  const email = req.body.email;
+
+  db.query(
+    `select * from moonmoon.order where ORDER_USER_EMAIL = ?`,
+    email,
+    (err, results) => {
+      if (err) {
+        res.status(200).send(err);
+      } else {
+        if (results.length == 0) {
+          db.query(
+            `select * from survey where SUR_USER_EMAIL = ?`,
+            email,
+            (err, result) => {
+              if (err) {
+                res.status(200).send(err);
+              } else {
+                const sur1 = result[0].SUR_LIKE_1 || "없음";
+                const sur2 = result[0].SUR_LIKE_2 || "없음";
+                const sur3 = result[0].SUR_LIKE_3 || "없음";
+                const sur4 = result[0].SUR_LIKE_4 || "없음";
+                const sur5 = result[0].SUR_LIKE_5 || "없음";
+
+                const search1 = `%${sur1}%`;
+                const search2 = `%${sur2}%`;
+                const search3 = `%${sur3}%`;
+                const search4 = `%${sur4}%`;
+                const search5 = `%${sur5}%`;
+
+                const query = `select BOOK_ID, BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, '%Y.%m.%d') as PUBDATE, BOOK_PRICE, BOOK_DESCRIPTION, BOOK_COVER, BOOK_PUBLISHER 
+                      from book 
+                      where BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? 
+                      order by BOOK_SALESPOINT desc 
+                      limit 8`;
+                console.log([search1, search2, search3, search4, search5]);
+                db.query(
+                  query,
+                  [search1, search2, search3, search4, search5],
+                  (err, results) => {
+                    if (err) {
+                      res.status(200).send("error" + err);
+                    } else {
+                      res.status(200).send(results);
+                    }
+                  }
+                );
+              }
+            }
+          );
+        } else {
+          db.query(
+            `select distinct b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, date_format(b.BOOK_PUBDATE, '%Y.%m.%d') as BOOK_PUBDATE, b.BOOK_PRICE, b.BOOK_DESCRIPTION, b.BOOK_COVER, b.BOOK_PUBLISHER, (select COALESCE(ROUND(AVG(r2.REV_RATING), 1), 0) from review r2 where r2.REV_ORDERITEM_BOOK = b.BOOK_ID) AS reviewpoint, b.book_salespoint
+                  from book b left join review r on b.BOOK_ID = r.REV_ORDERITEM_BOOK
+                  where BOOK_CATEGORYNAME = (SELECT BOOK_CATEGORYNAME
+                  FROM book
+                  WHERE BOOK_ID IN (
+                      SELECT ORDERITEM_BOOK_ID
+                      FROM moonmoon.order o
+                      JOIN orderitem oi ON o.ORDER_ID = oi.ORDERITEM_ORDER_ID
+                      WHERE o.ORDER_USER_EMAIL = ?
+                  )
+                  GROUP BY BOOK_CATEGORYNAME
+                  ORDER BY COUNT(*) DESC
+                  limit 1)
+                  order by b.book_salespoint desc;`,
+            email,
+            (err, results2) => {
+              if (err) {
+                res.status(200).send(err);
+              } else {
+                res.status(200).send(results2);
+              }
+            }
+          );
+        }
+      }
+    }
+  );
+});
+
 module.exports = router;
