@@ -24,7 +24,10 @@ router.get("/recentbook", (req, res) => {
   if (userEmail) {
     // 회원인 경우에는 회원의 최근 본 책 목록 조회
     query =
-      "SELECT * FROM recentbook WHERE REC_USER_EMAIL=? ORDER BY REC_VIEWED_AT DESC LIMIT 10";
+      "SELECT rb.REC_VIEWED_AT, b.BOOK_TITLE, b.BOOK_COVER, b.BOOK_AUTHOR, b.BOOK_PRICE " +
+      "FROM recentbook rb " +
+      "INNER JOIN book b ON rb.REC_BOOK_ID = b.BOOK_ID " +
+      "WHERE rb.REC_USER_EMAIL=? ORDER BY rb.REC_VIEWED_AT DESC LIMIT 10";
     db.query(query, [userEmail], (err, results) => {
       if (err) {
         console.error(err);
@@ -47,14 +50,33 @@ router.post("/addrecentbook", (req, res) => {
 
   if (userEmail) {
     // 회원인 경우, 데이터베이스에 최근 본 책 추가
-    const query =
+    const insertQuery =
       "INSERT INTO recentbook (REC_USER_EMAIL, REC_BOOK_ID) VALUES (?, ?)";
-    db.query(query, [userEmail, bookId], (err, result) => {
+    db.query(insertQuery, [userEmail, bookId], (err, result) => {
       if (err) {
         console.error(err);
         res.status(500).json({ error: "서버에러" });
       } else {
-        res.json({ message: "책이 최근 본 책 목록에 추가되었습니다ddd." });
+        // 추가한 데이터와 책 정보를 함께 가져오기 위해 JOIN을 사용한 쿼리 실행
+        const selectQuery =
+          "SELECT r.RECENT_ID, r.REC_USER_EMAIL, r.REC_BOOK_ID, " +
+          "b.BOOK_TITLE, b.BOOK_COVER, b.BOOK_AUTHOR, b.BOOK_PRICE, r.REC_VIEWED_AT " +
+          "FROM recentbook r " +
+          "JOIN book b ON r.REC_BOOK_ID = b.BOOK_ID " +
+          "WHERE r.REC_USER_EMAIL = ? " +
+          "ORDER BY r.REC_VIEWED_AT DESC " +
+          "LIMIT 10";
+        db.query(selectQuery, [userEmail], (selectErr, selectResults) => {
+          if (selectErr) {
+            console.error(selectErr);
+            res.status(500).json({ error: "서버에러" });
+          } else {
+            res.json({
+              message: "책이 최근 본 책 목록에 추가되었습니다.",
+              recentBooks: selectResults,
+            });
+          }
+        });
       }
     });
   } else {
@@ -70,7 +92,10 @@ router.post("/addrecentbook", (req, res) => {
         );
       }
     }
-    res.json({ message: "책이 최근 본 책 목록에 추가되었습니다ttttt." });
+    res.json({
+      message: "책이 최근 본 책 목록에 추가되었습니다.",
+      recentBooks: req.session.recentBooks,
+    });
   }
 });
 
@@ -98,7 +123,7 @@ router.delete("/delrecentbook/:id", (req, res) => {
 });
 
 //찜하기 데이터 조회 ok
-router.get("/likebooks", (req, res) => {
+router.get("/likebook", (req, res) => {
   const userEmail = req.query.userEmail; // 쿼리 파라미터에서 userEmail 가져오기
 
   if (!userEmail) {
@@ -107,7 +132,10 @@ router.get("/likebooks", (req, res) => {
   }
 
   const query =
-    "SELECT * FROM likedbook WHERE LIKE_USER_EMAIL=? ORDER BY LIKE_CREATED_AT DESC LIMIT 10";
+    "SELECT lb.LIKE_CREATED_AT, b.BOOK_TITLE, b.BOOK_COVER, b.BOOK_AUTHOR, b.BOOK_PRICE " +
+    "FROM likedbook lb " +
+    "INNER JOIN book b ON lb.LIKE_BOOK_ID = b.BOOK_ID " +
+    "WHERE lb.LIKE_USER_EMAIL=? ORDER BY lb.LIKE_CREATED_AT DESC LIMIT 10";
   db.query(query, [userEmail], (err, results) => {
     if (err) {
       console.error(err);
@@ -119,7 +147,7 @@ router.get("/likebooks", (req, res) => {
 });
 
 //찜 추가
-router.post("/addlikebooks", (req, res) => {
+router.post("/addlikebook", (req, res) => {
   const userEmail = req.query.userEmail; // 쿼리 파라미터에서 userEmail 가져오기
   const bookId = req.body.bookId; // 요청 바디에서 추가할 책의 ID 가져오기
 
@@ -128,15 +156,39 @@ router.post("/addlikebooks", (req, res) => {
     return;
   }
 
-  const query =
-    "INSERT INTO likedbook (LIKE_USER_EMAIL, LIKE_BOOK_ID) VALUES (?, ?)";
-  db.query(query, [userEmail, bookId], (err, result) => {
+  const getBookInfoQuery = "SELECT * FROM book WHERE BOOK_ID = ?";
+  db.query(getBookInfoQuery, [bookId], (err, bookResults) => {
     if (err) {
       console.error(err);
       res.status(500).json({ error: "서버 에러" });
-    } else {
-      res.json({ message: "책이 찜 목록에 추가되었습니다." });
+      return;
     }
+
+    const bookInfo = bookResults[0];
+    if (!bookInfo) {
+      res.status(404).json({ error: "해당 책 정보를 찾을 수 없습니다." });
+      return;
+    }
+
+    const insertLikeQuery =
+      "INSERT INTO likedbook (LIKE_USER_EMAIL, LIKE_BOOK_ID) VALUES (?, ?)";
+    db.query(insertLikeQuery, [userEmail, bookId], (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: "서버 에러" });
+      } else {
+        res.json({
+          message: "책이 찜 목록에 추가되었습니다.",
+          bookInfo: {
+            BOOK_ID: bookInfo.BOOK_ID,
+            BOOK_TITLE: bookInfo.BOOK_TITLE,
+            BOOK_COVER: bookInfo.BOOK_COVER,
+            BOOK_AUTHOR: bookInfo.BOOK_AUTHOR,
+            BOOK_PRICE: bookInfo.BOOK_PRICE,
+          },
+        });
+      }
+    });
   });
 });
 
