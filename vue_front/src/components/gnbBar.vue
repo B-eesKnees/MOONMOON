@@ -10,7 +10,7 @@
             </div>
             <div v-else-if="logined == true" class="gnb_bar_service">
                 <a @click="logout" href="/">로그아웃</a>
-                <a href="/고객센터">고객센터</a>
+                <a href="/qna">고객센터</a>
             </div>
         </div>
     </div>
@@ -45,7 +45,7 @@
                     ><img class="gnb_bar_header_cart" src="../assets/img/cart1.png" alt="" />
                     <span class="gnb_bar_header_cart_num">{{ cartNum }}</span>
                 </a>
-                <a href=""><img class="gnb_bar_header_userimg" src="../assets/img/user.png" alt="" /></a>
+                <a href="/mypage"><img class="gnb_bar_header_userimg" src="../assets/img/user.png" alt="" /></a>
             </div>
         </div>
     </div>
@@ -66,7 +66,7 @@
                 <a class="nav_category_link" href="/new">
                     <li>신상품</li>
                 </a>
-                <a class="nav_category_link" href="">
+                <a class="nav_category_link" href="/event1">
                     <li>이벤트</li>
                 </a>
                 <a class="nav_category_link" href="/goods">
@@ -74,9 +74,9 @@
                 </a>
             </ul>
             <div class="nav_sub">
-                <a class="nav_sub_link" href="">마일리지</a>
+                <a class="nav_sub_link" href="/event1">룰렛</a>
                 •
-                <a class="nav_sub_link" href="">출석체크</a>
+                <a class="nav_sub_link" href="/attendance">출석체크</a>
             </div>
             <!-- 카테고리 모달 -->
             <div v-if="showCategoryModal" class="nav_category_modal">

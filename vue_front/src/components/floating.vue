@@ -25,14 +25,15 @@
                         <span>{{ floatingRecent.length }}</span>
                         <span>건</span>
                     </div>
-                    <div class="floating_modal_list_header_right cursor">
+                    <div @click="allDeleteFloatRecentBook" class="floating_modal_list_header_right cursor">
                         <img src="../assets/img/trash.png" alt="" />
                         <span>전체삭제</span>
                     </div>
                 </div>
                 <div class="floating_modal_list">
                     <div v-for="(item, i) in floatingRecent" class="floating_modal_item">
-                        <a class="floating_modal_item_img" :href="`/detail/${item.BOOK_ID}`"><img :src="item.BOOK_COVER" alt="" /></a>
+                        <a class="floating_modal_item_img" :href="`/detail/${item.BOOK_ID}`"><img :src="item.BOOK_COVER"
+                                alt="" /></a>
                         <div class="floating_modal_item_info">
                             <a :href="`/detail/${item.BOOK_ID}`">
                                 <h2>{{ item.BOOK_TITLE }}</h2>
@@ -60,14 +61,15 @@
                         <span>{{ floatingHeart.length }}</span>
                         <span>건</span>
                     </div>
-                    <div class="floating_modal_list_header_right cursor">
+                    <div @click="allDeleteFloatHeartBook" class="floating_modal_list_header_right cursor">
                         <img src="../assets/img/trash.png" alt="" />
                         <span>전체삭제</span>
                     </div>
                 </div>
                 <div class="floating_modal_list">
                     <div v-for="(item, i) in floatingHeart" class="floating_modal_item">
-                        <a class="floating_modal_item_img" :href="`/detail/${item.BOOK_ID}`"><img :src="item.BOOK_COVER" alt="" /></a>
+                        <a class="floating_modal_item_img" :href="`/detail/${item.BOOK_ID}`"><img :src="item.BOOK_COVER"
+                                alt="" /></a>
                         <div class="floating_modal_item_info">
                             <a :href="`/detail/${item.BOOK_ID}`">
                                 <h2>{{ item.BOOK_TITLE }}</h2>
@@ -182,6 +184,38 @@ export default {
                     alert(err);
                 });
         },
+        // 최근 본 목록 삭제
+        async deleteFloatRecentBook(bookId) {
+            await axios({
+                url: `http://localhost:3000/floating/delrecentbook/${bookId}`,
+                method: "DELETE",
+                params: {
+                    id: bookId
+                },
+            })
+                .then((res) => {
+                    this.getFloatRecentBook()
+                })
+                .catch((err) => {
+                    alert(err);
+                });
+        },
+        //최근 본 전체 삭제
+        async allDeleteFloatRecentBook() {
+            await axios({
+                url: "http://localhost:3000/floating/delAllRec",
+                method: "DELETE",
+                params: {
+                    userEmail: this.email
+                }
+            })
+                .then((res) => {
+                    this.getFloatRecentBook();
+                })
+                .catch((err) => {
+                    alert(err);
+                });
+        },
         //찜 목록 조회
         async getFloatHeartBook() {
             this.floatingHeart = [];
@@ -209,6 +243,22 @@ export default {
                             };
                         });
                     }
+                })
+                .catch((err) => {
+                    alert(err);
+                });
+        },
+        //찜목록 전체 삭제
+        async allDeleteFloatHeartBook() {
+            await axios({
+                url: "http://localhost:3000/floating/delAllLike",
+                method: "DELETE",
+                params: {
+                    userEmail: this.email
+                }
+            })
+                .then((res) => {
+                    this.getFloatHeartBook();
                 })
                 .catch((err) => {
                     alert(err);
@@ -251,22 +301,7 @@ export default {
             }
 
         },
-        // 최근 본 목록 삭제
-        async deleteFloatRecentBook(bookId) {
-            await axios({
-                url: `http://localhost:3000/floating/delrecentbook/${bookId}`,
-                method: "DELETE",
-                params: {
-                    id: bookId
-                },
-            })
-                .then((res) => {
-                    this.getFloatRecentBook()
-                })
-                .catch((err) => {
-                    alert(err);
-                });
-        },
+
         formatNumber(number) {
             // 숫자를 천 단위마다 쉼표가 있는 형식으로 변환
             return new Intl.NumberFormat().format(number);
