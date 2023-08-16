@@ -30,181 +30,181 @@ import mypage from "../views/mypage.vue";
 import axios from "axios";
 
 const requireLogin = () => (to, from, next) => {
-  //로그인안하고 접근하려했을때 실행할 함수?
-  if (localStorage.getItem("userID") !== null) {
-    //localStorage에 데이터 있으면
-    return next(); //접근가능
-  }
-  next("/login"); //localStorage에 데이터 없으면 로그인창으로 리다이렉트
+    //로그인안하고 접근하려했을때 실행할 함수?
+    if (localStorage.getItem("userID") !== null) {
+        //localStorage에 데이터 있으면
+        return next(); //접근가능
+    }
+    next("/login"); //localStorage에 데이터 없으면 로그인창으로 리다이렉트
 };
 const requireSurvey = () => (to, from, next) => {
-  if (!localStorage.getItem("userID")) {
-    return next();
-  }
-  axios({
-    url: "http://localhost:3000/sur/check",
-    method: "POST",
-    data: { email: localStorage.getItem("userID") },
-  })
-    .then((res) => {
-      if (res.data == "설문조사 안한 유저") {
-        next("/survey");
-      } else {
+    if (!localStorage.getItem("userID")) {
         return next();
-      }
+    }
+    axios({
+        url: "http://localhost:3000/sur/check",
+        method: "POST",
+        data: { email: localStorage.getItem("userID") },
     })
-    .catch((err) => {
-      console.log(err);
-    });
+        .then((res) => {
+            if (res.data == "설문조사 안한 유저") {
+                next("/survey");
+            } else {
+                return next();
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 };
 // beforeEnter: requireLogin(),  <<로그인한 사람만 들어갈 수 있는 페이지 component아래에 붙여넣으면됨
 const routes = [
-  {
-    path: "/",
-    name: "Main",
-    component: Main,
-    beforeEnter: requireSurvey()
-  },
-  {
-    path: "/login",
-    name: "Login",
-    component: Login,
-  },
-  {
-    path: "/naverlogin",
-    name: "naverlogin",
-    component: NaverLogin,
-  },
-  {
-    path: "/join",
-    name: "Join",
-    component: Join,
-  },
-  {
-    path: "/survey",
-    name: "Survey",
-    component: Survey,
-    beforeEnter: requireLogin()
-  },
-  {
-    path: "/test",
-    name: "testAPIPage",
-    component: booktestPage,
-  },
-  //---책리스트-------------------------------------------------
-  {
-    path: "/recommendlist",
-    name: "RecommendList",
-    component: RecommendList,
-  },
-  {
-    path: "/search/:keyword",
-    name: "SearchList",
-    component: SearchList,
-  },
-  {
-    path: "/best",
-    name: "BestList",
-    component: BestList,
-  },
-  {
-    path: "/new",
-    name: "NewList",
-    component: NewList,
-  },
-  {
-    path: "/detail/:bookNum",
-    name: "bookDetail",
-    component: bookDetail,
-    props: true // 라우트 파라미터를 컴포넌트의 프롭스로 전달
-  },
-  {
-    path: "/startest",
-    name: "writeStar",
-    component: startest,
-  },
-  {
-    path: "/goods",
-    name: "Goods",
-    component: Goods,
-  },
-  //-------------------------------------------------------------
-  //장바구니 - 결제 - 결제완료
-  {
-    path: "/cart",
-    name: "cartPage",
-    component: cart,
-  },
-  {
-    path: "/pay",
-    name: "paymentPage",
-    component: pay,
-  },
-  {
-    path: "/result/:orderNum",
-    name: "resultpage",
-    component: resultpage,
-  },
-  //-------------------------------------------------------------
-  //QNA
-  {
-    path: "/qna",
-    name: "qnaList",
-    component: qnaList,
-  },
-  {
-    path: "/qnaWrite",
-    name: "qnaWrite",
-    component: qnaWrite,
-  },
-  {
-    path: "/qnaEdit",
-    name: "qnaEdit",
-    component: qnaEdit,
-  },
-  //-------------------------------------------------------------
-  //룰렛, 쿠폰주는 화면
-  {
-    path: "/event",
-    name: "eventPage",
-    component: eventPage,
-  },
-  {
-    path: "/event1",
-    name: "eventPage1",
-    component: eventPage1,
-  },
-  {
-    path: "/roulette",
-    name: "roulette",
-    component: roulette,
-  },
-  //-------------------------------------------------------------
-  //관리자페이지
-  {
-    path: "/bookinsert",
-    name: "bookInsert",
-    component: bookInsert,
-  },
-  //-------------------------------------------------------------
-  //출석체크페이지
-  {
-    path: "/attendance",
-    name: "attendanceEventPage",
-    component: attendance,
-  },
-  {
-    path: "/mypage",
-    name: "mypage",
-    component: mypage,
-  },
+    {
+        path: "/",
+        name: "Main",
+        component: Main,
+        beforeEnter: requireSurvey(),
+    },
+    {
+        path: "/login",
+        name: "Login",
+        component: Login,
+    },
+    {
+        path: "/naverlogin",
+        name: "naverlogin",
+        component: NaverLogin,
+    },
+    {
+        path: "/join",
+        name: "Join",
+        component: Join,
+    },
+    {
+        path: "/survey",
+        name: "Survey",
+        component: Survey,
+        beforeEnter: requireLogin(),
+    },
+    {
+        path: "/test",
+        name: "testAPIPage",
+        component: booktestPage,
+    },
+    //---책리스트-------------------------------------------------
+    {
+        path: "/recommendlist",
+        name: "RecommendList",
+        component: RecommendList,
+    },
+    {
+        path: "/search/:keyword",
+        name: "SearchList",
+        component: SearchList,
+    },
+    {
+        path: "/best",
+        name: "BestList",
+        component: BestList,
+    },
+    {
+        path: "/new",
+        name: "NewList",
+        component: NewList,
+    },
+    {
+        path: "/detail/:bookNum",
+        name: "bookDetail",
+        component: bookDetail,
+        props: true, // 라우트 파라미터를 컴포넌트의 프롭스로 전달
+    },
+    {
+        path: "/startest",
+        name: "writeStar",
+        component: startest,
+    },
+    {
+        path: "/goods",
+        name: "Goods",
+        component: Goods,
+    },
+    //-------------------------------------------------------------
+    //장바구니 - 결제 - 결제완료
+    {
+        path: "/cart",
+        name: "cartPage",
+        component: cart,
+    },
+    {
+        path: "/pay/:payID",
+        name: "paymentPage",
+        component: pay,
+    },
+    {
+        path: "/result/:orderNum",
+        name: "resultpage",
+        component: resultpage,
+    },
+    //-------------------------------------------------------------
+    //QNA
+    {
+        path: "/qna",
+        name: "qnaList",
+        component: qnaList,
+    },
+    {
+        path: "/qnaWrite",
+        name: "qnaWrite",
+        component: qnaWrite,
+    },
+    {
+        path: "/qnaEdit",
+        name: "qnaEdit",
+        component: qnaEdit,
+    },
+    //-------------------------------------------------------------
+    //룰렛, 쿠폰주는 화면
+    {
+        path: "/event",
+        name: "eventPage",
+        component: eventPage,
+    },
+    {
+        path: "/event1",
+        name: "eventPage1",
+        component: eventPage1,
+    },
+    {
+        path: "/roulette",
+        name: "roulette",
+        component: roulette,
+    },
+    //-------------------------------------------------------------
+    //관리자페이지
+    {
+        path: "/bookinsert",
+        name: "bookInsert",
+        component: bookInsert,
+    },
+    //-------------------------------------------------------------
+    //출석체크페이지
+    {
+        path: "/attendance",
+        name: "attendanceEventPage",
+        component: attendance,
+    },
+    {
+        path: "/mypage",
+        name: "mypage",
+        component: mypage,
+    },
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes,
-  scrollBehavior() {
-    return { top: 0 };
-  },
+    history: createWebHistory(process.env.BASE_URL),
+    routes,
+    scrollBehavior() {
+        return { top: 0 };
+    },
 });
 export default router;

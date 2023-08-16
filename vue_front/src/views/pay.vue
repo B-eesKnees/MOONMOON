@@ -149,12 +149,26 @@ export default {
             month: "",
             selectedCoupon: "",
             isModalOpen: true,
+            payID: this.$route.params.payID,
+            userEmail: localStorage.getItem("userID"),
         };
     },
     mounted() {
         this.getNextDate();
+        this.getUserInfo();
     },
     methods: {
+        getUserInfo() {
+            const email = this.userEmail;
+
+            axios({
+                url: "/pay/payUserInfo",
+                method: "GET",
+                data: { userEmail: email },
+            }).then((res) => {
+                console.log(res.data);
+            });
+        },
         getNextDate() {
             //내일 배송일로 나오게 하는 함수
             const today = new Date();
