@@ -17,6 +17,9 @@ const queries = {
                  from qna
                  where QNA_USER_EMAIL = ? and QNA_REP = 1
                  order by QNA_DATE desc;`,
+
+  qnaWriteQuery: `INSERT INTO qna (QNA_USER_EMAIL, QNA_TITLE, QNA_CON, QNA_REP)
+                  VALUES (?,?,?,?)`,
 }
 
 // 데이터베이스 작업 함수
@@ -50,7 +53,7 @@ router.post('/qnaAll', async (request, res) => {
   });
 
 
-  // 문의 내역 출력_wait 
+  // 문의 내역 출력_wait  --ok 
 router.post('/qnaWait', async (request, res) => {
 
   try {
@@ -66,7 +69,7 @@ router.post('/qnaWait', async (request, res) => {
   });
 
 
-  // 문의 내역 출력_done  
+  // 문의 내역 출력_done  --ok  
 router.post('/qnaDone', async (request, res) => {
 
   try {
@@ -98,27 +101,29 @@ router.post('/qnaView', async (req, res) => {
 
 // 문의글 작성 --ok
 // get 요청이 왜 같이 들어오지..(아무래도 redirect 부분인 듯..)
-router.post('/qnaWrite', async (req, res) => {
-  const QNA_USER_EMAIL = 'user1@example.com';  // req.body.email
-  const { QNA_TITLE, QNA_CON } = req.body;
-  const QNA_REP = 0;
+router.post('/qnaWrite', async (request, res) => {
 
-  const query = `INSERT INTO qna (QNA_USER_EMAIL, QNA_TITLE, QNA_CON, QNA_REP)
-                 VALUES (?,?,?,?)`;
-  
-  if (QNA_TITLE ==='' || QNA_CON ==='') {
-    res.send(alertMove('제목이나 내용을 입력해주세요', '/qna/write'));
-  } else {
-    db.query(query, [QNA_USER_EMAIL, QNA_TITLE, QNA_CON, QNA_REP], (error, result) => {
-      if (error) {
-        return console.log(error);
-      }
-      if (result) {
-        return res.redirect(`/qna`);
-      }
-    });
-  }
-});
+  try {
+    const userEmail = request.body.email;
+    const QNA_TITLE = request.body.title;
+    const QNA_CON = request.body.con;
+    const QNA_REP = 0;
+
+    if (QNA_TITLE ==='' || QNA_CON ==='') {
+      return res.send(alertMove('제목이나 내용을 입력해주세요', '/qna/write'));
+    } else {
+      res.send(await req(queries.qnaWriteQuery, [userEmail, QNA_TITLE, QNA_CON, QNA_REP]));
+      console.log(userEmail);
+      console.log(QNA_TITLE);
+      console.log(QNA_CON);
+      return res.redirect(`/qna`);
+    } 
+  }catch (err) {
+      res.status(500).send({
+        error:err
+      });
+    } 
+  });
 
 
 // 문의 내용 수정  --ok
