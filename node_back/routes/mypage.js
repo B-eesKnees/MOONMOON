@@ -102,102 +102,298 @@ router.get("/userpoint", (req, res) => {
   });
 });
 
-router.post("/updatecoupon", (req, res) => {
-  const userEmail = req.body.userEmail;
+router.post("/updatecoupon/:userEmail", (req, res) => {
+  const userEmail = req.params.userEmail;
 
-  // user_total_pay 구하기
-  const totalPayQuery = "SELECT user_total_pay FROM user WHERE user_email = ?";
-  db.query(totalPayQuery, [userEmail], (err, results) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: "서버에러" });
-    } else if (results.length > 0) {
-      const userTotalPay = results[0].user_total_pay;
+  // 사용자 정보 조회
+  const userQuery = `
+      SELECT user_total_pay FROM user
+      WHERE user_email = ?
+  `;
 
-      // Determine user's coupon type based on total pay
-      let couponGrades = [];
-      let discountRatios = [];
-      let freeShipCouponId = null;
+  db.query(userQuery, [userEmail], (userError, userResults) => {
+    if (userError) {
+      console.error(userError);
+      res.status(500).json({ error: "유저 정보 조회 실패." });
+      return;
+    }
 
-      if (userTotalPay < 100000) {
-        couponGrades = ["프렌즈"];
-        discountRatios = [5]; // 할인 비율
-      } else if (userTotalPay >= 100000 && userTotalPay < 200000) {
-        couponGrades = ["실버"];
-        discountRatios = [10]; // 할인 비율
-      } else if (userTotalPay >= 200000 && userTotalPay < 300000) {
-        couponGrades = ["골드"];
-        discountRatios = [15]; // 할인 비율
-        freeShipCouponId = 5;
-      } else if (userTotalPay >= 300000) {
-        couponGrades = ["플래티넘"];
-        discountRatios = [20]; // 할인 비율
-        freeShipCouponId = 6;
-      }
+    if (userResults.length === 0) {
+      res.status(404).json({ error: "유저를 찾을 수 없음." });
+      return;
+    }
 
-      // Loop through coupon types and insert if not already added
-      couponGrades.forEach((couponGrades, index) => {
-        let insertQuery = `
-          INSERT INTO cpuser (CPUSER_USER_EMAIL, CPUSER_COUPON_ID, CPUSER_STATUS, CPUSER_MAXDATE, CPUSER_REGDATE)
-          SELECT ?, c.COUPON_ID, 0, c.COUPON_MAXDATE, NOW()
-          FROM coupon c
-          WHERE (c.COUPON_GRADE = ? OR (c.COUPON_ID IN (5, 6))) AND c.COUPON_RATIO = ? AND NOT EXISTS (
-            SELECT 1 FROM cpuser WHERE CPUSER_USER_EMAIL = ? AND CPUSER_COUPON_ID = c.COUPON_ID
-          );
-        `;
+    const userTotalPay = userResults[0].user_total_pay;
 
-        if (couponGrades === "무료배송 쿠폰") {
-          insertQuery = `
-            INSERT INTO cpuser (CPUSER_USER_EMAIL, CPUSER_COUPON_ID, CPUSER_STATUS, CPUSER_MAXDATE, CPUSER_REGDATE)
-            SELECT ?, c.COUPON_ID, 0, c.COUPON_MAXDATE, NOW()
-            FROM coupon c
-            WHERE (c.COUPON_GRADE = ? AND c.COUPON_ID IN (5, 6)) AND c.COUPON_RATIO = ? AND NOT EXISTS (
-              SELECT 1 FROM cpuser WHERE CPUSER_USER_EMAIL = ? AND CPUSER_COUPON_ID = c.COUPON_ID
-            );
-          `;
-        }
+    // 현재 날짜 및 시간
+    const now = new Date();
+
+    // 무료배송 쿠폰 조회 및 지급 로직
+    const query = `
+          SELECT * FROM coupon
+          WHERE COUPON_GRADE IN ('골드', '플래티넘')
+          AND ? >= 200000
+          AND COUPON_MAXDATE >= NOW()
+      `;
+
+    db.query(query, [userTotalPay], (error, results) => {
+      if (error) {
+        console.error(error);
+        res.status(500).json({
+          error: "An error occurred while fetching free delivery coupons.",
+        });
+      } else {
+        const freeDeliveryCouponsToGive = results;
+
+        // 등급별 쿠폰 조회 및 지급 로직
+        const query = `
+                  SELECT * FROM coupon
+                  WHERE (COUPON_GRADE = '프렌즈' AND ? < 100000)
+                  OR (COUPON_GRADE = '실버' AND ? >= 100000 AND ? < 200000)
+                  OR (COUPON_GRADE = '골드' AND ? >= 200000 AND ? < 300000)
+                  OR (COUPON_GRADE = '플래티넘' AND ? >= 300000)
+                  AND COUPON_MAXDATE >= NOW()
+              `;
 
         db.query(
-          insertQuery,
-          [userEmail, couponGrades, discountRatios[index], userEmail],
-          (insertErr) => {
-            if (insertErr) {
-              console.error(insertErr);
+          query,
+          [
+            userTotalPay,
+            userTotalPay,
+            userTotalPay,
+            userTotalPay,
+            userTotalPay,
+            userTotalPay,
+          ],
+          (error, results) => {
+            if (error) {
+              console.error(error);
+              res.status(500).json({
+                error: "An error occurred while fetching grade coupons.",
+              });
+            } else {
+              const gradeCouponsToGive = results;
+
+              // 쿠폰 지급 및 cpuser 테이블에 삽입
+              const couponsToInsert =
+                freeDeliveryCouponsToGive.concat(gradeCouponsToGive);
+
+              const cpuserInsertQuery = `
+                          INSERT INTO cpuser (CPUSER_USER_EMAIL, CPUSER_COUPON_ID, CPUSER_STATUS, CPUSER_MAXDATE, CPUSER_REGDATE)
+                          VALUES (?, ?, ?, ?, now())
+                      `;
+
+              const insertPromises = couponsToInsert.map((coupon) => {
+                return new Promise((resolve, reject) => {
+                  db.query(
+                    cpuserInsertQuery,
+                    [userEmail, coupon.COUPON_ID, 0, coupon.COUPON_MAXDATE],
+                    (insertError, insertResults) => {
+                      if (insertError) {
+                        console.error(insertError);
+                        reject(
+                          "An error occurred while inserting cpuser data."
+                        );
+                      } else {
+                        resolve(coupon);
+                      }
+                    }
+                  );
+                });
+              });
+
+              Promise.all(insertPromises)
+                .then((insertedCoupons) => {
+                  res.json({
+                    message: "Coupons generated and inserted successfully.",
+                    coupons: insertedCoupons,
+                  });
+                })
+                .catch((error) => {
+                  res.status(500).json({ error });
+                });
             }
           }
         );
-      });
-
-      res.status(200).json({ message: "쿠폰을 업데이트했습니다." });
-    } else {
-      res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
-    }
+      }
+    });
   });
 });
 
-// 쿠폰 소멸 로직
-function processCouponExpiry() {
-  const currentDate = new Date();
-  const expiryDate = new Date("2023-08-31 23:59:59");
+router.post("/updatecoupon/:userEmail", (req, res) => {
+  const userEmail = req.params.userEmail;
 
-  if (currentDate >= expiryDate) {
-    const deleteQuery = "DELETE FROM cpuser WHERE CPUSER_MAXDATE < ?";
-    db.query(deleteQuery, [currentDate], (deleteErr) => {
-      if (deleteErr) {
-        console.error(deleteErr);
+  // 사용자 정보 조회
+  const userQuery = `
+      SELECT user_total_pay FROM user
+      WHERE user_email = ?
+  `;
+
+  db.query(userQuery, [userEmail], (userError, userResults) => {
+    if (userError) {
+      console.error(userError);
+      res.status(500).json({ error: "유저 정보 조회 실패." });
+      return;
+    }
+
+    if (userResults.length === 0) {
+      res.status(404).json({ error: "유저를 찾을 수 없음." });
+      return;
+    }
+
+    const userTotalPay = userResults[0].user_total_pay;
+
+    // 현재 날짜 및 시간
+    const now = new Date();
+
+    // 등급별 쿠폰 조회 및 지급 로직
+    const gradeCouponQuery = `
+        SELECT * FROM coupon
+        WHERE (COUPON_GRADE = '프렌즈' AND ? < 100000)
+        OR (COUPON_GRADE = '실버' AND ? >= 100000 AND ? < 200000)
+        OR (COUPON_GRADE = '골드' AND ? >= 200000 AND ? < 300000)
+        OR (COUPON_GRADE = '플래티넘' AND ? >= 300000)
+        AND COUPON_MAXDATE >= NOW()
+    `;
+
+    db.query(
+      gradeCouponQuery,
+      [
+        userTotalPay,
+        userTotalPay,
+        userTotalPay,
+        userTotalPay,
+        userTotalPay,
+        userTotalPay,
+      ],
+      (gradeCouponError, gradeCouponResults) => {
+        if (gradeCouponError) {
+          console.error(gradeCouponError);
+          res.status(500).json({
+            error: "An error occurred while fetching grade coupons.",
+          });
+        } else {
+          const gradeCouponsToGive = gradeCouponResults;
+
+          // 쿠폰 지급 및 cpuser 테이블에 삽입
+          const cpuserInsertQuery = `
+              INSERT INTO cpuser (CPUSER_USER_EMAIL, CPUSER_COUPON_ID, CPUSER_STATUS, CPUSER_MAXDATE, CPUSER_REGDATE)
+              VALUES (?, ?, ?, ?, now())
+          `;
+
+          const insertPromises = gradeCouponsToGive.map((coupon) => {
+            return new Promise((resolve, reject) => {
+              db.query(
+                cpuserInsertQuery,
+                [userEmail, coupon.COUPON_ID, 0, coupon.COUPON_MAXDATE],
+                (insertError, insertResults) => {
+                  if (insertError) {
+                    console.error(insertError);
+                    reject("An error occurred while inserting cpuser data.");
+                  } else {
+                    resolve(coupon);
+                  }
+                }
+              );
+            });
+          });
+
+          Promise.all(insertPromises)
+            .then((insertedCoupons) => {
+              res.json({
+                message: "Coupons generated and inserted successfully.",
+                coupons: insertedCoupons,
+              });
+            })
+            .catch((error) => {
+              res.status(500).json({ error });
+            });
+        }
       }
-    });
-  }
-}
+    );
+  });
+});
 
-// 8월 31일까지 매일 자정에 쿠폰 소멸 작업 수행
-const expiryDate = new Date("2023-08-31 23:59:59");
-const timeUntilExpiry = expiryDate - new Date();
-if (timeUntilExpiry > 0) {
-  setTimeout(() => {
-    processCouponExpiry();
-    setInterval(processCouponExpiry, 24 * 60 * 60 * 1000);
-  }, timeUntilExpiry);
-}
+//배송 상태별 조회
+const ORDER_STATE = {
+  ready: "배송준비",
+  delivering: "배송중",
+  delivered: "배송완료",
+  cancelled: "주문취소",
+};
+
+router.get("/orderdelivery", (req, res) => {
+  const userEmail = req.query.userEmail;
+  const orderState = req.query.orderState;
+
+  const query =
+    "SELECT order_useremail, order_state FROM `order` WHERE ORDER_USEREMAIL = ? AND ORDER_STATE = ?";
+
+  db.query(query, [userEmail, ORDER_STATE[orderState]], (err, results) => {
+    if (err) {
+      console.error("에러발생:", err);
+      res.status(500).json({ error: "에러발생" });
+      return;
+    }
+    res.json(results);
+  });
+});
+
+//주문검색(주문상품)
+router.get("/ordersearchbook", (req, res) => {
+  const userEmail = req.query.userEmail;
+  const bookKeyword = req.query.bookKeyword;
+
+  let query = `
+    SELECT o.*, oi.*, b.BOOK_TITLE
+    FROM \`order\` AS o
+    JOIN ORDERITEM AS oi ON o.ORDER_ID = oi.ORDERITEM_ORDERID
+    JOIN BOOK AS b ON oi.ORDERITEM_BOOKID = b.BOOK_ID
+    WHERE 1
+  `;
+
+  if (userEmail) {
+    query += ` AND o.ORDER_USEREMAIL = '${userEmail}'`;
+  }
+
+  if (bookKeyword) {
+    query += ` AND b.BOOK_TITLE LIKE '%${bookKeyword}%'`;
+  }
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error fetching orders:", err);
+      res.status(500).json({ error: "Error fetching orders" });
+      return;
+    }
+    res.json(results);
+  });
+});
+//주문검색(주문번호)
+router.get("/ordersearchnumber", (req, res) => {
+  const userEmail = req.query.userEmail;
+  const orderId = req.query.orderId;
+
+  let query = "SELECT * FROM `order` WHERE 1"; // 기본 쿼리
+
+  if (userEmail) {
+    query += ` AND ORDER_USEREMAIL = '${userEmail}'`;
+  }
+
+  if (orderId) {
+    query += ` AND CAST(ORDER_ID AS CHAR) LIKE '${orderId}%'`; // 부분적으로 일치하도록 변경
+  }
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error fetching orders:", err);
+      res.status(500).json({ error: "Error fetching orders" });
+      return;
+    }
+    res.json(results);
+  });
+});
+
+//날짜별로 (기간 검색)
 
 module.exports = router;
