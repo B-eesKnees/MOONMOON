@@ -81,7 +81,7 @@ router.get("/reviewdata", (req, res) => {
 //리뷰 데이터 받아오기 (평점 높은 순)ok
 router.get("/reviewrating", (req, res) => {
   const { bookId } = req.query;
-  const query = `SELECT r.REVIEW_ID, r.REV_COMMENT, DATE_FORMAT(r.REV_CREATED_AT, '%Y-%m-%d') AS REV_CREATED_AT, r.REV_RATING, b.BOOK_ID, u.user_email AS rev_writer 
+  const query = `SELECT r.REVIEW_ID, r.REV_COMMENT, DATE_FORMAT(r.REV_CREATED_AT, '%Y-%m-%d') AS REV_CREATED_AT, r.REV_RATING, b.BOOK_ID, u.user_email AS review_writer 
     FROM review r 
     INNER JOIN book b ON r.REV_ORDERITEM_BOOK = b.BOOK_ID 
     INNER JOIN user u ON r.REV_WRITER = u.user_email 
@@ -101,7 +101,7 @@ router.get("/reviewrating", (req, res) => {
 //리뷰데이터 평점 낮은 순 ok
 router.get("/lowreviewrating", (req, res) => {
   const { bookId } = req.query;
-  const query = `SELECT r.REVIEW_ID, r.REV_COMMENT, DATE_FORMAT(r.REV_CREATED_AT, '%Y-%m-%d') AS REV_CREATED_AT, r.REV_RATING, b.BOOK_ID, u.user_email AS rev_writer 
+  const query = `SELECT r.REVIEW_ID, r.REV_COMMENT, DATE_FORMAT(r.REV_CREATED_AT, '%Y-%m-%d') AS REV_CREATED_AT, r.REV_RATING, b.BOOK_ID, u.user_email AS review_writer 
     FROM review r 
     INNER JOIN book b ON r.REV_ORDERITEM_BOOK = b.BOOK_ID 
     INNER JOIN user u ON r.REV_WRITER = u.user_email 
