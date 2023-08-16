@@ -153,12 +153,12 @@ const routes = [
     component: qnaList,
   },
   {
-    path: "/qnaWrite",
+    path: "/qnawrite",
     name: "qnaWrite",
     component: qnaWrite,
   },
   {
-    path: "/qnaEdit",
+    path: "/qnaedit",
     name: "qnaEdit",
     component: qnaEdit,
   },

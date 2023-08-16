@@ -18,7 +18,7 @@
       </div>
       <div class="btn_box">
         <button class="btn_cancel">취소</button>
-        <button class="btn_accept" @click="qnaInsert">문의 접수</button>
+        <button class="btn_accept" @click="qnaWrite">문의 접수</button>
       </div>
     </div>
   </div>
@@ -27,7 +27,6 @@
 
 <script>
 import axios from 'axios';
-import Swal from 'sweetalert2';
 
 import GnbBar from '../components/gnbBar.vue'
 
@@ -38,17 +37,27 @@ export default {
   data() {
     return {
       qna: {
+        email: "",
         qna_title: "",
         qna_con: "",
+        qna_rep: 0
     },
     }
   },
+  created() {
+    this.qna.email = localStorage.getItem("userID");
+  },
   methods: {
-    goToQnaTitle(title) {
-     this.$router.push({path:'/qna/qnaWrite', query:{title: qna_title}}); 
-    },
-    goToQnaCon(con) {
-     this.$router.push({path:'/qna/qnaWrite', query:{con: qna_con}}); 
+    qnaWrite() {
+      axios.post("/qna/qnaWrite", this.qna) // this.qna 객체를 서버로 전송
+        .then(response => {
+          // 서버 응답 처리
+          // ... (원하는 처리 방식으로 추가)
+          this.$router.push("/qna"); // 문의 작성 후에 목록 페이지로 이동
+        })
+        .catch(error => {
+          console.error("Error writing Q&A:", error);
+        });
     },
   }
   

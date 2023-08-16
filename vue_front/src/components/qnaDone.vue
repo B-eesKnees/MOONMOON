@@ -13,7 +13,7 @@ export default {
     },
   },
   methods: {
-    async toggleContent1(index) {
+    async toggleContent3(index) {
       this.showQnaDoneContent[index] =!this.showQnaDoneContent[index];
       await this.$emit('update:showQnaDoneContent', this.showQnaDoneContent);
     }
@@ -41,7 +41,7 @@ export default {
         <img class="done-icon" src="../assets/img/done.png" alt="done-img">
       </div>
       <!-- 문의 제목/날짜 -->      
-        <div class="qna-tilte">{{ done.QNA_TITLE}}</div>
+        <div class="qna-title">{{ done.QNA_TITLE}}</div>
         <div class="qna-date">{{ done.QNA_DATE }}</div>
       <!-- 버튼 토글-문의 내용/답변 -->        
           <button @click="toggleContent3(i)" class="con-open_close">

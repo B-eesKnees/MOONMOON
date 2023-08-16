@@ -11,12 +11,16 @@ export default {
       type: Array,
       default: () => []
     },
+    qnaDelFunction: Function,
   },
   methods: {
     async toggleContent2(index) {
       this.showQnaWaitContent[index] =!this.showQnaWaitContent[index];
       await this.$emit('update:showQnaWaitContent', this.showQnaWaitContent);
-    }
+    },
+    handleQnaDel(qna_id) {
+      this.qnaDelFunction(qna_id);
+    },
   }
   /* computed: {
     truncatedContents() {
@@ -40,7 +44,7 @@ export default {
         <img class="wait-icon" src="../assets/img/waiting.png" alt="waiting-img">
       </div>
       <!-- 문의 제목/날짜 -->      
-        <div class="qna-tilte">{{ wait.QNA_TITLE }}</div>
+        <div class="qna-title">{{ wait.QNA_TITLE }}</div>
         <div class="qna-date">{{ wait.QNA_DATE }}</div>
       <!-- 버튼 토글-문의 내용/답변 -->        
           <button @click="toggleContent2(i)" class="con-open_close">
@@ -48,6 +52,12 @@ export default {
           </button>
           <div class="younju" v-if="showQnaWaitContent[i]">
             <div class="qna-con">{{ wait.QNA_CON }}</div>
+              <div>
+                <a href="http://localhost:8080/qnaEdit">
+                  <button>수정</button>
+                </a>          
+                <button @click="handleQnaDel(wait.QNA_ID)">삭제</button>
+              </div>
           </div>       
     </div>
   </div>
