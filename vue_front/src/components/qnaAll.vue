@@ -11,13 +11,17 @@ export default {
     qnaAllList: Array,
     conOpenBotton: String,
     conCloseBotton: String,
+    qnaDelFunction: Function,
   },
   methods: {
     async toggleContent1(index) {
       this.showQnaAllContent[index] =!this.showQnaAllContent[index];
       await this.$emit('update:showQnaAllContent', this.showQnaAllContent);
-    }
-  }
+    },
+    handleQnaDel(qna_id) {
+      this.qnaDelFunction(qna_id);
+    },
+  },
   /* computed: {
     truncatedContents() {
       const maxChars = 30;
@@ -52,6 +56,12 @@ export default {
         </button>
         <div class="younju" v-if="showQnaAllContent[i]">
           <div class="qna-con">{{ all.QNA_CON }}</div>
+            <div v-if="all.QNA_REP === 0">
+              <a href="http://localhost:8080/qnaEdit">
+                <button>수정</button>
+              </a>          
+              <button @click="handleQnaDel(all.QNA_ID)">삭제</button>
+            </div>
           <div class="qna-reply">{{ all.QNA_REPLY }}</div>
         </div>  
     </div>

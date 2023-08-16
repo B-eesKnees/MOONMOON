@@ -20,6 +20,9 @@ const queries = {
 
   qnaWriteQuery: `INSERT INTO qna (QNA_USER_EMAIL, QNA_TITLE, QNA_CON, QNA_REP)
                   VALUES (?,?,?,?)`,
+
+  qnaDelQuery: `delete from qna
+                where QNA_ID = ?`,
 }
 
 // 데이터베이스 작업 함수
@@ -100,23 +103,21 @@ router.post('/qnaView', async (req, res) => {
 
 
 // 문의글 작성 --ok
-// get 요청이 왜 같이 들어오지..(아무래도 redirect 부분인 듯..)
 router.post('/qnaWrite', async (request, res) => {
 
   try {
     const userEmail = request.body.email;
-    const QNA_TITLE = request.body.title;
-    const QNA_CON = request.body.con;
-    const QNA_REP = 0;
+    const QNA_TITLE = request.body.qna_title;
+    const QNA_CON = request.body.qna_con;
+    const QNA_REP = request.body.qna_rep;
 
     if (QNA_TITLE ==='' || QNA_CON ==='') {
-      return res.send(alertMove('제목이나 내용을 입력해주세요', '/qna/write'));
+      return res.send(alertMove('제목이나 내용을 입력해주세요', '/qnawrite'));
     } else {
       res.send(await req(queries.qnaWriteQuery, [userEmail, QNA_TITLE, QNA_CON, QNA_REP]));
       console.log(userEmail);
       console.log(QNA_TITLE);
       console.log(QNA_CON);
-      return res.redirect(`/qna`);
     } 
   }catch (err) {
       res.status(500).send({
@@ -127,7 +128,7 @@ router.post('/qnaWrite', async (request, res) => {
 
 
 // 문의 내용 수정  --ok
-router.post('/qnaEdit', async (req, res) => {
+router.post('/qnaEdit', async (request, res) => {
   let { QNA_ID } = req.body;
    QNA_ID = Number(QNA_ID);
   const { QNA_TITLE, QNA_CON } = req.body;
@@ -148,21 +149,19 @@ router.post('/qnaEdit', async (req, res) => {
 
 
 // 문의 삭제  --ok
-router.get('/qnaDel', async (req, res) => {
-  let { QNA_ID } = req.body;
-   QNA_ID = Number(QNA_ID); 
+router.post('/qnaDel', async (request, res) => {
 
-  const query = `delete from qna
-                 where QNA_ID = ?`;
+   try {
+    let { QNA_ID } = request.body;
+      QNA_ID = Number(QNA_ID);
 
-  db.query(query, QNA_ID, (error, result) => {
-    if (error) {
-      return console.log(error);
-    }
-    if (result) {
-      res.send(alertMove('글이 삭제 되었습니다.', '/qna'));
-    }
-  });
+      res.send(await req(queries.qnaDelQuery, QNA_ID));
+      console.log(QNA_ID);
+   } catch (err) {
+    res.status(500).send({
+      error: err
+    });
+   }  
 });
 
 

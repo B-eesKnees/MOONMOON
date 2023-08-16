@@ -10,7 +10,7 @@
       <section class="tabWrap">
         <TabsWrapper>
           <TabItem title="전체(11)">           
-            <a href="#">
+            <a href="http://localhost:8080/qnaWrite">
               <div class="qna-btn" v-if="!nodata">
                 1:1 문의하기
               </div>
@@ -28,11 +28,12 @@
                 :conOpenBotton="conOpenBotton"
                 :conCloseBotton="conCloseBotton"        
                 :editMode="editMode"
+                :qnaDelFunction="qnaDel"
               ></qnaAll>
             </div>
           </TabItem>
           <TabItem title="답변 대기(2)">
-            <a href="#">
+            <a href="http://localhost:8080/qnaWrite">
               <div class="qna-btn" v-if="!nodata">
                 1:1 문의하기
               </div>
@@ -50,11 +51,12 @@
                 :conOpenBotton="conOpenBotton"
                 :conCloseBotton="conCloseBotton"  
                 :editMode="editMode"
+                :qnaDelFunction="qnaDel"
               ></qnaWait>
             </div>
           </TabItem>
           <TabItem title="답변 완료(9)">
-            <a href="#">
+            <a href="http://localhost:8080/qnaWrite">
               <div class="qna-btn" v-if="!nodata">
                 1:1 문의하기
               </div>
@@ -103,6 +105,7 @@ export default {
   data() {
     return {
       email: "",
+      qna_id: "",
       editMode: false,
       currentTagName: "전체(11)",
       showQnaAllContent: [],
@@ -189,7 +192,16 @@ export default {
       } catch (error) {
         console.log(error);
       }      
-      }
+      },
+      qnaDel(qna_id) {
+        axios.post("/qna/qnaDel", { QNA_ID: qna_id })
+          .then(response => {
+            window.location.reload();
+          })
+          .catch(error => {
+            console.error("Error deleting Q&A", error);
+          });
+      },
     }, 
  
 };
