@@ -88,5 +88,16 @@ router.post("/countCart", async (req, res) => {
         }
     });
 });
+router.post("/delete", async (req, res) => {
+    const bookidArr = req.body.bookid;
+
+    db.query(`delete from cart where CART_BOOK_ID in (?)`, [bookidArr], (err, result) => {
+        if (err) {
+            res.status(200).send(err);
+        } else {
+            res.status(200).send("삭제완료");
+        }
+    });
+});
 
 module.exports = router;

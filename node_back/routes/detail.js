@@ -60,6 +60,26 @@ router.post("/gotoPay", async (req, res) => {
 });
 
 //성공
+// router.post("/gotoCart", async (req, res) => {
+//     //장바구니에 추가
+//     const gotoCartInfo = {
+//         CART_USER_EMAIL: req.body.email,
+//         //유저 이메일
+//         CART_BOOK_ID: req.body.bookId,
+//         //책 고유번호
+//         CART_COUNT: 1,
+//         //장바구니 수량 기본 1개
+//     };
+
+//     db.query(`insert into cart set ?`, gotoCartInfo, (err, result) => {
+//         if (err) {
+//             res.send(err).status(200);
+//         } else {
+//             res.status(200).send("ok");
+//         }
+//     });
+// });
+
 router.post("/gotoCart", async (req, res) => {
     //장바구니에 추가
     const gotoCartInfo = {
@@ -70,12 +90,30 @@ router.post("/gotoCart", async (req, res) => {
         CART_COUNT: 1,
         //장바구니 수량 기본 1개
     };
+    const email = req.body.email;
+    const bookId = req.body.bookId;
 
-    db.query(`insert into cart set ?`, gotoCartInfo, (err, result) => {
+    db.query(`select * from cart where CART_USER_EMAIL = ? and CART_BOOK_ID = ?`, [email, bookId], (err, result1) => {
         if (err) {
-            res.send(err).status(200);
+            res.status(200).send(err);
         } else {
-            res.status(200).send("ok");
+            if (result1.length === 0) {
+                db.query(`insert into cart set ?`, gotoCartInfo, (err, result2) => {
+                    if (err) {
+                        res.send(err).status(200);
+                    } else {
+                        res.status(200).send("장바구니 추가");
+                    }
+                });
+            } else {
+                db.query(`update cart set CART_COUNT = CART_COUNT + 1 where CART_USER_EMAIL = ? and CART_BOOK_ID = ?`, [email, bookId], (err, result3) => {
+                    if (err) {
+                        res.send(err).status(200);
+                    } else {
+                        res.status(200).send("수량 추가");
+                    }
+                });
+            }
         }
     });
 });
