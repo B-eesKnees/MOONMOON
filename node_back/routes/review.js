@@ -6,28 +6,32 @@ const db = require("../db");
 router.post("/postreview", (req, res) => {
   const reviewData = req.body;
 
-  // Check if the user has bought the product (ORDERITEM_BUYCHECK is 1)
-  const checkBuyQuery = `
-    SELECT oi.ORDERITEM_BUYCHECK
+  // Check if the user has bought the product and rev_check is 0
+  const checkBuyAndRevCheckQuery = `
+    SELECT oi.ORDERITEM_BUYCHECK, oi.ORDERITEM_REVCHECK
     FROM orderitem oi
     WHERE oi.ORDERITEM_ORDERID IN (
       SELECT o.ORDER_ID
       FROM \`order\` o
-      WHERE o.ORDER_USEREMAIL = ? AND o.ORDER_STATE = '배송 완료'
+      WHERE o.ORDER_USEREMAIL = ? AND o.ORDER_STATE = '배송완료'
     )
     AND oi.ORDERITEM_BOOKID = ?
   `;
 
   db.query(
-    checkBuyQuery,
+    checkBuyAndRevCheckQuery,
     [reviewData.REV_WRITER, reviewData.REV_ORDERITEM_BOOK],
     (err, result) => {
       if (err) {
         console.error(err);
         res.status(500).json({ error: "서버 에러" });
       } else {
-        if (result.length > 0 && result[0].ORDERITEM_BUYCHECK === 1) {
-          // User has bought the product, proceed with inserting the review
+        if (
+          result.length > 0 &&
+          result[0].ORDERITEM_BUYCHECK === 1 &&
+          result[0].ORDERITEM_REVCHECK === 0
+        ) {
+          // Proceed with inserting the review
           const reviewRow = {
             REV_ORDERITEM_BOOK: reviewData.REV_ORDERITEM_BOOK,
             REV_WRITER: reviewData.REV_WRITER,
@@ -42,27 +46,75 @@ router.post("/postreview", (req, res) => {
               console.error(err);
               res.status(500).json({ error: "서버 에러" });
             } else {
-              res.status(200).json({
-                message: "INSERT COMPLETE",
-                review: reviewRow,
-              });
+              // 리뷰 작성되면 REVCHECK =1로 업데이트
+              const updateRevCheckQuery = `
+              UPDATE orderitem
+              SET ORDERITEM_REVCHECK = 1
+              WHERE ORDERITEM_ORDERID IN (
+                SELECT o.ORDER_ID
+                FROM \`order\` o
+                WHERE o.ORDER_USEREMAIL = ? AND o.ORDER_STATE = '배송완료'
+              )
+              AND ORDERITEM_BOOKID = ?
+              `;
+
+              db.query(
+                updateRevCheckQuery,
+                [reviewData.REV_WRITER, reviewData.REV_ORDERITEM_BOOK],
+                (err, updateResult) => {
+                  if (err) {
+                    console.error(err);
+                    res.status(500).json({ error: "서버 에러" });
+                  } else {
+                    //리뷰 작성하면 300p증정
+                    const updateUserPointQuery = `
+                      UPDATE user
+                      SET user_point = user_point + 300
+                      WHERE user_email = ?
+                    `;
+
+                    db.query(
+                      updateUserPointQuery,
+                      [reviewData.REV_WRITER],
+                      (err, updatePointResult) => {
+                        if (err) {
+                          console.error(err);
+                          res.status(500).json({ error: "서버 에러" });
+                        } else {
+                          res.status(200).json({
+                            message: "리뷰 작성 완료",
+                            review: reviewRow,
+                          });
+                        }
+                      }
+                    );
+                  }
+                }
+              );
             }
           });
-        } else {
-          // User has not bought the product, cannot post review
+        } else if (result.length > 0 && result[0].ORDERITEM_REVCHECK === 1) {
+          // User has already posted a review for the same product
           res.status(400).json({
-            error: "해당 상품을 구매하지 않아 리뷰를 작성할 수 없습니다.",
+            error: "이미 해당 상품에 대한 리뷰를 작성한 경우.",
+          });
+        } else {
+          // User has not bought the product or rev_check is not 0, cannot post review
+          res.status(400).json({
+            error:
+              "해당 상품을 구매하지 않았거나 리뷰 작성이 불가능한 상태입니다.",
           });
         }
       }
     }
   );
 });
+
 //리뷰 데이터 받아오기ok (기본(최신순))
 router.get("/reviewdata", (req, res) => {
   const { bookId } = req.query;
   const query =
-    "SELECT r.REVIEW_ID, r.REV_COMMENT,r.REV_COMMENT, DATE_FORMAT(r.REV_CREATED_AT, '%Y-%m-%d') AS REV_CREATED_AT, r.REV_RATING, b.BOOK_ID, u.user_email AS review_writer " +
+    "SELECT r.REVIEW_ID, r.REV_COMMENT,r.REV_COMMENT, DATE_FORMAT(r.REV_CREATED_AT, '%Y-%m-%d') AS REV_CREATED_AT, r.REV_RATING,  b.BOOK_ID, u.user_email AS review_writer " +
     "FROM review r " +
     "INNER JOIN book b ON r.REV_ORDERITEM_BOOK = b.BOOK_ID " +
     "INNER JOIN user u ON r.REV_WRITER = u.user_email " +
