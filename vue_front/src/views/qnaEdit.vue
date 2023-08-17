@@ -9,11 +9,11 @@
       <div class="write_box">
         <div class="title_write">
           <h2 class="title_text">제목</h2>
-          <input class="title_input" type="text">
+          <input class="title_input" type="text" v-model="qna.qna_title" placeholder="{{ qna.qna_title }}">
         </div>
         <div class="con_write">
           <h2 class="con_text">내용</h2>
-          <input class="con_input" type="text">
+          <input class="con_input" type="text" v-model="qna.qna_con" placeholder="{{ qna.qna_con }}">
         </div>
       </div>
       <div class="btn_box">
@@ -40,23 +40,51 @@ export default {
         qna_title: "",
         qna_con: "",
         qna_rep: 0
-    },
+      },
+      qna_id: "",
     }
   },
   created() {
     this.qna.email = localStorage.getItem("userID");
   },
   methods: {
-    qnaEdit() {
-      axios.post("/qna/qnaEdit", this.qna) // this.qna 객체를 서버로 전송
-        .then(response => {
-          // 서버 응답 처리
-          // ... (원하는 처리 방식으로 추가)
-          this.$router.push("/qna"); // 문의 작성 후에 목록 페이지로 이동
-        })
-        .catch(error => {
-          console.error("Error editing Q&A:", error);
+    async getOriginalQnaCon() {
+      try {
+        const url = "/qna/qnaOriginal";
+        const data = { QNA_ID: this.qna_id };
+
+        const getOriginalQnaCon = (await axios({
+          method: 'post',
+          url,
+          data
+        }).catch(error => {
+          console.log(error);
+        })).data;
+
+        if (getOriginalQnaCon.length > 0) {
+        this.getOriginalQnaCon = getOriginalQnaCon;
+
+      }
+      console.log(this.getOriginalQnaCon);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async qnaEdit() {
+      try {
+        const qna_id = this.$route.params.qna_id; // assuming you have the qna_id as a parameter in the route
+        const response = await axios.post("/qna/qnaEdit", {
+          qna_id,
+          qna_con: this.qna.qna_con
         });
+        
+        // 서버 응답 처리
+        // ... (원하는 처리 방식으로 추가)
+        
+        this.$router.push("/qna"); // 문의 작성 후에 목록 페이지로 이동
+      } catch (error) {
+        console.error("Error editing Q&A:", error);
+      }
     },
   }
   

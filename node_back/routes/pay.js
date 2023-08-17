@@ -3,22 +3,54 @@ const db = require("../db");
 
 const router = express.Router();
 
-// 가입시 입력한 유저/배송지 정보 출력  --ok
-router.get("/payUserInfo", (req, res) => {
-    const userEmail = req.body.userEmail; // req.body.userEmail
-    console.log(userEmail);
-    const query = `select USER_NAME, USER_PHONE, USER_ADD1, USER_ADD2
-                 from user
-                 where USER_EMAIL = ?`;
+const queries = {
+  payUserInfoQuery: `select USER_NAME, USER_PHONE, USER_ADD1, USER_ADD2
+                     from user
+                     where USER_EMAIL = ?`,
 
-    db.query(query, userEmail, (error, result) => {
-        if (error) {
-            return console.log(error);
-        }
-        if (result.length > 0) {
-            res.send({ payUserInfo: result }); // res.render?-x  res.json?
-        }
+  payBookInfoQuery: `SELECT b.BOOK_COVER as image, b.BOOK_TITLE as name, b.BOOK_PRICE as price, o.ORDERITEM_CNT as quantity, o.ORDERITEM_PRICE as totalPrice
+                     FROM book b
+                     JOIN orderitem o ON b.BOOK_ID = o.ORDERITEM_BOOK_ID
+                     where o.ORDERITEM_ORDER_ID = ?`,
+
+  couponListQuery: `SELECT c.COUPON_NAME as name, c.COUPON_RATIO as ratio
+                    FROM coupon c
+                    JOIN cpuser cu ON c.COUPON_ID = cu.CPUSER_COUPON_ID
+                    WHERE cu.CPUSER_USER_EMAIL = ?`,
+
+  userPointQuery: `select USER_POINT
+                   from user
+                   where USER_EMAIL = ?`,
+}
+
+// 데이터베이스 작업 함수
+const req = async (query, params) => {
+  return new Promise((resolve, reject) => {
+    db.query(query, params, (error, rows) => {
+      if (error) {
+        console.log(error);
+        resolve({ error });
+      } else {
+        resolve(rows);
+      }
     });
+  });
+};
+
+
+// 가입시 입력한 유저/배송지 정보 출력  --ok
+router.post("/payUserInfo", async (request, res) => {
+    
+  try {
+    const userEmail = request.body.userEmail; 
+
+    res.send(await req(queries.payUserInfoQuery, userEmail));
+    console.log(userEmail); 
+  } catch (err) {
+    res.status(500).send({
+      error:err
+    });
+  }
 });
 
 
@@ -40,50 +72,43 @@ router.get("/payUserInfo", (req, res) => {
 });
  */
 
+// 
+
 // 상품 정보 출력  --ok
-router.get("/payBookInfo", (req, res) => {
-    const ORDERITEM_ORDER_ID = req.body.orderid; // req.body.orderid
+router.post("/payBookInfo", async (request, res) => {
+  try {
+    const ORDERITEM_ORDER_ID = request.body.payID
 
-    const query = `SELECT b.BOOK_COVER, b.BOOK_TITLE, b.BOOK_PRICE, o.ORDERITEM_CNT, o.ORDERITEM_PRICE
-                 FROM book b
-                 JOIN orderitem o ON b.BOOK_ID = o.ORDERITEM_BOOK_ID
-                 where o.ORDERITEM_ORDER_ID = ?`;
-
-    db.query(query, [ORDERITEM_ORDER_ID], (error, result) => {
-        if (error) {
-            return console.log(error);
-        }
-        if (result) {
-            res.send({ payBookInfo: result }); // res.render?-x  res.json?
-            console.log(req.body.orderid);
-        }
+    res.send(await req(queries.payBookInfoQuery, ORDERITEM_ORDER_ID));
+    console.log(ORDERITEM_ORDER_ID);
+  } catch (err) {
+    res.status(500).send({
+      error:err
     });
+  }
 });
+
 
 //------할인 쿠폰 적용
 // 사용 가능한 쿠폰 조회 --ok
-router.get("/CouponList", (req, res) => {
-    const userEmail = req.body.userEmail; // req.body.userEmail
+router.get("/couponList", async (request, res) => {
 
-    const query = `SELECT c.COUPON_NAME, c.COUPON_RATIO, c.COUPON_PRICE, date_format(c.COUPON_MAXDATE, '%Y-%m-%d') AS COUPON_MAXDATE
-                 FROM coupon c
-                 JOIN cpuser cu ON c.COUPON_ID = cu.CPUSER_COUPON_ID
-                 WHERE cu.CPUSER_USER_EMAIL = ?`;
+  try {
+    const userEmail = request.query.userEmail;
 
-    db.query(query, userEmail, (error, result) => {
-        if (error) {
-            return console.log(error);
-        }
-        if (result) {
-            res.send({ CouponList: result }); // res.render?-x  res.json?
-        }
+    res.send(await req(queries.couponListQuery, userEmail));
+    console.log(userEmail);
+  } catch (err) {
+    res.status(500).send({
+      error:err
     });
+  }
 });
 
 // 사용자가 선택한 쿠폰 가격에 적용 --ok
-router.post("/applyCoupon", (req, res) => {
-    const selectedCoupon = req.body.selectedCoupon; // req.body.selectedCoupon
-    const selectedCouponRatio = req.body.selectedCouponRatio;
+router.post("/applyCoupon", (request, res) => {
+    const selectedCoupon = request.body.selectedCoupon; // req.body.selectedCoupon
+    const selectedCouponRatio = request.body.selectedCouponRatio;
     // 선택한 쿠폰의 CouponRatio 받아올 수 있나??? 받아올 수 있으면 위에 selectedCoupon 변수는 빼도 됨
     const originalPrice = 10000; // 쿠폰 적용 전 금액 -- 변수 수정해야함!!!!!!!!!!!!!
 
@@ -91,24 +116,22 @@ router.post("/applyCoupon", (req, res) => {
     res.send({ applyCouponPrice });
 });
 
+
 //-----포인트 적용
 // 포인트 조회 --ok
-router.get("/userPoint", (req, res) => {
-    const userEmail = req.body.userEmail; // req.body.userEmail
+router.get("/userPoint", async (request, res) => {
 
-    const query = `select USER_POINT
-                 from user
-                 where USER_EMAIL = ?`;
+  try {
+    const userEmail = request.query.userEmail;
 
-    db.query(query, userEmail, (error, result) => {
-        if (error) {
-            return console.log(error);
-        }
-        if (result) {
-            res.send({ userPoint: result }); // res.render?-x  res.json?
-        }
+    res.send(await req(queries.userPointQuery, userEmail));
+    console.log(userEmail);
+  } catch (err) {
+    res.status(500).send({
+      error:err
     });
-});
+  }
+})
 
 // 사용자가 선택한 포인트 가격에 적용
 

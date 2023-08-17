@@ -186,7 +186,7 @@ export default {
         url: "http://localhost:3000/cart",
         method: "POST",
         data: {
-          email: "bj3757@naver.com",
+          email: "beeskneesezen@gmail.com",
           total_pay: TP,
           total_point: TP2,
           fee: thisFee,

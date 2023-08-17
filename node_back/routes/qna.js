@@ -2,6 +2,7 @@ const express = require("express");
 const db = require("../db");
 
 const router = express.Router();
+
 const queries = {
   qnaAllQuery: `select QNA_ID, QNA_REP, QNA_TITLE, date_format(QNA_DATE, '%Y-%m-%d') as QNA_DATE, QNA_CON, QNA_REPLY
                 from qna
@@ -23,6 +24,14 @@ const queries = {
 
   qnaDelQuery: `delete from qna
                 where QNA_ID = ?`,
+
+  qnaOriginalQuery: `select QNA_TITLE, QNA_CON
+                     from qna
+                     where QNA_ID = ?`,
+
+  qnaEditQuery: `update qna
+                 set QNA_TITLE = ?, QNA_CON = ?
+                 where QNA_ID = ?`
 }
 
 // 데이터베이스 작업 함수
@@ -38,7 +47,6 @@ const req = async (query, params) => {
     });
   });
 };
-
 
 // 문의 내역 출력_all  --ok
 router.post('/qnaAll', async (request, res) => {
@@ -127,24 +135,41 @@ router.post('/qnaWrite', async (request, res) => {
   });
 
 
-// 문의 내용 수정  --ok
+// 문의 내용 수정 - 원래 내용 불러오기
+router.post('/qnaOriginal', async (request, res) => {
+  
+  try {
+    let { QNA_ID } = request.body;
+      QNA_ID = Number(QNA_ID);
+
+      res.send(await req(queries.qnaOriginalQuery, QNA_ID));
+      console.log(QNA_ID);
+  } catch (err) {
+    res.status(500).send({
+      error: err
+    });
+  }
+});
+
+
+// 문의 내용 수정 - 수정하기
 router.post('/qnaEdit', async (request, res) => {
-  let { QNA_ID } = req.body;
-   QNA_ID = Number(QNA_ID);
-  const { QNA_TITLE, QNA_CON } = req.body;
+  
+  try {
+    const QNA_TITLE = request.body.qna_title
+    const QNA_CON = request.body.qna_con
 
-  const query = `update qna
-                 set QNA_CON = ?
-                 where QNA_ID = ?`;
+    let { QNA_ID } = request.body;
+      QNA_ID = Number(QNA_ID);
 
-  db.query(query, [QNA_CON, QNA_ID], (error, result) => {
-    if (error) {
-      return console.log(error);
-    }
-    if (result) {
-      res.send(alertMove('글이 수정되었습니다', '/qna'));
-    }
+    return res.send(await req(queries.qnaEditQuery, [QNA_TITLE, QNA_CON, QNA_ID]));
+    console.log(qna_con);
+    console.log(qna_id);
+  } catch (err) {
+    res.status(500).send({
+      error: err
   });
+  }
 });
 
 
