@@ -16,12 +16,12 @@
             </div>
         </div>
         <div class="search_items">
-            <div v-for="(item, i) in searchListData" :key="i" class="search_item">
+            <div v-for="(item, i) in displayedPosts" :key="i" class="search_item">
                 <div class="search_item_img">
-                    <a href=""><img :src="item.BOOK_COVER" alt="" /></a>
+                    <a :href="`/detail/${item.BOOK_ID}`"><img :src="item.BOOK_COVER" alt="" /></a>
                 </div>
                 <div class="search_item_info">
-                    <h2 class="best_item_info_title"><a href="">{{ item.BOOK_TITLE }}</a></h2>
+                    <h2 class="best_item_info_title"><a :href="`/detail/${item.BOOK_ID}`">{{ item.BOOK_TITLE }}</a></h2>
                     <span class="search_item_info_author">{{ item.BOOK_AUTHOR }} | {{ item.BOOK_PUBDATE }}</span>
                     <div class="search_item_info_price">
                         <span>{{ formatNumber(item.BOOK_PRICE) }}</span>
@@ -49,8 +49,18 @@
                 </div>
             </div>
         </div>
+        <div class="booklist_paging">
+            <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1">이전</button>
+            <button v-for="pageNumber in pageNumbers" :key="pageNumber" @click="changePage(pageNumber)"
+                :class="{ active: pageNumber === currentPage }">
+                {{ pageNumber }}
+            </button>
+            <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages">다음</button>
+        </div>
         <!-- 플로팅-->
         <Floating />
+        <!-- 스크롤 TOP -->
+        <ScrollTop />
     </div>
 </template>
 
@@ -58,7 +68,7 @@
 import GnbBar from "../components/gnbBar.vue";
 import Floating from "../components/floating.vue"
 import StarIcon from "../components/star.vue"; // 별점 아이콘 컴포넌트의 경로를 수정해주세요.
-import { eventBus } from '@/main'; // 이벤트 버스 가져오기
+import ScrollTop from "@/components/scrollTop.vue";
 
 import axios from "axios";
 axios.defaults.baseURL = "http://localhost:3000";
@@ -68,7 +78,7 @@ axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 export default {
 
     name: "",
-    components: { GnbBar, StarIcon, Floating },
+    components: { GnbBar, StarIcon, Floating, ScrollTop },
     data() {
         return {
             searchListData: [],
@@ -81,6 +91,12 @@ export default {
             //좋아요 여부
             isLiked: false,
             likeBook: [],
+
+            // 페이징
+            perPage: 10, //한 페이지에 보여줄 게시물 수
+            currentPage: 1, // 현재 페이지 번호
+            totalPages: 1, // 총 페이지 수
+            maxDisplayedPages: 9, // 표시할 최대 페이지 수 (현재 페이지를 중심으로 좌우로 표시)
         };
     },
 
@@ -92,8 +108,31 @@ export default {
     },
     mounted() { },
     unmounted() { },
-
+    computed: {
+        totalPages() { // 전체 페이지 수 계산
+            this.totalPages = Math.ceil(this.searchListData.length / this.perPage);
+            return Math.ceil(this.searchListData.length / this.perPage);
+        },
+        pageNumbers() {
+            const start = Math.max(1, this.currentPage - Math.floor(this.maxDisplayedPages / 2));
+            const end = Math.min(this.totalPages, start + this.maxDisplayedPages - 1);
+            return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+        }
+    },
     methods: {
+        changePage(pageNumber) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (pageNumber >= 1 && pageNumber <= this.totalPages) {
+                this.currentPage = pageNumber;
+                // 페이지 변경 시 추가 로직 수행
+                // 예: API 호출하여 해당 페이지 데이터 가져오기
+                // displayedPosts 업데이트
+                this.displayedPosts = this.searchListData.slice(
+                    (this.currentPage - 1) * this.perPage,
+                    this.currentPage * this.perPage
+                );
+            }
+        },
         handleSearchKeyword(keyword) {
             this.searchKeyword = keyword;
             this.getSearchList();
@@ -122,6 +161,7 @@ export default {
                             //별이 5개이므로 총점10점을 2로 나눔
                             this.reviewScore.push((res.data[i].reviewpoint) / 2)
                         }
+                        console.log(this.searchListData, "서치데이터")
                     } else {
                         this.searchListData = res.data.map(book => {
                             return {
@@ -129,8 +169,13 @@ export default {
                                 isLiked: false // 해당 책의 BOOK_ID가 likeBook 배열에 포함되어 있는지 확인하여 isLiked 값을 설정
                             };
                         });
-
                     }
+
+                    // displayedPosts에 categoryData 데이터 복사
+                    this.displayedPosts = this.searchListData.slice(
+                        (this.currentPage - 1) * this.perPage,
+                        this.currentPage * this.perPage
+                    );
                 } catch (error) {
                     console.error("Error fetching search results:", error);
                 }
@@ -160,8 +205,13 @@ export default {
                                 isLiked: false // 해당 책의 BOOK_ID가 likeBook 배열에 포함되어 있는지 확인하여 isLiked 값을 설정
                             };
                         });
-
                     }
+
+                    // displayedPosts에 categoryData 데이터 복사
+                    this.displayedPosts = this.searchListData.slice(
+                        (this.currentPage - 1) * this.perPage,
+                        this.currentPage * this.perPage
+                    );
                 } catch (error) {
                     console.error("Error fetching search results:", error);
                 }

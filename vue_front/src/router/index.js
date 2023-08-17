@@ -12,6 +12,7 @@ import NewList from "../views/newList.vue";
 import bookDetail from "../views/bookDetail.vue";
 import startest from "@/views/test.vue";
 import Goods from "../views/goods.vue";
+import Categories from '../views/categories.vue'
 
 import booktestPage from "../views/bookTest.vue";
 import cart from "../views/cart.vue";
@@ -127,6 +128,12 @@ const routes = [
         path: "/goods",
         name: "Goods",
         component: Goods,
+    },
+    {
+        path: "/categories/:category",
+        name: "Categories",
+        component: Categories,
+        props: true, // 전달된 파라미터를 컴포넌트의 props로 전달
     },
     //-------------------------------------------------------------
     //장바구니 - 결제 - 결제완료
