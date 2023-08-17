@@ -83,14 +83,16 @@
                             <div class="head"></div>
 
                             <!-- 출석 도장 영역 -->
-                            <ol class="stamp">
-                                <li v-for="index in month">
-                                    <div class="stamp-item">
-                                        <span v-if="checkAtt(index)"><img src="https://contents.kyobobook.co.kr/resources/fo/images/common/ink/img_attendance_active@2x.png" alt="출석완료" /></span>
-                                        <span v-else>{{ index }}</span>
-                                    </div>
-                                </li>
-                            </ol>
+                            <div class="stamp_wrap">
+                                <ol class="stamp">
+                                    <li v-for="index in 42">
+                                        <div class="stamp-item">
+                                            <span v-if="checkAtt(index)"><img src="https://contents.kyobobook.co.kr/resources/fo/images/common/ink/img_attendance_active@2x.png" alt="출석완료" /></span>
+                                            <span v-else>{{ index }}</span>
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
                             <div class="attendance_button">
                                 <button @click="attendance">출석체크</button>
                             </div>
@@ -150,11 +152,13 @@ export default {
             today: null, //오늘의 날짜 데이터
             month: null, //30일인지 31일인지 확인
             realMonth: new Date().getMonth() + 1,
+            startDay: "",
         };
     },
     mounted() {
         this.getMonth();
         this.getUserAtt();
+        this.testDate();
     },
 
     methods: {
@@ -297,6 +301,15 @@ export default {
         checkAtt(index) {
             // 유저가 출석한 날짜를 받아와서 출석한 날짜는 true 안한 날짜는 false로 return
             return this.userAtt.includes(index);
+        },
+        testDate() {
+            const thisYear = new Date().getFullYear();
+            const thisMonth = new Date().getMonth();
+            const thisFirstDay = new Date(thisYear, thisMonth, 1);
+            const firstDayDate = thisFirstDay.getDay();
+            console.log(thisFirstDay);
+            console.log(firstDayDate);
+            return (this.startDay = firstDayDate);
         },
         getMonth() {
             //달에 알맞은 일자 출력하게 하는 함수

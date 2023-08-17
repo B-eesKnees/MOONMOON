@@ -7,6 +7,7 @@
             <div class="cart_header" style="background-color: white">
                 <input type="checkbox" v-model="selectAll" @change="selectAllItems" id="book_checkbox" /><label for="book_checkbox"></label>
                 <h3>&nbsp;장바구니</h3>
+                <button type="button" class="delete_button" @click="deleteCartBook">삭제</button>
             </div>
             <div class="cart_float">
                 <div class="cart_inside">
@@ -54,11 +55,11 @@
 
                     <div class="pay_wrap">
                         <div class="payment_value">배송비</div>
-                        <span class="getTotalPrice">{{ fee }} </span>
+                        <span class="getTotalPrice">{{ 20000 | comma }} </span>
                         <span class="unit">원</span>
                     </div>
 
-                    <br /><br /><br /><br /><br />
+                    <br /><br /><br />
                     <hr />
                     <div class="pay_wrap">
                         <div class="payment_text">결제금액</div>
@@ -100,7 +101,35 @@ export default {
             userEmail: localStorage.getItem("userID"),
         };
     },
+    filters: {
+        comma(val) {
+            return String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
+    },
     methods: {
+        deleteCartBook() {
+            if (this.select.length === 0) {
+                alert("상품을 선택하세요");
+            }
+            console.log(this.select);
+            axios({
+                url: "/cart/delete",
+                method: "POST",
+                data: {
+                    bookid: this.select,
+                },
+            })
+                .then((res) => {
+                    if (res.data === "삭제완료") {
+                        alert("삭제완료");
+                        this.getCart();
+                        this.$refs.childComponent.getCartNum();
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        },
         increaseQuantity(book) {
             //장바구니 수량 늘리기
 
@@ -189,56 +218,6 @@ export default {
                     console.log(error);
                 });
         },
-        // allPay() {
-        //   const allBooks = this.cart; //장바구니에 담긴 책 정보 전부 담아오기
-
-        //   let TP = 0; //총 결제 금액
-        //   let TP2 = 0; //총 포인트
-        //   let thisFee = 0;
-
-        //   let bookData = [];
-
-        //   // 모든 상품에 대한 결제 정보를 콘솔로 출력합니다.
-        //   allBooks.forEach((book) => {
-        //     TP += this.getPrice(book);
-        //     TP2 += this.getPoint(book);
-
-        //     bookData.push({
-        //       ORDERITEM_BOOKID: book.book_no,
-        //       ORDERITEM_CNT: book.quantity,
-        //       ORDERITEM_PRICE: book.price,
-        //       ORDERITEM_POINT: this.getPoint(book),
-        //     });
-        //   });
-
-        //   if (TP >= 15000) { //결제금액이 15000원이상이면 배송료 0원으로 설정
-        //     thisFee = 0;
-        //   } else if (TP < 15000) {
-        //     thisFee = 2500;
-        //   }
-
-        //   axios({
-        //     url: "http://localhost:3000/cart",
-        //     method: "POST",
-        //     data: {
-        //       "email": "bj3757@naver.com",
-        //       "total_pay": TP,
-        //       "total_point": TP2,
-        //       "fee": thisFee,
-        //       "books_info": bookData,
-        //     },
-        //   }).then((res => {
-        //     if (res.status == 401) {
-        //       console.log("에러 발생: " + res.data.error);
-        //     } else if (res.status == 200) {
-        //       const orderId = res.data.orderID;
-        //       alert('결제페이지로 이동합니다');
-        //       window.location.href = `/pay/${orderId}`;
-        //     }
-        //   })).catch(error => {
-        //     console.log(error);
-        //   });
-        // },
         decreaseQuantity(book) {
             //장바구니 수량 줄이기
             if (book.quantity === 1) {

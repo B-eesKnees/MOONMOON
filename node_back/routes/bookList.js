@@ -30,8 +30,7 @@ router.post("/getRecList", async (req, res) => {
                         const query = `select distinct b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, date_format(b.BOOK_PUBDATE, '%Y.%m.%d') as BOOK_PUBDATE, b.BOOK_PRICE, b.BOOK_DESCRIPTION, b.BOOK_COVER, b.BOOK_PUBLISHER, (select COALESCE(ROUND(AVG(r2.REV_RATING), 1), 0) from review r2 where r2.REV_ORDERITEM_BOOK = b.BOOK_ID) AS reviewpoint, b.book_salespoint
                         from book b left join review r on b.BOOK_ID = r.REV_ORDERITEM_BOOK
                         where BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? 
-                        order by BOOK_SALESPOINT desc 
-                        limit 8`;
+                        order by BOOK_SALESPOINT desc`;
                         console.log([search1, search2, search3, search4, search5]);
                         db.query(query, [search1, search2, search3, search4, search5], (err, results) => {
                             if (err) {
