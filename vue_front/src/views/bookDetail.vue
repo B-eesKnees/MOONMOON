@@ -82,7 +82,7 @@
 
     <div class="detail_review_set">
         <div class="rev_top">
-            <div class="review_con_title">책 리뷰 (43)</div>
+            <div class="review_con_title">책 리뷰 ({{ reviewAverageData.averageRating }})</div>
             <button class="go_to_review" @click="toggleBtn">리뷰 작성</button>
         </div>
         <!-- 댓글 작성-------------------------------------------------------------------------------------------------------
@@ -90,15 +90,18 @@
         <div class="write_rev" id="write_review" v-if="!showBtn">
             <div class="write_star">
                 <fieldset class="rating">
-                    <input type="radio" id="star5" name="rating" value="5" /><label class="full" for="star5"></label>
-                    <input type="radio" id="star4half" name="rating" value="4 and a half" /><label class="half" for="star4half"></label>
-                    <input type="radio" id="star4" name="rating" value="4" /><label class="full" for="star4"></label>
-                    <input type="radio" id="star3half" name="rating" value="3 and a half" /><label class="half" for="star3half"></label>
-                    <input type="radio" id="star3" name="rating" value="3" /><label class="full" for="star3"></label>
-                    <input type="radio" id="star2half" name="rating" /><label class="half" for="star2half"></label>
-                    <input type="radio" id="star2" name="rating" value="2" /><label class="full" for="star2"></label>
-                    <input type="radio" id="star1half" name="rating" value="1 and a half" /><label class="half" for="star1half"></label>
-                    <input type="radio" id="star1" name="rating" value="1" /><label class="full" for="star1"></label>
+                    <input type="radio" id="star5" name="rating" value="5" /><label class="full" for="star5"></label> <input type="radio" id="star4half" name="rating" value="4 and a half" /><label class="half" for="star4half"></label> <input type="radio" id="star4" name="rating" value="4" /><label
+                        class="full"
+                        for="star4"
+                    ></label>
+                    <input type="radio" id="star3half" name="rating" value="3 and a half" /><label class="half" for="star3half"></label> <input type="radio" id="star3" name="rating" value="3" /><label class="full" for="star3"></label> <input type="radio" id="star2half" name="rating" /><label
+                        class="half"
+                        for="star2half"
+                    ></label>
+                    <input type="radio" id="star2" name="rating" value="2" /><label class="full" for="star2"></label> <input type="radio" id="star1half" name="rating" value="1 and a half" /><label class="half" for="star1half"></label> <input type="radio" id="star1" name="rating" value="1" /><label
+                        class="full"
+                        for="star1"
+                    ></label>
                     <input type="radio" id="starhalf" name="rating" value="half" /><label class="half" for="starhalf"></label>
                 </fieldset>
             </div>
@@ -120,7 +123,7 @@
             <div class="total_star_rec">
                 <star :rating="rating" />
                 <div class="total_rec_num">
-                    <!-- {{ averageRating(review.average_rating) }} -->
+                    <!-- {{ formattedAverageRating }} -->
                     <span class="total_rec_num_10">/10</span>
                 </div>
             </div>
@@ -135,7 +138,7 @@
             </select>
         </div>
         <div class="review_con">
-            <div v-if="reviewData.length === 0">리뷰가 없습니다.</div>
+            <div v-if="reviewData.length === 0" class="no_data_review">리뷰가 없습니다.</div>
             <div v-else>
                 <div v-for="review in reviewData" :key="review.REVIEW_ID" class="single_review">
                     <div class="single_rev_top">
@@ -158,10 +161,7 @@
         </div>
         <hr class="review_title_next_hr" />
         <div class="exc_return_con_title">반품/교환 방법</div>
-        <div class="exc_return_con_text">
-            마이룸 > 주문관리 > 주문/배송내역 > 주문조회 > 반품/교환 신청, [1:1 상담 > 반품/교환/환불] 또는 고객센터 (1544-1900)<br />* 오픈마켓,
-            해외배송 주문, 기프트 주문시 [1:1 상담>반품/교환/환불] 또는 고객센터 (1544-1900)
-        </div>
+        <div class="exc_return_con_text">마이룸 > 주문관리 > 주문/배송내역 > 주문조회 > 반품/교환 신청, [1:1 상담 > 반품/교환/환불] 또는 고객센터 (1544-1900)<br />* 오픈마켓, 해외배송 주문, 기프트 주문시 [1:1 상담>반품/교환/환불] 또는 고객센터 (1544-1900)</div>
         <hr />
         <div class="exc_return_con_title">반품/교환가능 기간</div>
         <div class="exc_return_con_text">변심반품의 경우 수령 후 7일 이내,<br />상품의 결함 및 계약내용과 다를 경우 문제점 발견 후 30일 이내</div>
@@ -171,12 +171,9 @@
         <hr />
         <div class="exc_return_con_title">반품/교환 불가 사유</div>
         <div class="exc_return_con_text">
-            1) 소비자의 책임 있는 사유로 상품 등이 손실 또는 훼손된 경우<br />(단지 확인을 위한 포장 훼손은 제외) <br />2) 소비자의 사용, 포장 개봉에
-            의해 상품 등의 가치가 현저히 감소한 경우 <br />예) 화장품, 식품, 가전제품(악세서리 포함) 등 <br />3) 복제가 가능한 상품 등의 포장을 훼손한
-            경우 <br />예) 음반/DVD/비디오, 소프트웨어, 만화책, 잡지, 영상 화보집 <br />4) 소비자의 요청에 따라 개별적으로 주문 제작되는 상품의 경우
-            ((1)해외주문도서) <br />5) 디지털 컨텐츠인 eBook, 오디오북 등을 1회 이상 다운로드를 받았을 경우 <br />6) 시간의 경과에 의해 재판매가
-            곤란한 정도로 가치가 현저히 감소한 경우 <br />7) 전자상거래 등에서의 소비자보호에 관한 법률이 정하는 소비자 청약철회 제한 내용에 해당되는
-            경우
+            1) 소비자의 책임 있는 사유로 상품 등이 손실 또는 훼손된 경우<br />(단지 확인을 위한 포장 훼손은 제외) <br />2) 소비자의 사용, 포장 개봉에 의해 상품 등의 가치가 현저히 감소한 경우 <br />예) 화장품, 식품, 가전제품(악세서리 포함) 등 <br />3) 복제가 가능한 상품 등의 포장을 훼손한 경우
+            <br />예) 음반/DVD/비디오, 소프트웨어, 만화책, 잡지, 영상 화보집 <br />4) 소비자의 요청에 따라 개별적으로 주문 제작되는 상품의 경우 ((1)해외주문도서) <br />5) 디지털 컨텐츠인 eBook, 오디오북 등을 1회 이상 다운로드를 받았을 경우 <br />6) 시간의 경과에 의해 재판매가 곤란한 정도로 가치가
+            현저히 감소한 경우 <br />7) 전자상거래 등에서의 소비자보호에 관한 법률이 정하는 소비자 청약철회 제한 내용에 해당되는 경우
         </div>
     </div>
 </template>
@@ -196,7 +193,7 @@ export default {
         return {
             bookDetailData: [],
             reviewData: [],
-            reviewAverageData: null,
+            reviewAverageData: {},
             isLiked: false,
             sortvalue: "최신순",
             showBtn: true,
@@ -211,10 +208,9 @@ export default {
     },
     mounted() {
         this.bookDetail();
-        this.loadRecentReviews();
-        this.loadTopRatedReviews();
-        this.loadLowRatedReviews();
+        this.fetchReviewData();
         this.averageRating();
+        // this.reviewAverageData();
     },
     computed: {
         paymentPrice() {
@@ -299,13 +295,11 @@ export default {
         // 리뷰 데이터 평점 높은 순 리스트 불러오기-------------------------------------------------------------------------------------------------------
         // ---------------------------------------------------------------------------------------------------------------------
         loadTopRatedReviews() {
-            const bookId = this.$route.params.id;
-
             axios({
                 url: "http://localhost:3000/review/reviewrating",
                 method: "get",
                 params: {
-                    bookId: 2,
+                    bookId: this.bookId,
                 },
             })
                 .then((response) => {
@@ -319,12 +313,11 @@ export default {
         // 리뷰 데이터 평점 낮은 순 리스트 불러오기-------------------------------------------------------------------------------------------------------
         // ---------------------------------------------------------------------------------------------------------------------
         loadLowRatedReviews() {
-            const bookId = this.$route.params.id;
             axios({
                 url: "http://localhost:3000/review/lowreviewrating",
                 method: "get",
                 params: {
-                    bookId: 2,
+                    bookId: this.bookId,
                 },
             })
                 .then((response) => {
@@ -335,21 +328,20 @@ export default {
                     console.error("Error fetching review data:", error);
                 });
         },
+        // 리뷰 데이터 평점 낮은 순 리스트 불러오기-------------------------------------------------------------------------------------------------------
+        // ---------------------------------------------------------------------------------------------------------------------
         // 리뷰 -------------------------------------------------------------------------------------------------------
 
         averageRating() {
             axios({
-                url: "http://localhost:3000/review/averagerating/:bookId",
+                url: `http://localhost:3000/review/averagerating/${this.bookId}`,
                 method: "get",
-                params: {
-                    bookId: this.bookId,
-                },
             })
                 .then((response) => {
                     this.reviewAverageData = response.data.averageRating;
                 })
                 .catch((error) => {
-                    console.error("Error fetching average rating:", error);
+                    console.error("평균 평점을 불러오는 중 오류 발생:", error);
                 });
         },
         convertRatingToHalfStars(number) {

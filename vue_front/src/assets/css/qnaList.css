@@ -210,12 +210,14 @@
 }
 
 .tabs__content {
+  /* width: 100%; */
   background-color: #FAFAFA;
   min-height: 300px;
-  display: grid;
+  /* display: grid; */
   /* place-items: center; */
   border-radius: 0 0 5px 5px;
   border-top: #000 1px solid;
+  /* border: #000 1px solid; */
   padding: 0px;
 }
 
