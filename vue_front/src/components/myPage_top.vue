@@ -4,7 +4,7 @@
             <div class="mypage_profile">
                 <img src="../assets/img/user.png" alt="user" />
             </div>
-            .mypage_
+            <div class="mypage_name"></div>
         </div>
     </div>
 </template>
