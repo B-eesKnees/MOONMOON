@@ -25,34 +25,23 @@ router.post("/", async (req, res) => {
             });
         } else {
             const order_id = results.insertId;
-            const orderItems = testdata.map((item) => [
-                order_id,
-                item.ORDERITEM_BOOKID,
-                item.ORDERITEM_CNT,
-                item.ORDERITEM_PRICE,
-                item.ORDERITEM_POINT,
-            ]);
+            const orderItems = testdata.map((item) => [order_id, item.ORDERITEM_BOOKID, item.ORDERITEM_CNT, item.ORDERITEM_PRICE, item.ORDERITEM_POINT]);
             console.log(orderItems);
-            db.query(
-                `INSERT INTO orderItem (ORDERITEM_ORDER_ID, ORDERITEM_BOOK_ID, ORDERITEM_CNT, ORDERITEM_PRICE, ORDERITEM_POINT) VALUES ?`,
-                [orderItems],
-                (err) => {
-                    if (err) {
-                        res.status(401).send({
-                            // 에러 발생 시
-                            code: 200,
-                            failed: "error occurred",
-                            error: err,
-                        });
-                    } else {
-                        console.log(order_id);
-                        res.status(200).send({
-                            message: "성공",
-                            orderID: order_id,
-                        });
-                    }
+            db.query(`INSERT INTO orderItem (ORDERITEM_ORDER_ID, ORDERITEM_BOOK_ID, ORDERITEM_CNT, ORDERITEM_PRICE, ORDERITEM_POINT) VALUES ?`, [orderItems], (err, result) => {
+                if (err) {
+                    res.status(401).send({
+                        // 에러 발생 시
+                        code: 200,
+                        failed: "error occurred",
+                        error: err,
+                    });
+                } else {
+                    res.status(200).send({
+                        message: "성공",
+                        orderID: order_id,
+                    });
                 }
-            );
+            });
         }
     });
 });

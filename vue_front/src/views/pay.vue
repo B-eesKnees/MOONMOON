@@ -149,13 +149,15 @@ export default {
             month: "",
             selectedCoupon: "",
             isModalOpen: true,
-            payID: this.$route.params.payID,
+            payID: this.$route.query.payid,
             userEmail: localStorage.getItem("userID"),
         };
     },
     mounted() {
         this.getNextDate();
-        this.getUserInfo();
+        // this.getUserInfo();
+        console.log(this.$route.query.payid);
+        console.log(this.payID);
     },
     methods: {
         getUserInfo() {
