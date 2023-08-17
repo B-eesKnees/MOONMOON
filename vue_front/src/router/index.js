@@ -24,7 +24,7 @@ import qnaWrite from "../views/qnaWrite.vue";
 import qnaEdit from "../views/qnaEdit.vue";
 import eventPage from "../views/event.vue";
 import attendance from "../views/attendance.vue";
-import mypage from "../views/mypage.vue";
+import myPage from "../views/myPage.vue";
 import axios from "axios";
 
 const requireLogin = () => (to, from, next) => {
@@ -184,7 +184,7 @@ const routes = [
     {
         path: "/mypage",
         name: "mypage",
-        component: mypage,
+        component: myPage,
     },
 ];
 

@@ -1,0 +1,23 @@
+.mypage_top {
+    margin: 0 auto;
+    border: #000 solid 1px;
+    display: flex;
+    /* justify-content: center; */
+    /* align-items: center; */
+    width: 80%;
+    height: 40vh;
+    margin-top: 80px;
+
+}
+
+.mypage_top_left {
+    border: #000 solid 1px;
+    width: 30%;
+    left: 0;
+    padding: 50px;
+}
+
+.mypage_profile {
+    border: #000 1px solid;
+    display: inline-block;
+}

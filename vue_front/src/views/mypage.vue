@@ -1,17 +1,19 @@
 <template>
-  <GnbBar />
-  <div></div>
+    <GnbBar />
+    <myPage_top />
+    <div></div>
 </template>
 <script>
+import "@/assets/css/myPage.css";
 import GnbBar from "../components/gnbBar.vue";
+import myPage_top from "../components/myPage_top.vue";
+
 export default {
-  name: "",
-  components: { GnbBar },
-  data() {
-    return {
-      sampleData: "",
-    };
-  },
-  methods: {},
+    name: "",
+    components: { GnbBar, myPage_top },
+    data() {
+        return {};
+    },
+    methods: {},
 };
 </script>

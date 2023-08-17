@@ -3,11 +3,11 @@
     <div class="detail_top"></div>
     <div class="title_wri_sum">
         <div class="detail_title">
-            {{ bookDetailData ? bookDetailData.BOOK_TITLE : "로딩 중..." }}
+            {{ bookDetailData.BOOK_TITLE }}
         </div>
         <div class="writer_date">{{ bookDetailData.BOOK_AUTHOR }} | {{ bookDetailData.BOOK_PUBDATE }}</div>
         <div class="book_summary">
-            {{ bookDetailData.BOOK_DESCRIPTION }}
+            {{ bookDetailData.BOOK_DESCRIPTION ? formatHtmlEntities(bookDetailData.BOOK_DESCRIPTION) : "" }}
         </div>
     </div>
     <div class="img_price_btn">
@@ -219,6 +219,12 @@ export default {
         formattedAverageRating() {
             return this.reviewAverageData ? this.reviewAverageData.toFixed(1) : "0.0";
         },
+        formattedBookDetailData() {
+            if (this.bookDetailData) {
+                return this.formatHtmlEntities(this.bookDetailData.description);
+            }
+            return "";
+        },
     },
     methods: {
         toggleBtn() {
@@ -241,6 +247,9 @@ export default {
                 .catch((error) => {
                     console.error("책 상세 정보 가져오기 오류:", error);
                 });
+        },
+        formatHtmlEntities(input) {
+            return input.replace(/&lt;/g, "< ").replace(/&gt;/g, " > ");
         },
         async addToCart() {
             if (localStorage.getItem("userID")) {
