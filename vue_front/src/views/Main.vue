@@ -39,9 +39,9 @@
       <div ref="mainBlur" class="main_item_wrap blur">
         <!-- 로그인시 추천출력 -->
         <div v-if="logined == true" class="recommend_item" v-for="(item, i) in recBook" :key="i">
-          <img class="main_item_img" :src="item.BOOK_COVER" alt="" />
+          <a :href="`/detail/${item.BOOK_ID}`"><img class="main_item_img" :src="item.BOOK_COVER" alt="" /></a>
           <div class="main_item_info">
-            <h5 class="main_item_title">{{ item.BOOK_TITLE }}</h5>
+            <h5 class="main_item_title"><a :href="`/detail/${item.BOOK_ID}`">{{ item.BOOK_TITLE }}</a></h5>
             <span class="main_item_writer">{{ item.BOOK_AUTHOR }}</span>
             •
             <span class="main_item_publisher">{{ item.BOOK_PUBLISHER }}</span>
@@ -68,9 +68,9 @@
       </div>
       <div class="main_item_wrap">
         <div class="main_contents_item" v-for="(item, i) in bestBook" :key="i">
-          <img class="main_item_img2" :src="item.BOOK_COVER" alt="" />
+          <a :href="`/detail/${item.BOOK_ID}`"><img class="main_item_img2" :src="item.BOOK_COVER" alt="" /></a>
           <div class="main_item_info">
-            <h5 class="main_item_title">{{ item.BOOK_TITLE }}</h5>
+            <h5 class="main_item_title"><a :href="`/detail/${item.BOOK_ID}`">{{ item.BOOK_TITLE }}</a></h5>
             <span class="main_item_writer">{{ item.BOOK_AUTHOR }}</span>
             •
             <span class="main_item_publisher">{{ item.BOOK_PUBLISHER }}</span>
@@ -87,9 +87,9 @@
       </div>
       <div class="main_item_wrap">
         <div class="main_contents_item" v-for="(item, i) in newestBook" :key="i">
-          <img class="main_item_img2" :src="item.BOOK_COVER" alt="" />
+          <a :href="`/detail/${item.BOOK_ID}`"><img class="main_item_img2" :src="item.BOOK_COVER" alt="" /></a>
           <div class="main_item_info">
-            <h5 class="main_item_title">{{ item.BOOK_TITLE }}</h5>
+            <h5 class="main_item_title"><a :href="`/detail/${item.BOOK_ID}`">{{ item.BOOK_TITLE }}</a></h5>
             <span class="main_item_writer">{{ item.BOOK_AUTHOR }}</span>
             •
             <span class="main_item_publisher">{{ item.BOOK_PUBLISHER }}</span>

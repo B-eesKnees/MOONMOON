@@ -12,6 +12,26 @@
     background-color: #f4f4f4;
 }
 
+.nav_category_modal ::-webkit-scrollbar {
+    width: 4px;
+    /* 세로축 스크롤바 길이 */
+    height: 12px;
+    /* 가로축 스크롤바 길이 */
+}
+
+.nav_category_modal ::-webkit-scrollbar-track {
+    background-color: lightblue;
+}
+
+.nav_category_modal ::-webkit-scrollbar-track-piece {
+    background-color: #ccc;
+}
+
+.nav_category_modal ::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: black;
+}
+
 /* 최상단 서비스바 */
 .gnb_bar_service {
     width: 80%;
@@ -27,6 +47,7 @@
     font-size: small;
     color: #929292;
 }
+
 .gnb_bar_service a:nth-child(1),
 .gnb_bar_service a:nth-child(2) {
     border-right: 1px solid #ccc;
@@ -52,9 +73,11 @@
 .gnb_bar_header_logo {
     width: 20%;
 }
+
 .gnb_bar_header_logo img {
     width: 60%;
 }
+
 .gnb_bar_header_search {
     width: 70%;
     position: relative;
@@ -112,6 +135,7 @@
     background-color: white;
     box-shadow: 0px 10px 20px 0px #ebebeb;
 }
+
 .nav {
     width: 80%;
     height: 100%;
@@ -168,29 +192,35 @@
     border: 1px solid black;
     border-radius: 16px;
 }
+
 .nav_modal_main_category_wrap {
     padding: 1%;
     width: 100%;
     height: 100%;
     border-top: 1px solid #ccc;
     text-align: left;
+    overflow-y: auto;
 }
+
 .nav_category_modal h2 {
     font-size: large;
     font-weight: bold;
     padding: 2%;
     padding-bottom: 2%;
 }
+
 .nav_category_modal h3 {
     font-size: medium;
     font-weight: bold;
     padding: 1%;
     padding-bottom: 2%;
 }
+
 .nav_modal_main_category_wrap {
     width: 100%;
     height: 80%;
 }
+
 .nav_modal_main_category {
     width: 15%;
     height: 100%;
@@ -199,10 +229,12 @@
     flex-direction: column;
     flex-wrap: wrap;
 }
+
 .nav_modal_main_category_list_main_wrap {
     width: 200%;
     padding-right: 40%;
 }
+
 .nav_modal_main_category_list_wrap {
     width: 100%;
     display: flex;
@@ -210,11 +242,13 @@
     align-items: center;
     margin: 7% 0;
 }
+
 .nav_modal_main_category_list {
     width: 100%;
     padding: 1%;
     font-size: medium;
 }
+
 .nav_modal_category_btn {
     padding: 3%;
     cursor: pointer;
@@ -222,6 +256,7 @@
     justify-content: center;
     align-items: center;
 }
+
 .nav_modal_category_btn span {
     display: flex;
     justify-content: center;
@@ -234,17 +269,21 @@
     padding: 1%;
     text-align: center;
 }
+
 .nav_modal_middle_category_list li {
     margin-bottom: 5%;
 }
+
 .nav_modal_middle_category_list li a {
     font-size: small;
     font-weight: normal;
     color: #676767;
 }
+
 .rec_search_back {
     position: relative;
 }
+
 .rec_search_area {
     position: absolute;
     border: 1px solid #4e4eff;
@@ -256,6 +295,7 @@
     padding-bottom: 1%;
     padding-top: 1%;
 }
+
 .search_results {
     position: relative;
     width: 80%;
@@ -264,6 +304,7 @@
     cursor: pointer;
     font-size: 0.8em;
 }
+
 .search_results:hover {
     color: #4e4eff;
 }
