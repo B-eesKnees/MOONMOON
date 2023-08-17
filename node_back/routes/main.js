@@ -93,7 +93,7 @@ router.post("/getNewestBook", async (req, res) => {
     db.query(
         `select BOOK_ID, BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, "%Y.%m.%d") as PUBDATE, BOOK_PRICE, BOOK_DESCRIPTION, BOOK_COVER, BOOK_PUBLISHER  
         from book order 
-        by BOOK_PUBDATE ASC
+        by BOOK_PUBDATE desc
         limit 5`,
         (err, result) => {
             if (err) {
