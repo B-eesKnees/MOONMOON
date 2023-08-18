@@ -24,7 +24,7 @@
                                 <img class="cart_img" :src="book.img" />
                                 <span class="cart_book_name">{{ book.title }}</span
                                 >&nbsp;
-                                <span class="book_price">{{ book.price }} 원</span>
+                                <span class="book_price">{{ comma(book.price) }} 원</span>
                                 <span class="book_point">적립포인트 &nbsp;&nbsp;&nbsp;{{ getPoint(book) }}</span>
                                 <button type="button" class="deleteBook" @click="deleteBook(book)"></button>
                                 <div class="changeQua">
@@ -34,7 +34,7 @@
                                         <button @click="increaseQuantity(book)">+</button>
                                     </div>
                                     <br />
-                                    <p>{{ getPrice(book) }} 원</p>
+                                    <p>{{ comma(getPrice(book)) }} 원</p>
                                 </div>
                                 <p></p>
                             </li>
@@ -48,14 +48,14 @@
         -->
                 <div class="payment_area">
                     <div class="pay_wrap">
-                        <p class="payment_value">상품금액</p>
-                        <span class="getTotalPrice">{{ getTotalPrice }} </span>
-                        <span class="unit">원</span>
+                        <div class="payment_value">상품금액</div>
+                        <div class="getTotalPrice">{{ comma(getTotalPrice) }}</div>
+                        <div class="unit">원</div>
                     </div>
 
-                    <div class="pay_wrap">
+                    <div class="pay_wrap_second">
                         <div class="payment_value">배송비</div>
-                        <span class="getTotalPrice">{{ 20000 | comma }} </span>
+                        <span class="getTotalPrice">{{ comma(fee) }} </span>
                         <span class="unit">원</span>
                     </div>
 
@@ -63,12 +63,12 @@
                     <hr />
                     <div class="pay_wrap">
                         <div class="payment_text">결제금액</div>
-                        <div class="payment_total">{{ getFinalPrice }}</div>
+                        <div class="payment_total">{{ comma(getFinalPrice) }}</div>
                         <span class="unit">원</span>
                     </div>
-                    <div class="pay_wrap">
+                    <div class="pay_wrap_second">
                         <div class="payment_text">총 적립 포인트</div>
-                        <div class="payment_point">{{ totalPoint }}</div>
+                        <div class="payment_point">{{ comma(totalPoint) }}</div>
                         <span class="unit">원</span>
                     </div>
                     <button @click="choosePay" class="pay_button">주문하기</button>
@@ -107,6 +107,9 @@ export default {
         },
     },
     methods: {
+        comma(num) {
+            return String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
         deleteCartBook() {
             if (this.select.length === 0) {
                 alert("상품을 선택하세요");
@@ -187,7 +190,7 @@ export default {
             });
 
             if (TP >= 50000) {
-                //결제금액이 15000원이상이면 배송료 0원으로 설정
+                //결제금액이 50000원이상이면 배송료 0원으로 설정
                 thisFee = 0;
             } else if (TP < 50000) {
                 thisFee = 2500;
@@ -302,7 +305,7 @@ export default {
             return totalPrice; //리턴
         },
         fee() {
-            if (this.getTotalPrice > 15000) {
+            if (this.getTotalPrice > 50000) {
                 return 0;
             } else {
                 return 2500;

@@ -85,10 +85,16 @@
                             <!-- 출석 도장 영역 -->
                             <div class="stamp_wrap">
                                 <ol class="stamp">
-                                    <li v-for="index in 42">
+                                    <li v-for="index in calendar">
                                         <div class="stamp-item">
-                                            <span v-if="checkAtt(index)"><img src="https://contents.kyobobook.co.kr/resources/fo/images/common/ink/img_attendance_active@2x.png" alt="출석완료" /></span>
-                                            <span v-else>{{ index }}</span>
+                                            <div v-if="index === undefined" class="emptyCal"></div>
+                                            <div v-else-if="checkAtt(index)" class="viewCal">
+                                                <img
+                                                    src="https://contents.kyobobook.co.kr/resources/fo/images/common/ink/img_attendance_active@2x.png"
+                                                    alt="출석완료"
+                                                />
+                                            </div>
+                                            <div class="viewCal" v-else>{{ index }}</div>
                                         </div>
                                     </li>
                                 </ol>
@@ -153,12 +159,14 @@ export default {
             month: null, //30일인지 31일인지 확인
             realMonth: new Date().getMonth() + 1,
             startDay: "",
+            calendar: [],
         };
     },
     mounted() {
-        this.getMonth();
-        this.getUserAtt();
-        this.testDate();
+        this.getMonth(); //몇 월인지 받아오기
+        this.getUserAtt(); //유저가 출석한 날짜 받아오기
+        this.testDate(); //시작일 ex)8월 1일 이 무슨 요일인지 확인하는 함수
+        this.getCan(); //달력 출력
     },
 
     methods: {
@@ -303,24 +311,43 @@ export default {
             return this.userAtt.includes(index);
         },
         testDate() {
-            const thisYear = new Date().getFullYear();
-            const thisMonth = new Date().getMonth();
-            const thisFirstDay = new Date(thisYear, thisMonth, 1);
-            const firstDayDate = thisFirstDay.getDay();
-            console.log(thisFirstDay);
-            console.log(firstDayDate);
-            return (this.startDay = firstDayDate);
+            const thisYear = new Date().getFullYear(); //연도
+            const thisMonth = new Date().getMonth(); //달
+            const thisFirstDay = new Date(thisYear, thisMonth, 1); //ex) 2023/8/1
+            const firstDayDate = thisFirstDay.getDay(); //요일구하기 0=일요일 1=월요일...
+
+            return (this.startDay = firstDayDate); //적용
         },
         getMonth() {
             //달에 알맞은 일자 출력하게 하는 함수
             //new Date 객체 생성하고 getMonth() 쓰는게 더 간단함
             const checkMonth = new Date().toISOString().slice(5, 7); //2023-"01"-01 //무슨 달인지 추출
-            if (checkMonth == "01" || checkMonth == "03" || checkMonth == "05" || checkMonth == "07" || checkMonth == "08" || checkMonth == "10" || checkMonth == "12") {
+            if (
+                checkMonth == "01" ||
+                checkMonth == "03" ||
+                checkMonth == "05" ||
+                checkMonth == "07" ||
+                checkMonth == "08" ||
+                checkMonth == "10" ||
+                checkMonth == "12"
+            ) {
                 this.month = 31; //31일인 달
             } else if (checkMonth == "02") {
                 this.month = 28; //2월은 28일
             } else {
                 this.month = 30; //나머지는 30일
+            }
+        },
+        getCan() {
+            this.calendar.length = 35; //달력 느낌나게 배열 길이 설정
+            if (this.startDay > 4) {
+                //요일이 수요일 이상이면 넘어가니까 길이 더 길게 설정
+                this.calendar.length = 42;
+            }
+            var daynum = 1; //요일 일자 나오게 설정
+            for (var i = this.startDay; i <= this.month - 1 + this.startDay; i++) {
+                this.calendar[i] = daynum;
+                daynum++;
             }
         },
         getUserAtt() {

@@ -22,8 +22,14 @@
                 <a href="/"><img src="../assets/img/logo.png" alt="" /></a>
             </div>
             <div class="gnb_bar_header_search" ref="search_box">
-                <input class="gnb_bar_header_search_input" type="text" placeholder="검색어를 입력하세요"
-                    @keyup.enter="sendSearchKeyword" :value="keyword" @input="rec_search" />
+                <input
+                    class="gnb_bar_header_search_input"
+                    type="text"
+                    placeholder="검색어를 입력하세요"
+                    @keyup.enter="sendSearchKeyword"
+                    :value="keyword"
+                    @input="rec_search"
+                />
                 <!-- 검색 결과 미리보기 창 모달 -->
                 <div v-show="rec_show" class="rec_search_back" ref="search_result_box">
                     <div class="rec_search_area">
@@ -35,7 +41,8 @@
                 <img @click="sendSearchKeyword" class="gnb_bar_header_search_icon" src="../assets/img/search.png" alt="" />
             </div>
             <div class="gnb_bar_header_user">
-                <a href="/cart"><img class="gnb_bar_header_cart" src="../assets/img/cart1.png" alt="" />
+                <a href="/cart"
+                    ><img class="gnb_bar_header_cart" src="../assets/img/cart1.png" alt="" />
                     <span class="gnb_bar_header_cart_num">{{ cartNum }}</span>
                 </a>
                 <a href="/mypage"><img class="gnb_bar_header_userimg" src="../assets/img/user.png" alt="" /></a>
@@ -81,17 +88,18 @@
                             <div class="nav_modal_main_category_list_wrap">
                                 <div class="nav_modal_main_category_list">
                                     <!-- <a href="/categorys/:category">{{ main.top }}</a> -->
-                                    <router-link @click="closeCategoryModal" :to="`/categories/${encodeURIComponent(main.top)}`">{{ main.top
+                                    <router-link @click="closeCategoryModal" :to="`/categories/${encodeURIComponent(main.top)}`">{{
+                                        main.top
                                     }}</router-link>
                                 </div>
                                 <div class="nav_modal_category_btn">
-                                    <span @click="showCategoryMiddleBtn($event, main.id)">{{ main.expanded ? "―" : "＋"
-                                    }}</span>
+                                    <span @click="showCategoryMiddleBtn($event, main.id)">{{ main.expanded ? "―" : "＋" }}</span>
                                 </div>
                             </div>
                             <ul v-if="main.expanded" class="nav_modal_middle_category_list">
                                 <li v-for="(middle, index) in main.middle" :key="index">
-                                    <router-link @click="closeCategoryModal" :to="`/categories/${encodeURIComponent(middle)}`">{{ middle
+                                    <router-link @click="closeCategoryModal" :to="`/categories/${encodeURIComponent(middle)}`">{{
+                                        middle
                                     }}</router-link>
                                 </li>
                             </ul>

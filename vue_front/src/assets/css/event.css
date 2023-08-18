@@ -254,7 +254,6 @@
     box-sizing: border-box;
     margin: 5px;
     padding: 5px;
-    border: 1px solid #ccc;
     border-radius: 10px;
     display: flex;
     justify-content: center;
@@ -271,8 +270,7 @@
 .stamp-item img {
     max-width: 80%; /* 이미지가 자동으로 축소되도록 함 */
     max-height: 80%; /* 이미지가 자동으로 축소되도록 함 */
-    margin: auto;
-    display: block;
+    vertical-align: middle;
 }
 
 .attendance_button {
@@ -354,4 +352,21 @@ p {
     margin-top: 3%;
     font-size: larger;
     font-weight: bolder;
+}
+.emptyCal {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: 105%;
+    height: 105%;
+    text-align: center;
+    line-height: 600%;
+    background-color: #f1f1f1;
+}
+.viewCal {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: 105%;
+    height: 105%;
+    text-align: center;
+    line-height: 600%;
 }

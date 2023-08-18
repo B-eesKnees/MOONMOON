@@ -59,19 +59,19 @@
     margin-top: 20px;
     font-weight: 700;
     font-size: 1.1em;
-    width: 425px;
+    width: 400px;
     line-height: 20px;
 }
 
 .book_price {
     position: absolute;
-    display: inline-block;
     margin-left: 5px;
-    margin-top: 170px;
 }
 
 .book_point {
-    margin-left: 5px;
+    position: relative;
+    top: -20px;
+    left: 170px;
 }
 
 .changeQua {
@@ -158,6 +158,13 @@
     font-size: large;
     font-weight: bolder;
 }
+.pay_wrap_second {
+    margin-top: 8%;
+    display: flex; /* 세로배치를 가로배치로 */
+    width: 100%; /* 장바구니박스 가로100% 공간 사용 */
+    font-size: large;
+    font-weight: bolder;
+}
 /* 금액(숫자) */
 .payment_value {
     width: 70%; /* 그중에 70% 사용 */
@@ -213,7 +220,7 @@
     height: 18px;
     position: absolute;
     left: 43.5%;
-    margin-top: 11%;
+    margin-top: 1%;
     background-image: url(../img/btn_delete_ord@2x.png);
     background-repeat: no-repeat;
     background-position: center;
@@ -258,4 +265,15 @@
 }
 .nodata {
     margin-top: 15%;
+}
+.delete_button {
+    position: relative;
+    border: none;
+    left: 78%;
+    background-color: #4e4eff;
+    color: white;
+    padding: 5px;
+    border-radius: 13px;
+    width: 50px;
+    font-weight: bold;
 }

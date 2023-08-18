@@ -12,7 +12,7 @@ import NewList from "../views/newList.vue";
 import bookDetail from "../views/bookDetail.vue";
 import startest from "@/views/test.vue";
 import Goods from "../views/goods.vue";
-import Categories from '../views/categories.vue'
+import Categories from "../views/categories.vue";
 
 import booktestPage from "../views/bookTest.vue";
 import cart from "../views/cart.vue";
@@ -25,7 +25,7 @@ import qnaWrite from "../views/qnaWrite.vue";
 import qnaEdit from "../views/qnaEdit.vue";
 import eventPage from "../views/event.vue";
 import attendance from "../views/attendance.vue";
-import myPage from "../views/myPage.vue";
+import myPage from "../views/mypage.vue";
 import axios from "axios";
 
 const requireLogin = () => (to, from, next) => {
