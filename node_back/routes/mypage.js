@@ -103,13 +103,35 @@ router.get("/userpoint", (req, res) => {
   });
 });
 
+//쿠폰 업데이트(6개월간의 user_total_pay 산정해서 지급)
 router.post("/updatecoupon/:userEmail", (req, res) => {
   const userEmail = req.params.userEmail;
 
+  // 현재 날짜
+  const now = new Date();
+
+  // 6개월 전의 날짜 (2월 1일)
+  const sixMonthsAgo = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 6, 1, 0, 0, 0)
+  );
+
+  // 7월 31일의 마지막 시간 (23:59:59)
+  const lastDayOfMonth = new Date(
+    Date.UTC(now.getUTCFullYear(), 6, 31, 23, 59, 59, 999)
+  );
+
+  // 사용자의 sixMonthsAgo와 lastDayOfMonth 사이의 결제 총액을 구하는 쿼리
+  const userPaymentQuery = `
+    SELECT SUM(u.user_total_pay) AS totalPayment
+    FROM user u
+    JOIN \`order\` o ON u.user_email = o.order_useremail
+    WHERE u.user_email = ? AND o.order_paydate >= ? AND o.order_paydate <= ?
+  `;
+
   // 사용자 정보 조회
   const userQuery = `
-      SELECT user_total_pay FROM user
-      WHERE user_email = ?
+    SELECT user_total_pay FROM user
+    WHERE user_email = ?
   `;
 
   db.query(userQuery, [userEmail], (userError, userResults) => {
@@ -124,195 +146,194 @@ router.post("/updatecoupon/:userEmail", (req, res) => {
       return;
     }
 
-    const userTotalPay = userResults[0].user_total_pay;
+    const totalPayment = userResults[0].user_total_pay || 0;
 
-    // 현재 날짜 및 시간
-    const now = new Date();
+    // 사용자의 결제 총액 조회
+    db.query(
+      userPaymentQuery,
+      [userEmail, sixMonthsAgo, lastDayOfMonth],
+      (paymentError, paymentResults) => {
+        if (paymentError) {
+          console.error(paymentError);
+          res
+            .status(500)
+            .json({ error: "결제 총액 조회 중 오류가 발생했습니다." });
+          return;
+        }
 
-    // 무료배송 쿠폰 조회 및 지급 로직
-    const query = `
-          SELECT * FROM coupon
-          WHERE COUPON_GRADE IN ('골드', '플래티넘')
-          AND ? >= 200000
-          AND COUPON_MAXDATE >= NOW()
-      `;
+        const userTotalPaymentInPeriod = paymentResults[0].totalPayment || 0;
 
-    db.query(query, [userTotalPay], (error, results) => {
-      if (error) {
-        console.error(error);
-        res.status(500).json({
-          error: "An error occurred while fetching free delivery coupons.",
-        });
-      } else {
-        const freeDeliveryCouponsToGive = results;
-
-        // 등급별 쿠폰 조회 및 지급 로직
-        const query = `
-                  SELECT * FROM coupon
-                  WHERE (COUPON_GRADE = '프렌즈' AND ? < 100000)
-                  OR (COUPON_GRADE = '실버' AND ? >= 100000 AND ? < 200000)
-                  OR (COUPON_GRADE = '골드' AND ? >= 200000 AND ? < 300000)
-                  OR (COUPON_GRADE = '플래티넘' AND ? >= 300000)
-                  AND COUPON_MAXDATE >= NOW()
-              `;
-
-        db.query(
-          query,
-          [
-            userTotalPay,
-            userTotalPay,
-            userTotalPay,
-            userTotalPay,
-            userTotalPay,
-            userTotalPay,
-          ],
-          (error, results) => {
-            if (error) {
-              console.error(error);
-              res.status(500).json({
-                error: "An error occurred while fetching grade coupons.",
-              });
-            } else {
-              const gradeCouponsToGive = results;
-
-              // 쿠폰 지급 및 cpuser 테이블에 삽입
-              const couponsToInsert =
-                freeDeliveryCouponsToGive.concat(gradeCouponsToGive);
-
-              const cpuserInsertQuery = `
-                          INSERT INTO cpuser (CPUSER_USER_EMAIL, CPUSER_COUPON_ID, CPUSER_STATUS, CPUSER_MAXDATE, CPUSER_REGDATE)
-                          VALUES (?, ?, ?, ?, now())
-                      `;
-
-              const insertPromises = couponsToInsert.map((coupon) => {
-                return new Promise((resolve, reject) => {
-                  db.query(
-                    cpuserInsertQuery,
-                    [userEmail, coupon.COUPON_ID, 0, coupon.COUPON_MAXDATE],
-                    (insertError, insertResults) => {
-                      if (insertError) {
-                        console.error(insertError);
-                        reject(
-                          "An error occurred while inserting cpuser data."
-                        );
-                      } else {
-                        resolve(coupon);
-                      }
-                    }
-                  );
-                });
-              });
-
-              Promise.all(insertPromises)
-                .then((insertedCoupons) => {
-                  res.json({
-                    message: "Coupons generated and inserted successfully.",
-                    coupons: insertedCoupons,
-                  });
-                })
-                .catch((error) => {
-                  res.status(500).json({ error });
-                });
-            }
-          }
-        );
-      }
-    });
-  });
-});
-
-router.post("/updatecoupon/:userEmail", (req, res) => {
-  const userEmail = req.params.userEmail;
-
-  // 사용자 정보 조회
-  const userQuery = `
-      SELECT user_total_pay FROM user
-      WHERE user_email = ?
-  `;
-
-  db.query(userQuery, [userEmail], (userError, userResults) => {
-    if (userError) {
-      console.error(userError);
-      res.status(500).json({ error: "유저 정보 조회 실패." });
-      return;
-    }
-
-    if (userResults.length === 0) {
-      res.status(404).json({ error: "유저를 찾을 수 없음." });
-      return;
-    }
-
-    const userTotalPay = userResults[0].user_total_pay;
-
-    // 현재 날짜 및 시간
-    const now = new Date();
-
-    // 등급별 쿠폰 조회 및 지급 로직
-    const gradeCouponQuery = `
+        const gradeCouponQuery = `
         SELECT * FROM coupon
         WHERE (COUPON_GRADE = '프렌즈' AND ? < 100000)
         OR (COUPON_GRADE = '실버' AND ? >= 100000 AND ? < 200000)
         OR (COUPON_GRADE = '골드' AND ? >= 200000 AND ? < 300000)
-        OR (COUPON_GRADE = '플래티넘' AND ? >= 300000)
-        AND COUPON_MAXDATE >= NOW()
-    `;
+        OR (COUPON_GRADE = '플래티넘' AND ? >= 300000);
+      `;
 
-    db.query(
-      gradeCouponQuery,
-      [
-        userTotalPay,
-        userTotalPay,
-        userTotalPay,
-        userTotalPay,
-        userTotalPay,
-        userTotalPay,
-      ],
-      (gradeCouponError, gradeCouponResults) => {
-        if (gradeCouponError) {
-          console.error(gradeCouponError);
-          res.status(500).json({
-            error: "An error occurred while fetching grade coupons.",
-          });
-        } else {
-          const gradeCouponsToGive = gradeCouponResults;
+        db.query(
+          gradeCouponQuery,
+          [
+            userTotalPaymentInPeriod,
+            userTotalPaymentInPeriod,
+            userTotalPaymentInPeriod,
+            userTotalPaymentInPeriod,
+            userTotalPaymentInPeriod,
+            userTotalPaymentInPeriod,
+          ],
+          (gradeCouponError, gradeCouponResults) => {
+            if (gradeCouponError) {
+              console.error(gradeCouponError);
+              res.status(500).json({
+                error: "등급 쿠폰 오류 발생",
+              });
+            } else {
+              const gradeCouponsToGive = gradeCouponResults;
 
-          // 쿠폰 지급 및 cpuser 테이블에 삽입
-          const cpuserInsertQuery = `
-              INSERT INTO cpuser (CPUSER_USER_EMAIL, CPUSER_COUPON_ID, CPUSER_STATUS, CPUSER_MAXDATE, CPUSER_REGDATE)
-              VALUES (?, ?, ?, ?, now())
-          `;
+              // 기존에 유저가 해당 등급의 쿠폰을 이미 받았는지 확인
+              const existingCouponQuery = `
+                SELECT COUNT(*) AS couponCount
+                FROM cpuser
+                WHERE CPUSER_USER_EMAIL = ? 
+              `;
 
-          const insertPromises = gradeCouponsToGive.map((coupon) => {
-            return new Promise((resolve, reject) => {
               db.query(
-                cpuserInsertQuery,
-                [userEmail, coupon.COUPON_ID, 0, coupon.COUPON_MAXDATE],
-                (insertError, insertResults) => {
-                  if (insertError) {
-                    console.error(insertError);
-                    reject("An error occurred while inserting cpuser data.");
+                existingCouponQuery,
+                [userEmail, gradeCouponsToGive[0].COUPON_GRADE],
+                (existingCouponError, existingCouponResults) => {
+                  if (existingCouponError) {
+                    console.error(existingCouponError);
+                    res.status(500).json({
+                      error: "쿠폰 조회 실패.",
+                    });
                   } else {
-                    resolve(coupon);
+                    const couponCount = existingCouponResults[0].couponCount;
+
+                    if (couponCount > 0) {
+                      res.json({
+                        message: `이미 ${gradeCouponsToGive[0].COUPON_GRADE} coupon을 받았습니다.`,
+                        coupons: [],
+                      });
+                      return;
+                    }
+
+                    // 쿠폰 지급 및 cpuser 테이블에 삽입
+                    const cpuserInsertQuery = `
+                    INSERT INTO cpuser (CPUSER_USER_EMAIL, CPUSER_COUPON_ID, CPUSER_STATUS, CPUSER_MAXDATE, CPUSER_REGDATE)
+                    VALUES (?, ?, ?, ?, now())
+                  `;
+
+                    const insertPromises = gradeCouponsToGive.map((coupon) => {
+                      return new Promise((resolve, reject) => {
+                        db.query(
+                          cpuserInsertQuery,
+                          [
+                            userEmail,
+                            coupon.COUPON_ID,
+                            0,
+                            coupon.COUPON_MAXDATE,
+                          ],
+                          (insertError, insertResults) => {
+                            if (insertError) {
+                              console.error(insertError);
+                              reject("쿠폰 insert 실패.");
+                            } else {
+                              resolve(coupon);
+                            }
+                          }
+                        );
+                      });
+                    });
+
+                    Promise.all(insertPromises)
+                      .then((insertedCoupons) => {
+                        res.json({
+                          message: "쿠폰이 정상적으로 발급되었습니다.",
+                          coupons: insertedCoupons,
+                        });
+                      })
+                      .catch((error) => {
+                        res.status(500).json({ error });
+                      });
                   }
                 }
               );
-            });
-          });
-
-          Promise.all(insertPromises)
-            .then((insertedCoupons) => {
-              res.json({
-                message: "Coupons generated and inserted successfully.",
-                coupons: insertedCoupons,
-              });
-            })
-            .catch((error) => {
-              res.status(500).json({ error });
-            });
-        }
+            }
+          }
+        );
       }
     );
   });
+});
+
+//user 등급 (coupon_grade)가져오기
+router.get("/coupongrade/:userEmail", (req, res) => {
+  const userEmail = req.params.userEmail;
+
+  const now = new Date();
+
+  // 6개월 전의 날짜 (2월 1일)
+  const sixMonthsAgo = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 6, 1, 0, 0, 0)
+  );
+
+  // 7월 31일의 마지막 시간 (23:59:59)
+  const lastDayOfMonth = new Date(
+    Date.UTC(now.getUTCFullYear(), 6, 31, 23, 59, 59, 999)
+  );
+
+  // 사용자의 sixMonthsAgo와 lastDayOfMonth 사이의 결제 총액을 구하는 쿼리
+  const userPaymentQuery = `
+    SELECT SUM(u.user_total_pay) AS totalPayment
+    FROM user u
+    JOIN \`order\` o ON u.user_email = o.order_useremail
+    WHERE u.user_email = ? AND o.order_paydate >= ? AND o.order_paydate <= ?
+  `;
+  db.query(
+    userPaymentQuery,
+    [userEmail, sixMonthsAgo, lastDayOfMonth],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: "결제 총액 조회 중 오류 발생" });
+        return;
+      }
+
+      const userTotalPaymentInPeriod = results[0].totalPayment || 0;
+
+      let userGrade = "프렌즈"; // 기본 등급을 프렌즈로 설정
+
+      // 결제 총액에 따라 등급 결정
+      if (userTotalPaymentInPeriod >= 300000) {
+        userGrade = "플래티넘";
+      } else if (userTotalPaymentInPeriod >= 200000) {
+        userGrade = "골드";
+      } else if (userTotalPaymentInPeriod >= 100000) {
+        userGrade = "실버";
+      }
+
+      // 쿠폰 등급을 가져오는 쿼리
+      const couponGradeQuery = `
+      SELECT c.COUPON_GRADE
+      FROM coupon c
+      WHERE c.COUPON_GRADE = ?
+    `;
+
+      db.query(couponGradeQuery, [userGrade], (couponError, couponResults) => {
+        if (couponError) {
+          console.error(couponError);
+          res
+            .status(500)
+            .json({ error: "쿠폰 등급 조회 중 오류가 발생했습니다." });
+          return;
+        }
+
+        const couponGrade = couponResults[0].COUPON_GRADE || "해당 없음";
+
+        res.json({ userGrade, couponGrade });
+      });
+    }
+  );
 });
 
 //배송 상태별 조회  + 배송 상세 표시
@@ -640,6 +661,36 @@ router.post("/updateUserInfo", async (req, res) => {
       res.status(200).json({ message: "회원정보 수정 완료" });
     }
   });
+});
+
+//-----------------------------------------------------------
+// 등급 업데이트 라우터
+router.post("/updategrade/:userEmail", async (req, res) => {
+  try {
+    const userEmail = req.params.userEmail;
+    const user = await db.getUserInfo(userEmail); // 사용자 정보 가져오기 (user_total_pay 포함)
+
+    let newCouponGrade = "";
+    if (user.user_total_pay < 100000) {
+      newCouponGrade = "프렌즈";
+    } else if (user.user_total_pay >= 100000 && user.user_total_pay < 200000) {
+      newCouponGrade = "실버";
+    } else if (user.user_total_pay >= 200000 && user.user_total_pay < 300000) {
+      newCouponGrade = "골드";
+    } else if (user.user_total_pay >= 300000) {
+      newCouponGrade = "플래티넘";
+    }
+
+    if (newCouponGrade !== user.coupon_grade) {
+      await db.updateUserCouponGrade(userId, newCouponGrade); // 사용자 등급 업데이트
+      res.json({ message: "등급이 업데이트되었습니다." });
+    } else {
+      res.json({ message: "등급이 변경되지 않았습니다." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "서버 오류" });
+  }
 });
 
 module.exports = router;
