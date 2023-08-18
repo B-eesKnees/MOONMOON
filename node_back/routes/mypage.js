@@ -358,7 +358,8 @@ router.get("/ordersearchbook", (req, res) => {
   }
 
   if (bookKeyword) {
-    query += ` AND b.BOOK_TITLE LIKE '%${bookKeyword}%'`;
+    const keywordWithoutSpaces = bookKeyword.replace(/\s+/g, ""); // Remove spaces
+    query += ` AND REPLACE(b.BOOK_TITLE, ' ', '') LIKE '%${keywordWithoutSpaces}%'`;
   }
 
   db.query(query, (err, results) => {
@@ -422,7 +423,7 @@ router.get("/orderpaydate", (req, res) => {
   });
 });
 
-//bookTitle, bookCover, orderPay,orderCnt
+//bookTitle, bookCover, orderPay,orderCnt 데이터 받아오기
 
 router.get("/paybookinfo/:orderId", (req, res) => {
   const orderId = req.params.orderId;
@@ -452,31 +453,6 @@ router.get("/paybookinfo/:orderId", (req, res) => {
 });
 
 //구매확정처리
-router.get("/notYetReview/:userEmail", (req, res) => {
-  const userEmail = req.params.userEmail;
-
-  const notReviewQuery = `
-    SELECT oi.*, b.book_author, b.book_cover, b.book_title
-    FROM orderitem oi
-    JOIN book b ON oi.ORDERITEM_BOOKID = b.BOOK_ID
-    WHERE oi.ORDERITEM_ORDERID IN (
-      SELECT o.ORDER_ID
-      FROM \`order\` o
-      WHERE o.ORDER_USEREMAIL = ? AND o.ORDER_STATE = '배송완료'
-    )
-    AND oi.ORDERITEM_BUYCHECK = 1 AND oi.ORDERITEM_REVCHECK = 0
-  `;
-
-  db.query(notReviewQuery, [userEmail], (err, results) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: "서버 에러" });
-    } else {
-      res.status(200).json(results);
-    }
-  });
-});
-
 router.get("/notYetReview/:userEmail", (req, res) => {
   const userEmail = req.params.userEmail;
 
@@ -587,7 +563,31 @@ router.get("/mypagereview/:email", (req, res) => {
   });
 });
 
-//내가 쓸 리뷰 (구매확정 했지만 REV_CHECK=0)
+//마이페이지 리뷰 작성할 책 데이터
+router.get("/notYetReview/:userEmail", (req, res) => {
+  const userEmail = req.params.userEmail;
+
+  const notReviewQuery = `
+    SELECT oi.ORDERITEM_BOOKID, b.book_author, b.book_cover, b.book_title
+    FROM orderitem oi
+    JOIN book b ON oi.ORDERITEM_BOOKID = b.BOOK_ID
+    WHERE oi.ORDERITEM_ORDERID IN (
+      SELECT o.ORDER_ID
+      FROM \`order\` o
+      WHERE o.ORDER_USEREMAIL = ? AND o.ORDER_STATE = '배송완료'
+    )
+    AND oi.ORDERITEM_BUYCHECK = 1 AND oi.ORDERITEM_REVCHECK = 0
+  `;
+
+  db.query(notReviewQuery, [userEmail], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: "서버 에러" });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
 
 //회원정보 수정(주소, 번호 , 비밀번호,,,만 )
 router.post("/updateUserInfo", async (req, res) => {
@@ -642,29 +642,4 @@ router.post("/updateUserInfo", async (req, res) => {
   });
 });
 
-//마이페이지 리뷰 작성할 책 데이터
-router.get("/notYetReview/:userEmail", (req, res) => {
-  const userEmail = req.params.userEmail;
-
-  const notReviewQuery = `
-    SELECT oi.ORDERITEM_BOOKID, b.book_author, b.book_cover, b.book_title
-    FROM orderitem oi
-    JOIN book b ON oi.ORDERITEM_BOOKID = b.BOOK_ID
-    WHERE oi.ORDERITEM_ORDERID IN (
-      SELECT o.ORDER_ID
-      FROM \`order\` o
-      WHERE o.ORDER_USEREMAIL = ? AND o.ORDER_STATE = '배송완료'
-    )
-    AND oi.ORDERITEM_BUYCHECK = 1 AND oi.ORDERITEM_REVCHECK = 0
-  `;
-
-  db.query(notReviewQuery, [userEmail], (err, results) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: "서버 에러" });
-    } else {
-      res.status(200).json(results);
-    }
-  });
-});
 module.exports = router;
