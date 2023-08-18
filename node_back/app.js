@@ -48,10 +48,7 @@ const attPageRouter = require("./routes/att");
 const booklistPageRouter = require("./routes/bookList");
 const surveyRouter = require("./routes/survey");
 const mypageRouter = require("./routes/mypage");
-<<<<<<< HEAD
-=======
 const visitRouter = require("./routes/visit");
->>>>>>> origin/seungLee
 const adminRouter = require("./routes/admin");
 
 app.use("/cart", cartRouter);
@@ -69,10 +66,7 @@ app.use("/att", attPageRouter);
 app.use("/booklist", booklistPageRouter);
 app.use("/sur", surveyRouter);
 app.use("/mypage", mypageRouter);
-<<<<<<< HEAD
-=======
 app.use("/visit", visitRouter);
->>>>>>> origin/seungLee
 app.use("/admin", adminRouter);
 
 app.listen(app.get("port"), () => {

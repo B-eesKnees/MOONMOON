@@ -165,9 +165,9 @@ router.post('/adminOrderList', async (request, res) => {
 
 
 //오늘 방문자 수
-router.post(`/getTodayV`, async (req, res) => {
+router.post(`/getTodayV`, async (request, res) => {
   //오늘 날짜 new Date().toLocaleDateString()
-  const today = req.body.today;
+  const today = request.body.today;
   console.log(today);
 
   db.query(`select vc_count from viewcount where vc_date = ?`, today, (err, results) => {
@@ -179,7 +179,7 @@ router.post(`/getTodayV`, async (req, res) => {
   });
 });
 //날자별 방문자 수
-router.post("/getTotalV", async (req, res) => {
+router.post("/getTotalV", async (request, res) => {
   db.query(`select vc_count, vc_date from viewcount`, (err, results) => {
       if (err) {
           res.status(200).send(err);
