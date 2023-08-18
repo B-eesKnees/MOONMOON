@@ -3,7 +3,9 @@
     <div>
         <GnbBar />
 
-        <div class="mypage_menu"></div>
+        <div class="mypage_menu">
+            <myPageSide />
+        </div>
         <div class="right_box">
             <h1 class="qna_title_big">EVENT</h1>
 
@@ -87,7 +89,11 @@
                                 <ol class="stamp">
                                     <li v-for="index in 42">
                                         <div class="stamp-item">
-                                            <span v-if="checkAtt(index)"><img src="https://contents.kyobobook.co.kr/resources/fo/images/common/ink/img_attendance_active@2x.png" alt="출석완료" /></span>
+                                            <span v-if="checkAtt(index)"
+                                                ><img
+                                                    src="https://contents.kyobobook.co.kr/resources/fo/images/common/ink/img_attendance_active@2x.png"
+                                                    alt="출석완료"
+                                            /></span>
                                             <span v-else>{{ index }}</span>
                                         </div>
                                     </li>
@@ -117,6 +123,7 @@ import "@/assets/css/event.css";
 import GnbBar from "../components/gnbBar.vue";
 import TabsWrapper from "../components/TabsWrapper.vue";
 import TabItem from "../components/TabItem.vue";
+import myPageSide from "../components/myPageSide.vue";
 axios.defaults.baseURL = "http://localhost:3000";
 axios.defaults.headers.post["Content-Type"] = "application/json;charset=utf-8";
 axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
@@ -126,6 +133,7 @@ export default {
         GnbBar,
         TabsWrapper,
         TabItem,
+        myPageSide,
     },
     data() {
         return {
@@ -315,7 +323,15 @@ export default {
             //달에 알맞은 일자 출력하게 하는 함수
             //new Date 객체 생성하고 getMonth() 쓰는게 더 간단함
             const checkMonth = new Date().toISOString().slice(5, 7); //2023-"01"-01 //무슨 달인지 추출
-            if (checkMonth == "01" || checkMonth == "03" || checkMonth == "05" || checkMonth == "07" || checkMonth == "08" || checkMonth == "10" || checkMonth == "12") {
+            if (
+                checkMonth == "01" ||
+                checkMonth == "03" ||
+                checkMonth == "05" ||
+                checkMonth == "07" ||
+                checkMonth == "08" ||
+                checkMonth == "10" ||
+                checkMonth == "12"
+            ) {
                 this.month = 31; //31일인 달
             } else if (checkMonth == "02") {
                 this.month = 28; //2월은 28일

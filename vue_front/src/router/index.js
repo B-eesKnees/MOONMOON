@@ -12,7 +12,7 @@ import NewList from "../views/newList.vue";
 import bookDetail from "../views/bookDetail.vue";
 import startest from "@/views/test.vue";
 import Goods from "../views/goods.vue";
-import Categories from '../views/categories.vue'
+import Categories from "../views/categories.vue";
 
 import booktestPage from "../views/bookTest.vue";
 import cart from "../views/cart.vue";
