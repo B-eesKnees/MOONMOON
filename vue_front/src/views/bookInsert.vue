@@ -1,94 +1,326 @@
+<style scoped src="bootstrap/dist/css/bootstrap.css"></style>
+<style scoped src="../assets/css/sbadmin.css"></style>
+
 <template>
-  <GnbBar />
-  <div class="input_book_title">
-    <form class="book_title_form" @submit.prevent="book_research">
-      <input
-        type="text"
-        class="book_title"
-        v-model="bookname"
-        placeholder="책이름을 입력하세요"
-      />
-      <button class="bi_button" type="submit">검색</button>
-    </form>
-  </div>
-  <div v-if="bookResults.length > 0" class="book_selection">
-    <label class="bi_label" for="selectedBook">Select a book:</label>
-    <select
-      class="bi_select"
-      v-model="selectedBook"
-      @change="onBookSelectionChange"
-    >
-      <option value="default">-----------------------</option>
-      <option v-for="(book, index) in bookResults" :key="index" :value="index">
-        {{ book.title }}
-      </option>
-    </select>
-  </div>
-  <div class="info_all">
-    <div class="book_info_image">
-      <img v-if="book_image" :src="book_image" class="book_image" />
-      <p v-else class="book_non_image">이미지없음</p>
-      <p>이미지 제공 api: {{ book_provider }}</p>
+  <body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+      <!-- Sidebar -->
+      <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
+
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/admin">
+          <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fa-solid fa-moon"></i>
+          </div>
+          <div class="sidebar-brand-text mx-3">관리자 페이지</div>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item">
+          <a class="nav-link" href="/admin">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span> 대쉬보드</span></a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+          관리
+        </div>
+
+        <!-- Nav Item - Pages Collapse Menu -->
+        <li class="nav-item active">
+          <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+            aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fa-solid fa-book"></i>
+            <span> 책 관리</span>
+          </a>
+          <div id="collapseTwo" class="collapse" aria-labelledby="headingUtilities" data-parent="#collapseUtilities"
+            aria-expanded="true" aria-controls="collapseUtilities">
+            <div class="bg-white py-2 collapse-inner rounded">
+              <h6 class="collapse-header">책 관리</h6>
+              <a class="collapse-item" href="#">책 조회/삭제</a>
+              <a class="collapse-item" href="/admin/bookinsert">책 추가</a>
+            </div>
+          </div>
+        </li>
+
+        <!-- Nav Item - Utilities Collapse Menu -->
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+            aria-expanded="true" aria-controls="collapseUtilities">
+            <i class="fa-solid fa-user-gear"></i>
+            <span>회원 관리</span>
+          </a>
+          <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+              <h6 class="collapse-header">Custom Utilities:</h6>
+              <a class="collapse-item" href="utilities-color.html">Colors</a>
+              <a class="collapse-item" href="utilities-border.html">Borders</a>
+              <a class="collapse-item" href="utilities-animation.html">Animations</a>
+              <a class="collapse-item" href="utilities-other.html">Other</a>
+            </div>
+          </div>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+            aria-expanded="true" aria-controls="collapseUtilities">
+            <i class="fa-solid fa-comment-dots"></i>
+            <span>문의 관리</span>
+          </a>
+          <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+              <h6 class="collapse-header">Custom Utilities:</h6>
+              <a class="collapse-item" href="utilities-color.html">Colors</a>
+              <a class="collapse-item" href="utilities-border.html">Borders</a>
+              <a class="collapse-item" href="utilities-animation.html">Animations</a>
+              <a class="collapse-item" href="utilities-other.html">Other</a>
+            </div>
+          </div>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+            aria-expanded="true" aria-controls="collapseUtilities">
+            <i class="fa-solid fa-truck-moving"></i>
+            <span>주문 관리</span>
+          </a>
+          <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+              <h6 class="collapse-header">Custom Utilities:</h6>
+              <a class="collapse-item" href="utilities-color.html">Colors</a>
+              <a class="collapse-item" href="utilities-border.html">Borders</a>
+              <a class="collapse-item" href="utilities-animation.html">Animations</a>
+              <a class="collapse-item" href="utilities-other.html">Other</a>
+            </div>
+          </div>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+          분석
+        </div>
+
+        <!-- Nav Item - Pages Collapse Menu -->
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
+            aria-controls="collapsePages">
+            <i class="fas fa-fw fa-folder"></i>
+            <span>회원 분석</span>
+          </a>
+          <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+              <h6 class="collapse-header">Login Screens:</h6>
+              <a class="collapse-item" href="login.html">Login</a>
+              <a class="collapse-item" href="register.html">Register</a>
+              <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+              <div class="collapse-divider"></div>
+              <h6 class="collapse-header">Other Pages:</h6>
+              <a class="collapse-item" href="404.html">404 Page</a>
+              <a class="collapse-item" href="blank.html">Blank Page</a>
+            </div>
+          </div>
+        </li>
+
+        <!-- Nav Item - Charts -->
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
+            aria-controls="collapsePages">
+            <i class="fas fa-fw fa-folder"></i>
+            <span>구매 분석</span>
+          </a>
+          <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+              <h6 class="collapse-header">Login Screens:</h6>
+              <a class="collapse-item" href="login.html">Login</a>
+              <a class="collapse-item" href="register.html">Register</a>
+              <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+              <div class="collapse-divider"></div>
+              <h6 class="collapse-header">Other Pages:</h6>
+              <a class="collapse-item" href="404.html">404 Page</a>
+              <a class="collapse-item" href="blank.html">Blank Page</a>
+            </div>
+          </div>
+        </li>
+
+        <!-- Nav Item - Tables -->
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
+            aria-controls="collapsePages">
+            <i class="fas fa-fw fa-folder"></i>
+            <span>매출 분석</span>
+          </a>
+          <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+              <h6 class="collapse-header">Login Screens:</h6>
+              <a class="collapse-item" href="login.html">Login</a>
+              <a class="collapse-item" href="register.html">Register</a>
+              <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+              <div class="collapse-divider"></div>
+              <h6 class="collapse-header">Other Pages:</h6>
+              <a class="collapse-item" href="404.html">404 Page</a>
+              <a class="collapse-item" href="blank.html">Blank Page</a>
+            </div>
+          </div>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
+
+      </ul>
+      <!-- End of Sidebar -->
+
+      <!-- Content Wrapper -->
+      <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+          <!-- Topbar -->
+          <nav
+            class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow d-flex align-items-center justify-content-center">
+            <h1 class="">MOONMOON</h1>
+          </nav>
+          <!-- End of Topbar -->
+
+          <!-- Begin Page Content -->
+          <div class="container-fluid d-flex flex-column align-items-center justify-content-center">
+
+            <!-- Page Heading -->
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+              <h1 class="h3 mb-0 text-gray-800">책 추가</h1>
+            </div>
+
+            <div class="input_book_title">
+              <form class="book_title_form d-flex align-items-center" @submit.prevent="book_research">
+                <input type="text" class="book_title" v-model="bookname" placeholder="책이름을 입력하세요" />
+                <button class="bi_button ml-2 btn btn-primary" type="submit">검색</button>
+              </form>
+            </div>
+            <div v-if="bookResults.length > 0" class="book_selection">
+              <label class="bi_label" for="selectedBook">Select a book:</label>
+              <select class="bi_select" v-model="selectedBook" @change="onBookSelectionChange">
+                <option value="default">-----------------------</option>
+                <option v-for="(book, index) in bookResults" :key="index" :value="index">
+                  {{ book.title }}
+                </option>
+              </select>
+            </div>
+            <div class="info_all 1">
+              <div class="book_info_image">
+                <img v-if="book_image" :src="book_image" class="book_image" />
+                <p v-else class="book_non_image">이미지없음</p>
+                <p>이미지 제공 api: {{ book_provider }}</p>
+              </div>
+              <div class="info_text">
+                <div class="con_line d-flex align-items-baseline">
+                  <h6 class="bi_h6">책 이름:</h6>
+                  <div class="contents">{{ book_title }}</div>
+                </div>
+                <div class="con_line d-flex align-items-baseline">
+                  <h6 class="bi_h6">작가:</h6>
+                  <div class="contents">{{ book_author }}</div>
+                </div>
+                <div class="con_line d-flex align-items-baseline">
+                  <h6 class="bi_h6">정가:</h6>
+                  <div class="contents">{{ book_pricestandard }}</div>
+                </div>
+                <div class="con_line d-flex align-items-baseline">
+                  <h6 class="bi_h6">카테고리:</h6>
+                  <div class="contents">{{ book_categoryname }}</div>
+                </div>
+                <div class="con_line d-flex align-items-baseline">
+                  <h6 class="bi_h6">포인트:</h6>
+                  <div class="contents">{{ book_point }}</div>
+                </div>
+                <div class="con_line d-flex align-items-baseline">
+                  <h6 class="bi_h6">출판사:</h6>
+                  <div class="contents">{{ book_publisher }}</div>
+                </div>
+                <div class="con_line d-flex align-items-baseline">
+                  <h6 class="bi_h6">출판일:</h6>
+                  <div class="contents">{{ book_pubdate }}</div>
+                </div>
+                <div class="con_line d-flex align-items-baseline">
+                  <h6 class="line bi_h6">알라딘<br />판매지수:</h6>
+                  <div class="contents">{{ book_salesPoint }}</div>
+                </div>
+                <div class="con_line d-flex align-items-baseline">
+                  <h6 class="bi_h6">책 한줄 설명:</h6>
+                  <div class="contents">{{ book_description }}</div>
+                </div>
+              </div>
+            </div>
+            <button type="button" @click="insertBookInfo" class="insertBookInfo bi_button mt-5 btn btn-primary">
+              등록하기
+            </button>
+          </div>
+          <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+          <div class="container my-auto">
+            <div class="copyright text-center my-auto">
+              <span>Copyright &copy; Your Website 2023</span>
+            </div>
+          </div>
+        </footer>
+        <!-- End of Footer -->
+
+      </div>
+      <!-- End of Content Wrapper -->
+
     </div>
-    <div class="info_text">
-      <div class="con_line">
-        <h6 class="bi_h6">책 이름:</h6>
-        <div class="contents">{{ book_title }}</div>
-      </div>
-      <div class="con_line">
-        <h6 class="bi_h6">작가:</h6>
-        <div class="contents">{{ book_author }}</div>
-      </div>
-      <div class="con_line">
-        <h6 class="bi_h6">정가:</h6>
-        <div class="contents">{{ book_pricestandard }}</div>
-      </div>
-      <div class="con_line">
-        <h6 class="bi_h6">카테고리:</h6>
-        <div class="contents">{{ book_categoryname }}</div>
-      </div>
-      <div class="con_line">
-        <h6 class="bi_h6">포인트:</h6>
-        <div class="contents">{{ book_point }}</div>
-      </div>
-      <div class="con_line">
-        <h6 class="bi_h6">출판사:</h6>
-        <div class="contents">{{ book_publisher }}</div>
-      </div>
-      <div class="con_line">
-        <h6 class="bi_h6">출판일:</h6>
-        <div class="contents">{{ book_pubdate }}</div>
-      </div>
-      <div class="con_line">
-        <h6 class="line bi_h6">알라딘<br />판매지수:</h6>
-        <div class="contents">{{ book_salesPoint }}</div>
-      </div>
-      <div class="con_line">
-        <h6 class="bi_h6">책 한줄 설명:</h6>
-        <div class="contents">{{ book_description }}</div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="login.html">Logout</a>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-  <button
-    type="button"
-    @click="insertBookInfo"
-    class="insertBookInfo bi_button"
-  >
-    등록하기
-  </button>
+
+  </body>
 </template>
 
 <script>
 import "@/assets/css/bookInsert.css";
 import axios from "axios";
-import GnbBar from "../components/gnbBar.vue";
+import 'bootstrap'; // Import Bootstrap JavaScript
+
 axios.defaults.baseURL = "http://localhost:3000";
 axios.defaults.headers.post["Content-Type"] = "application/json;charset=utf-8";
 axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 
 export default {
   components: {
-    GnbBar,
   },
   data() {
     return {

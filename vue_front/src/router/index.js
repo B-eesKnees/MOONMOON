@@ -30,6 +30,8 @@ import attendance from "../views/attendance.vue";
 import mypage from "../views/mypage.vue";
 import axios from "axios";
 
+import Admin from '../views/Admin.vue';
+
 const requireLogin = () => (to, from, next) => {
     //로그인안하고 접근하려했을때 실행할 함수?
     if (localStorage.getItem("userID") !== null) {
@@ -189,10 +191,15 @@ const routes = [
     //-------------------------------------------------------------
     //관리자페이지
     {
-        path: "/bookinsert",
+        path: "/admin/bookinsert",
         name: "bookInsert",
         component: bookInsert,
     },
+    {
+        path: '/admin',
+        name: 'Admin',
+        component: Admin
+      },
     //-------------------------------------------------------------
     //출석체크페이지
     {

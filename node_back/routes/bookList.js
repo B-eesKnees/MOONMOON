@@ -27,8 +27,8 @@ router.post("/getRecList", async (req, res) => {
                         const search4 = `%${sur4}%`;
                         const search5 = `%${sur5}%`;
 
-                        const query = `select BOOK_ID, BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, '%Y.%m.%d') as PUBDATE, BOOK_PRICE, BOOK_DESCRIPTION, BOOK_COVER, BOOK_PUBLISHER 
-                        from book 
+                        const query = `select distinct b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, date_format(b.BOOK_PUBDATE, '%Y.%m.%d') as BOOK_PUBDATE, b.BOOK_PRICE, b.BOOK_DESCRIPTION, b.BOOK_COVER, b.BOOK_PUBLISHER, (select COALESCE(ROUND(AVG(r2.REV_RATING), 1), 0) from review r2 where r2.REV_ORDERITEM_BOOK = b.BOOK_ID) AS reviewpoint, b.book_salespoint
+                        from book b left join review r on b.BOOK_ID = r.REV_ORDERITEM_BOOK
                         where BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? 
                         order by BOOK_SALESPOINT desc 
                         limit 8`;
@@ -78,7 +78,7 @@ router.post(`/getBest`, async (req, res) => {
         `select b.BOOK_ID, b.BOOK_COVER, b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, date_format(b.BOOK_PUBDATE, '%Y.%m.%d') as BOOK_PUBDATE, b.BOOK_PRICE, b.BOOK_DESCRIPTION, COALESCE(ROUND(AVG(r.REV_RATING), 1), 0) AS reviewpoint
         from book b left join review r on b.BOOK_ID = r.REV_ORDERITEM_BOOK
         group by b.BOOK_ID
-        order by b.BOOK_SALESPOINT;`,
+        order by b.BOOK_SALESPOINT desc;`,
         (err, result) => {
             if (err) {
                 res.status(200).send(err);
@@ -95,7 +95,7 @@ router.post(`/getNew`, async (req, res) => {
         `select b.BOOK_COVER, b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, date_format(b.BOOK_PUBDATE, '%Y.%m.%d') as BOOK_PUBDATE, b.BOOK_PRICE, b.BOOK_DESCRIPTION, COALESCE(ROUND(AVG(r.REV_RATING), 1), 0) AS reviewpoint
         from book b left join review r on b.BOOK_ID = r.REV_ORDERITEM_BOOK
         group by b.BOOK_ID
-        order by b.BOOK_PUBDATE;`,
+        order by b.BOOK_PUBDATE desc;`,
         (err, result) => {
             if (err) {
                 res.status(200).send(err);
@@ -138,6 +138,47 @@ router.post("/checkLike", async (req, res) => {
             res.status(200).send(likeArr);
         }
     });
+});
+
+//카테고리별로 리스트 (신상품)
+router.post("/newCate", async (req, res) => {
+    const category = req.body.category;
+
+    db.query(
+        `select b.BOOK_COVER, b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, date_format(b.BOOK_PUBDATE, '%Y.%m.%d') as BOOK_PUBDATE, b.BOOK_PRICE, b.BOOK_DESCRIPTION, COALESCE(ROUND(AVG(r.REV_RATING), 1), 0) AS reviewpoint
+            from book b left join review r on b.BOOK_ID = r.REV_ORDERITEM_BOOK
+            where b.BOOK_CATEGORYNAME like ?
+            group by b.BOOK_ID
+            order by b.BOOK_PUBDATE desc;`,
+        `%${category}%`,
+        (err, results) => {
+            if (err) {
+                res.status(200).send(err);
+            } else {
+                res.status(200).send(results);
+            }
+        }
+    );
+});
+
+router.post("/bestCate", async (req, res) => {
+    const category = req.body.category;
+
+    db.query(
+        `select b.BOOK_COVER, b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, date_format(b.BOOK_PUBDATE, '%Y.%m.%d') as BOOK_PUBDATE, b.BOOK_PRICE, b.BOOK_DESCRIPTION, COALESCE(ROUND(AVG(r.REV_RATING), 1), 0) AS reviewpoint
+            from book b left join review r on b.BOOK_ID = r.REV_ORDERITEM_BOOK
+            where b.BOOK_CATEGORYNAME like ?
+            group by b.BOOK_ID
+            order by b.BOOK_SALESPOINT desc;`,
+        `%${category}%`,
+        (err, results) => {
+            if (err) {
+                res.status(200).send(err);
+            } else {
+                res.status(200).send(results);
+            }
+        }
+    );
 });
 
 //결제 기능
