@@ -48,6 +48,7 @@ const attPageRouter = require("./routes/att");
 const booklistPageRouter = require("./routes/bookList");
 const surveyRouter = require("./routes/survey");
 const mypageRouter = require("./routes/mypage");
+const adminRouter = require("./routes/admin");
 
 app.use("/cart", cartRouter);
 app.use("/floating", floatingRouter);
@@ -64,6 +65,7 @@ app.use("/att", attPageRouter);
 app.use("/booklist", booklistPageRouter);
 app.use("/sur", surveyRouter);
 app.use("/mypage", mypageRouter);
+app.use("/admin", adminRouter);
 
 app.listen(app.get("port"), () => {
   //서버 연결

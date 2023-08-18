@@ -34,7 +34,7 @@
                     <thead>
                         <th>
                             <div class="text">주문 상품</div>
-                            <div class="num">총 3 개</div>
+                            <div class="num">총 {{ count }} 개</div>
                         </th>
                     </thead>
 
@@ -125,6 +125,7 @@ export default {
             user_add2: "",
             user_email: ``,
             books: [],
+            count: "",
             coupons: [],
             point: "",
             nextDay: "",
@@ -144,6 +145,7 @@ export default {
     mounted() {
         this.getNextDate();
         this.getUserInfo();
+        this.getBookCount();
         this.getBookInfo();
         this.getCouponList();
         this.getUserPoint();
@@ -171,6 +173,17 @@ export default {
             const today = new Date();
             this.nextDay = today.getDate() + 1;
             this.month = today.getMonth() + 1;
+        },
+        getBookCount() {
+            const payid = this.payID;
+
+            axios({
+                url: "/pay/bookCount",
+                method: "get",
+                params: { payID: [payid] },
+            }).then((res) => {
+                this.count = res.data[0].ORDERITEM_CNT;
+            });
         },
         getBookInfo() {
             const payid = this.payID;

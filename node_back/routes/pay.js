@@ -21,6 +21,10 @@ const queries = {
   userPointQuery: `select USER_POINT
                    from user
                    where USER_EMAIL = ?`,
+
+  bookCountQuery: `select sum(ORDERITEM_CNT) as ORDERITEM_CNT
+                   from orderitem
+                   where ORDERITEM_ORDER_ID = ?`,
 }
 
 // 데이터베이스 작업 함수
@@ -74,6 +78,22 @@ router.post("/payUserInfo", async (request, res) => {
 
 // 
 
+// 주문 상품 총 개수  --ok
+router.get("/bookCount", async (request, res) => {
+  try {
+    const ORDERITEM_ORDER_ID = request.query.payID;
+
+    res.send(await req(queries.bookCountQuery, ORDERITEM_ORDER_ID));
+    console.log(ORDERITEM_ORDER_ID);
+  } catch (err) {
+    res.status(500).send({
+      error:err
+    });
+  }
+});
+
+
+
 // 상품 정보 출력  --ok
 router.post("/payBookInfo", async (request, res) => {
   try {
@@ -105,7 +125,7 @@ router.get("/couponList", async (request, res) => {
   }
 });
 
-// 사용자가 선택한 쿠폰 가격에 적용 --ok
+// 사용자가 선택한 쿠폰 가격에 적용
 router.post("/applyCoupon", (request, res) => {
     const selectedCoupon = request.body.selectedCoupon; // req.body.selectedCoupon
     const selectedCouponRatio = request.body.selectedCouponRatio;
@@ -153,6 +173,25 @@ router.get("/payInfo", (req, res) => {
         }
     });
 });
+
+
+
+// 가격 관련 ------------------------------------------------------------
+// 상품 금액 (정가 합)
+/* router.get("originalPrice", async (request, res) => {
+
+  try {
+    const ORDERITEM_ORDER_ID = request.body.payID
+  }
+}) */
+
+
+
+
+
+
+
+
 
 // calFinalPrice 함수 선언
 function calAfterCouponPrice(couponRatio, originalPrice) {
