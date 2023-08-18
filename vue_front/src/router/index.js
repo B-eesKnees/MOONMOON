@@ -25,7 +25,7 @@ import qnaWrite from "../views/qnaWrite.vue";
 import qnaEdit from "../views/qnaEdit.vue";
 import eventPage from "../views/event.vue";
 import attendance from "../views/attendance.vue";
-import myPage from "../views/mypage.vue";
+import myPage from "../views/myPage.vue";
 import axios from "axios";
 
 import Admin from '../views/Admin.vue';
