@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const router = express.Router();
 
 //이름,이메일 받아오기
-router.get("/getuser", (req, res) => {
+router.post("/getuser", (req, res) => {
   const { userEmail } = req.body;
 
   const query = "SELECT * FROM user WHERE USER_EMAIL = ?";

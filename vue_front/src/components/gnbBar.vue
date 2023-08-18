@@ -66,7 +66,7 @@
                 <a class="nav_category_link" href="/new">
                     <li>신상품</li>
                 </a>
-                <a class="nav_category_link" href="/event1">
+                <a class="nav_category_link" href="/event">
                     <li>이벤트</li>
                 </a>
                 <a class="nav_category_link" href="/goods">
