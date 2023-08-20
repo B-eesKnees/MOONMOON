@@ -32,7 +32,30 @@ const queries = {
                       where QNA_REP = 1
                       order by QNA_DATE desc`,
 
-  adminOrderListQuery: ``,
+  adminQnaReplyQuery: `update qna
+                       set QNA_REPLY = ?, QNA_REP = 1
+                       where QNA_ID = ?`,
+
+  adminOrderListQuery: `select ORDER_ID, ORDER_USER_EMAIL, date_format(ORDER_DATE, '%Y-%m-%d') as ORDER_DATE, ORDER_STATE
+                        from \`order\`
+                        where ORDER_STATE = '배송준비' or ORDER_STATE = '배송중' or ORDER_STATE = '배송완료' or ORDER_STATE = '주문취소'`,
+
+  adminOrderDetailQuery: `select ORDER_ID, ORDER_USER_EMAIL, date_format(ORDER_DATE, '%Y-%m-%d') as ORDER_DATE, ORDER_NAME, ORDER_TEL, ORDER_ZIPCODE, ORDER_ADD, ORDER_ADDDETAIL, ORDER_REQ, ORDER_CNT, ORDER_PAY, ORDER_COST, ORDER_COUPON, ORDER_USEPOINT, ORDER_ADDPOINT, ORDER_PAYMETHOD, ORDER_PAYDATE, ORDER_STATE
+                          from \`order\`
+                          where (ORDER_STATE = '배송준비' or ORDER_STATE = '배송중' or ORDER_STATE = '배송완료' or ORDER_STATE = '주문취소') and ORDER_ID = ?`,
+
+  adminOrderItemDetailQuery: `select oi.ORDERITEM_BOOK_ID, oi.ORDERITEM_PRICE, oi.ORDERITEM_CNT
+                              from orderitem oi
+                              join \`order\` o on oi.ORDERITEM_ORDER_ID = o.ORDER_ID
+                              where (o.ORDER_STATE = '배송준비' or o.ORDER_STATE = '배송중' or o.ORDER_STATE = '배송완료' or o.ORDER_STATE = '주문취소') and oi.ORDERITEM_ORDER_ID = ?`,
+  
+  adminStatusChangeQuery: `update \`order\`
+                           set ORDER_STATE = '배송중'
+                           where ORDER_STATE = '배송준비' and ORDER_ID = ?`,
+
+  adminDaySalesQuery: `select sum(ORDER_PAY) as daySales
+                       from \`order\`
+                       where ORDER_DATE BETWEEN ? and ?`,
 }
 
 
@@ -78,7 +101,7 @@ router.post('/adminBookSalesPoint', async (request, res) => {
 router.post('/adminBookDel', async (request, res) => {
 
   try {
-   let BOOK_ID = request.body.bookId;
+   let BOOK_ID = request.body.book_id;
    BOOK_ID = Number(BOOK_ID);
 
      res.send(await req(queries.adminBookDelQuery, BOOK_ID));
@@ -144,12 +167,28 @@ router.post('/adminQnaDone', async (request, res) => {
     });
   }
 });
-// 답변 - update
+// 답변  --ok
+router.post('/adminQnaReply', async (request, res) => {
+  
+  try {
+    const QNA_REPLY = request.body.qna_reply;
+
+    const QNA_ID = request.body.qna_id;
+
+    return res.send(await req(queries.adminQnaReplyQuery, [QNA_REPLY, QNA_ID]));
+    console.log(qna_reply);
+    console.log(qna_id);
+  } catch (err) {
+    res.status(500).send({
+      error: err
+  });
+  }
+});
 
 
-
-// 주문 관리 ------------------
-// 주문 (최근 주문순)
+// 주문 관리 ------------------ 배송 상태별 모아보기는 v-if 하면 될 듯, 안되면 노션에 써줘
+// 주문 (최근 주문순) - 리스트
+// -모든 주문에 대한 간단한 정보(리스트 출력시 사용)  --ok
 router.post('/adminOrderList', async (request, res) => {
 
   try {
@@ -160,6 +199,86 @@ router.post('/adminOrderList', async (request, res) => {
     });
   }
 });
+// 주문 내역 - 상세(order)
+// -모달 창에 띄워지는 각 주문에 대한 정보  --ok
+router.post("/adminOrderDetail", async (request, res) => {
+  try {
+    const ORDER_ID = request.body.order_id;
+
+    res.send(await req(queries.adminOrderDetailQuery, ORDER_ID));
+    console.log(ORDER_ID);
+  } catch (err) {
+    res.status(500).send({
+      error:err
+    });
+  }
+});
+// 주문 내역 - 상세(orderitem)  --ok
+// -각 주문에 주문된 책에 대한 정보(배열)_여러개라 반복문으로 돌려서 받아야할 듯
+router.post("/adminOrderItemDetail", async (request, res) => {
+  try {
+    const ORDER_ID = request.body.order_id;
+
+    res.send(await req(queries.adminOrderItemDetailQuery, ORDER_ID));
+    console.log(ORDER_ID);
+  } catch (err) {
+    res.status(500).send({
+      error:err
+    });
+  }
+});
+// 주문 상태 변경_배송준비 > 배송중  --ok
+router.post('/adminStatusChange', async (request, res) => {
+  
+  try {
+    const ORDER_ID = request.body.order_id;
+
+    return res.send(await req(queries.adminStatusChangeQuery, ORDER_ID));
+    console.log(order_id);
+  } catch (err) {
+    res.status(500).send({
+      error: err
+  });
+  }
+});
+
+
+// 매출 관리 ---------------------
+// 일매출 계산  --ok
+// -혹시 하다가 당일/전일 계산 따로 필요하면 노션에 써줘
+router.post('/adminDaySales', async (request, res) => {
+  
+  try {
+    const dateStart = request.body.date_start;
+    // '2023-08-17 00:00:00' 이런식으로 원하는 날짜에 00:00:00 붙여서 보내줘야됨
+    const dateEnd = request.body.date_end;
+    // '2023-08-17 23:59:59' 이건 23:59:59 붙여서
+
+    return res.send(await req(queries.adminDaySalesQuery, [dateStart, dateEnd]));
+    console.log(date_start);
+    console.log(date_end);
+  } catch (err) {
+    res.status(500).send({
+      error: err
+  });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
