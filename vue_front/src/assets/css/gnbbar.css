@@ -287,10 +287,10 @@
 .rec_search_area {
     position: absolute;
     border: 1px solid #4e4eff;
-    width: 45%;
+    width: 55%;
 
     margin-top: 1%;
-    border-radius: 32px;
+    border-radius: 10px;
     background-color: #ffffff;
     padding-bottom: 1%;
     padding-top: 1%;
@@ -298,11 +298,13 @@
 
 .search_results {
     position: relative;
-    width: 80%;
+    width: 92%;
     margin: 2px 0 0 4%;
     padding: 15px;
     cursor: pointer;
-    font-size: 0.8em;
+    font-size: 0.9em;
+    line-height: 150%;
+    border-bottom: #d1d1d1 0.1px solid;
 }
 
 .search_results:hover {

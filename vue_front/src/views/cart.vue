@@ -19,24 +19,30 @@
                         </span>
                         <span v-else-if="cart.length >= 1">
                             <li v-for="(book, index) in cart" :key="index">
-                                <input type="checkbox" v-model="book.checked" @change="insertOrRemove(book)" :id="'book_checkbox_' + index" />
-                                <label :for="'book_checkbox_' + index"></label>
-                                <img class="cart_img" :src="book.img" />
-                                <span class="cart_book_name">{{ book.title }}</span
-                                >&nbsp;
-                                <span class="book_price">{{ comma(book.price) }} 원</span>
-                                <span class="book_point">적립포인트 &nbsp;&nbsp;&nbsp;{{ getPoint(book) }}</span>
-                                <button type="button" class="deleteBook" @click="deleteBook(book)"></button>
-                                <div class="changeQua">
-                                    <div class="button">
-                                        <button @click="decreaseQuantity(book)">-</button>
-                                        <span>{{ book.quantity }}</span>
-                                        <button @click="increaseQuantity(book)">+</button>
+                                <div class="cart_book_info_set">
+                                    <div class="cart_book_info_img_set">
+                                        <input type="checkbox" v-model="book.checked" @change="insertOrRemove(book)" :id="'book_checkbox_' + index" />
+                                        <label :for="'book_checkbox_' + index"></label>
+                                        <img class="cart_img" :src="book.img" />
+
+                                        <div class="cart_book_info_left">
+                                            <span class="cart_book_name">{{ book.title }}</span>
+                                            <button type="button" class="deleteBook" @click="deleteBook(book)"></button>
+                                            <span class="cart_book_price">{{ comma(book.price) }} 원</span>
+                                            <span class="cart_book_point">적립포인트 &nbsp;&nbsp;&nbsp;{{ getPoint(book) }}</span>
+                                        </div>
                                     </div>
-                                    <br />
-                                    <p>{{ comma(getPrice(book)) }} 원</p>
+
+                                    <div class="changeQua">
+                                        <div class="button">
+                                            <button @click="decreaseQuantity(book)">-</button>
+                                            <span>{{ book.quantity }}</span>
+                                            <button @click="increaseQuantity(book)">+</button>
+                                        </div>
+                                        <br />
+                                        <p>{{ comma(getPrice(book)) }} 원</p>
+                                    </div>
                                 </div>
-                                <p></p>
                             </li>
                         </span>
                     </ol>
@@ -78,8 +84,8 @@
         </div>
     </div>
     <div class="progress">
-        <span class="first">장바구니</span>
-        <span class="right">> 주문/결제> 완료</span>
+        <span class="first">장바구니</span>&nbsp;
+        <span class="right">> 주문/결제 > 완료</span>
     </div>
 </template>
 

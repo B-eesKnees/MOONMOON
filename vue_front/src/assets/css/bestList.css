@@ -54,18 +54,22 @@
   justify-content: space-between;
 }
 
-.best_item_info_title {
+.best_item_info_title > a {
   font-weight: bold;
   font-size: large;
+  color: #000;
+  line-height: 150%;
 }
 
 .best_item_info_author {
   font-size: small;
+  line-height: 150%;
 }
 
 .best_item_info_price span:first-child {
   font-weight: bold;
   font-size: large;
+  line-height: 150%;
 }
 
 .best_item_info_summary {

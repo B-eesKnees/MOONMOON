@@ -18,7 +18,7 @@
     align-items: center;
     padding-bottom: 20px;
     padding-top: 20px;
-    border-radius: 30px 30px 0 0;
+    border-radius: 10px 10px 0 0;
     border-top: 1px solid #ccc;
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc;
@@ -53,26 +53,81 @@
     padding-left: 10px;
 }
 
-.cart_book_name {
-    position: absolute;
-    margin-left: 15px;
-    margin-top: 20px;
-    font-weight: 700;
-    font-size: 1.1em;
-    width: 400px;
-    line-height: 20px;
+
+
+.cart_book_info_set {
+    display: flex;
+    /* border: #000 1px solid; */
 }
 
-.book_price {
-    position: absolute;
-    margin-left: 5px;
+.cart_book_info_img_set {
+    display: flex;
+    /* border: #000 1px solid; */
+    width: 80%;
 }
-
-.book_point {
+.cart_book_info_left {
+    width: 68%;
+    height: 100%;
     position: relative;
-    top: -20px;
-    left: 170px;
+    /* display: flex; */
+    /* border: #000 1px solid; */
+    padding: 30px;
 }
+
+
+
+
+
+
+
+.cart_book_name {
+    position: relative;
+    display: inline-block;
+    font-weight: 600;
+    font-size: 1.1em;
+    width: 80%;
+    line-height: 150%;
+    margin-bottom: 20px;
+    margin-right: 50px;
+}
+
+.cart_book_price {
+    position: relative;
+    /* display: inline-block; */
+    display: block;
+    margin-bottom: 80px;
+    /* margin-left: 5px; */
+}
+
+.cart_book_point {
+    position: relative;
+    margin-top: 80%;
+    /* top: -20px; */
+    /* left: 170px; */
+}
+
+.deleteBook {
+    color: grey;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    position: absolute;
+    /* left: 43.5%; */
+    /* margin-top: -100px; */
+    background-image: url(../img/btn_delete_ord@2x.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    /* border: #000 1px solid; */
+}
+
+
+
+
+
+
 
 .changeQua {
     float: right;
@@ -84,7 +139,7 @@
 
 .changeQua .button {
     margin-top: 100px;
-    margin-left: 80px;
+    margin-left: 20%;
     border: none;
     padding: 3px 15px;
     border-radius: 4px;
@@ -120,10 +175,12 @@
 
 .first {
     color: #4e4eff;
+    font-weight: 600;
 }
 
 .right {
     color: rgb(158, 158, 158);
+    font-weight: 300;
 }
 
 .cart_float {
@@ -140,11 +197,11 @@
     top: 229px;
     position: fixed;
     width: 20%; /* 가로20% 공간 사용 */
-    height: 400px;
+    height: 360px;
     margin-top: 1.2%;
     margin-right: 18%; /* 박스를 오른쪽으로 18%만큼 떨어뜨림(밀어냄) */
     padding: 2% 30px; /* 위아래 1% 양옆 10px*/
-    border-radius: 5%;
+    border-radius: 10px;
     /* box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); */
     border: 1px solid #ccc;
     background-color: white;
@@ -200,31 +257,18 @@
 .pay_button {
     position: relative;
     width: 95%;
-    height: 23%;
+    height: 60px;
     top: 12%;
     left: 3%;
     color: white;
     background-color: #4e4eff;
     border: none;
-    border-radius: 20px;
+    border-radius: 10px;
     font-weight: bolder;
     font-size: large;
     cursor: pointer;
 }
-.deleteBook {
-    color: grey;
-    background-color: white;
-    border: none;
-    cursor: pointer;
-    width: 18px;
-    height: 18px;
-    position: absolute;
-    left: 43.5%;
-    margin-top: 1%;
-    background-image: url(../img/btn_delete_ord@2x.png);
-    background-repeat: no-repeat;
-    background-position: center;
-}
+
 .cart_container input[type="checkbox"] {
     display: none;
 }
@@ -232,13 +276,13 @@
 .cart_container input[type="checkbox"] + label {
     display: inline-block;
     max-width: 22px;
+    width: 22px;
     height: 22px;
     border: 0.5px solid #707070;
     border-radius: 50%;
     position: relative;
     margin-right: 2%;
     bottom: 70%;
-    width: 22px;
 }
 
 .cart_container input[id^="book_checkbox"]:checked + label::after {
@@ -269,11 +313,11 @@
 .delete_button {
     position: relative;
     border: none;
-    left: 78%;
+    left: 75%;
     background-color: #4e4eff;
     color: white;
     padding: 5px;
-    border-radius: 13px;
+    border-radius: 5px;
     width: 50px;
-    font-weight: bold;
+    font-weight: 400;
 }
