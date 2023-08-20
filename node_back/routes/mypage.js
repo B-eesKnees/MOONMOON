@@ -336,6 +336,83 @@ router.get("/coupongrade/:userEmail", (req, res) => {
   );
 });
 
+//등급 업그레이드 시 필요한 구매급액
+router.get("/couponupgrade/:userEmail", (req, res) => {
+  const userEmail = req.params.userEmail;
+
+  const now = new Date();
+
+  // 6개월 전의 날짜 (2월 1일)
+  const sixMonthsAgo = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 6, 1, 0, 0, 0)
+  );
+
+  // 7월 31일의 마지막 시간 (23:59:59)
+  const lastDayOfMonth = new Date(
+    Date.UTC(now.getUTCFullYear(), 6, 31, 23, 59, 59, 999)
+  );
+
+  // 사용자의 sixMonthsAgo와 lastDayOfMonth 사이의 결제 총액을 구하는 쿼리
+  const userPaymentQuery = `
+    SELECT SUM(u.user_total_pay) AS totalPayment
+    FROM user u
+    JOIN \`order\` o ON u.user_email = o.order_useremail
+    WHERE u.user_email = ? AND o.order_paydate >= ? AND o.order_paydate <= ?
+  `;
+
+  db.query(
+    userPaymentQuery,
+    [userEmail, sixMonthsAgo, lastDayOfMonth],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: "결제 총액 조회 중 오류 발생" });
+        return;
+      }
+
+      const userTotalPaymentInPeriod = results[0].totalPayment || 0;
+
+      let userGrade = "프렌즈"; // 기본 등급을 프렌즈로 설정
+
+      // 결제 총액에 따라 등급 결정
+      if (userTotalPaymentInPeriod >= 300000) {
+        userGrade = "플래티넘";
+      } else if (userTotalPaymentInPeriod >= 200000) {
+        userGrade = "골드";
+      } else if (userTotalPaymentInPeriod >= 100000) {
+        userGrade = "실버";
+      }
+
+      // 등급 업그레이드를 위해 필요한 추가 결제 금액 계산
+      let additionalPayment = 0;
+      let upperGrade = "";
+
+      if (userGrade === "프렌즈" && userTotalPaymentInPeriod < 100000) {
+        additionalPayment = 100000 - userTotalPaymentInPeriod;
+        upperGrade = "실버";
+      } else if (userGrade === "실버" && userTotalPaymentInPeriod < 200000) {
+        additionalPayment = 200000 - userTotalPaymentInPeriod;
+        upperGrade = "골드";
+      } else if (userGrade === "골드" && userTotalPaymentInPeriod < 300000) {
+        additionalPayment = 300000 - userTotalPaymentInPeriod;
+        upperGrade = "플래티넘";
+      } else if (
+        userGrade === "플래티넘" &&
+        userTotalPaymentInPeriod >= 300000
+      ) {
+        additionalPayment = 0; // 플래티넘 등급은 최상위 등급이므로 추가 결제 금액은 없음
+        upperGrade = ""; //더 높은 등급 없음음
+      }
+
+      res.json({
+        userGrade,
+        additionalPayment,
+        message: "더 구매하면 " + upperGrade,
+      });
+    }
+  );
+});
+
 //배송 상태별 조회  + 배송 상세 표시
 const ORDER_STATE = {
   ready: "배송준비",
@@ -349,7 +426,7 @@ router.get("/orderdelivery", (req, res) => {
   const orderState = req.query.orderState;
 
   const query =
-    "SELECT order_useremail, order_state FROM `order` WHERE ORDER_USEREMAIL = ? AND ORDER_STATE = ?";
+    "SELECT * from `order` WHERE ORDER_USEREMAIL = ? AND ORDER_STATE = ?";
 
   db.query(query, [userEmail, ORDER_STATE[orderState]], (err, results) => {
     if (err) {
@@ -664,33 +741,5 @@ router.post("/updateUserInfo", async (req, res) => {
 });
 
 //-----------------------------------------------------------
-// 등급 업데이트 라우터
-router.post("/updategrade/:userEmail", async (req, res) => {
-  try {
-    const userEmail = req.params.userEmail;
-    const user = await db.getUserInfo(userEmail); // 사용자 정보 가져오기 (user_total_pay 포함)
-
-    let newCouponGrade = "";
-    if (user.user_total_pay < 100000) {
-      newCouponGrade = "프렌즈";
-    } else if (user.user_total_pay >= 100000 && user.user_total_pay < 200000) {
-      newCouponGrade = "실버";
-    } else if (user.user_total_pay >= 200000 && user.user_total_pay < 300000) {
-      newCouponGrade = "골드";
-    } else if (user.user_total_pay >= 300000) {
-      newCouponGrade = "플래티넘";
-    }
-
-    if (newCouponGrade !== user.coupon_grade) {
-      await db.updateUserCouponGrade(userId, newCouponGrade); // 사용자 등급 업데이트
-      res.json({ message: "등급이 업데이트되었습니다." });
-    } else {
-      res.json({ message: "등급이 변경되지 않았습니다." });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "서버 오류" });
-  }
-});
 
 module.exports = router;

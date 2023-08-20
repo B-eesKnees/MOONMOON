@@ -370,3 +370,6 @@ p {
     text-align: center;
     line-height: 600%;
 }
+.mypage_menu {
+    border: none;
+}
