@@ -103,6 +103,33 @@ router.get("/userpoint", (req, res) => {
   });
 });
 
+//총 쿠폰 개수
+
+// 라우터 예시
+router.get("/couponcount/:userEmail", (req, res) => {
+  const userEmail = req.params.userEmail;
+  const getCouponCount = `
+  SELECT cpuser_user_email, COUNT(*) AS coupon_count
+  FROM cpuser
+  WHERE cpuser_user_email = ?;
+
+`;
+  // 데이터베이스 쿼리 실행
+  db.query(getCouponCount, [userEmail], (err, results) => {
+    if (err) {
+      console.error("에러발생:", err);
+      res.status(500).json({ error: "에러발생" });
+      return;
+    }
+
+    // 쿠폰 개수를 가져온 경우 결과의 첫 번째 레코드의 coupon_count를 사용
+    const couponCount = results.length > 0 ? results[0].coupon_count : 0;
+
+    // JSON 형태로 쿠폰 개수 응답
+    res.json({ couponCount });
+  });
+});
+
 //쿠폰 업데이트(6개월간의 user_total_pay 산정해서 지급)
 router.post("/updatecoupon/:userEmail", (req, res) => {
   const userEmail = req.params.userEmail;

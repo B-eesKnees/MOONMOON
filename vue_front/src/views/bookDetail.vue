@@ -18,8 +18,8 @@
             <div class="det_top_star">
                 <star :rating="rating" />
                 <div class="top_star_score">
-                    9.3
-                    <div class="top_star_count">(43)</div>
+                    {{ averageRating }}
+                    <div class="top_star_count">({{ reviewCount }})</div>
                 </div>
             </div>
             <div class="price_point_set_1">
@@ -62,8 +62,8 @@
                 <button class="go_to_cart">
                     <img @click="addToCart(bookDetailData.BOOK_ID)" src="@/assets/img/detail_cart.png" alt="detail_cart" />
                 </button>
-                <button class="detail_like_btn" @click="isLiked = !isLiked">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" viewBox="0 0 22 20">
+                <button class="detail_like_btn" @click="toggleLike">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" vie wBox="0 0 22 20">
                         <path
                             d="M21.6071 6.60738C21.6071 13.5969 11.7775 19.2544 11.3589 19.488C11.2486 19.5506 11.1252 19.5834 11 19.5834C10.8747 19.5834 10.7514 19.5506 10.641 19.488C10.2224 19.2544 0.392822 13.5969 0.392822 6.60738C0.394577 4.96608 1.01378 3.39252 2.11457 2.23194C3.21537 1.07136 4.70787 0.418537 6.26463 0.416687C8.22033 0.416687 9.93262 1.30335 11 2.8021C12.0673 1.30335 13.7796 0.416687 15.7353 0.416687C17.2921 0.418537 18.7846 1.07136 19.8854 2.23194C20.9862 3.39252 21.6054 4.96608 21.6071 6.60738Z"
                             :fill="isLiked ? '#4E4EFF' : '#7d7d7d'"
@@ -84,7 +84,7 @@
         <div class="rev_top">
             <div class="review_con_title">
                 책 리뷰 (
-                <!-- {{ reviewAverageData.averageRating }} -->
+                {{ reviewCount }}
                 )
             </div>
             <button class="go_to_review" @click="toggleBtn">리뷰 작성</button>
@@ -125,7 +125,7 @@
                 <star :rating="rating" />
                 <div class="total_rec_num">
                     <!-- {{ formattedAverageRating }} -->
-                    <span class="total_rec_num_10">/10</span>
+                    <span class="total_rec_num_10">{{ averageRating }}/10</span>
                 </div>
             </div>
         </div>
@@ -200,12 +200,13 @@ export default {
         return {
             bookDetailData: [],
             reviewData: [],
-            // reviewAverageData: {},
+            reviewCount: 0,
             isLiked: false,
             sortvalue: "최신순",
             showBtn: true,
             countNum: 1,
             bookId: this.$route.params.id,
+            averageRating: 0,
 
             // 댓글 데이터를 페이지별로 나눈 배열
         };
@@ -216,8 +217,8 @@ export default {
     mounted() {
         this.bookDetail();
         this.fetchReviewData();
-        // this.averageRating();
-        // this.reviewAverageData();
+        this.fetchReviewCount();
+        this.fetchAverageRating();
     },
     computed: {
         paymentPrice() {
@@ -276,7 +277,56 @@ export default {
                 conResult ? (window.location.href = "/login") : null;
             }
         },
+
+        //좋아요 추가/취소
+        toggleLike() {
+            if (localStorage.getItem("userID")) {
+                const likeEndPoint = this.isLiked ? "/dellikebooks" : "addlikebook";
+                const data = {
+                    userEmail: this.email,
+                    bookId: this.bookId,
+                };
+
+                axios
+                    .post(`http://localhost:3000/floating/${likeEndPoint}`, data)
+                    .then(() => {
+                        this.isLiked = !this.isLiked;
+                    })
+                    .catch((error) => {
+                        console.error("좋아요 에러", error);
+                    });
+            } else {
+                const result = confirm("로그인이 필요합니다. \n 로그인하시겠습니까?");
+                if (result) {
+                    window.location.href = "/login";
+                }
+            }
+        },
+
         // 리뷰 시작-------------------------------------------------------------------------------------------------------
+        //리뷰 개수 가져오기
+        fetchReviewCount() {
+            axios({
+                url: `http://localhost:3000/review/reviewcount/${this.bookId}`,
+                method: "get",
+            })
+                .then((response) => {
+                    this.reviewCount = response.data.reviewCount;
+                })
+                .catch((error) => {
+                    console.error("Counting Err", Error);
+                });
+        },
+
+        //리뷰 평균 별점
+        async fetchAverageRating() {
+            try {
+                const res = await axios.get(`http://localhost:3000/review/averagerating/${this.bookId}`);
+                this.averageRating = res.data.averageRating;
+            } catch (err) {
+                console.error("average Err", err);
+            }
+        },
 
         // 리뷰 데이터 최신순 리스트 불러오기-------------------------------------------------------------------------------------------------------
         // ---------------------------------------------------------------------------------------------------------------------
