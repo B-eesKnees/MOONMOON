@@ -14,8 +14,8 @@
             <span>구매내역</span><span class="payment_title">{{ bookTitle_data[0]?.BOOK_TITLE }}</span
             ><span v-if="bookTitle_data.length > 1"> 외 {{ bookTitle_data.length - 1 }} 개</span><br />
             <br /><br /><br />
-            <div class="user_info">
-                <div class="user_info2">
+            <div class="payresult_user_info">
+                <div class="payresult_user_info2">
                     <div>배송지 정보</div>
                     <div class="user_name">임승리</div>
                 </div>
@@ -26,7 +26,7 @@
             </div>
         </div>
 
-        <div class="bill">
+        <div class="payresult_bill">
             <div class="logo"></div>
             <div class="bill_top">
                 <div class="cost">
@@ -78,7 +78,7 @@ export default {
     },
     computed: {},
     mounted() {
-        this.getBookTitle();
+        // this.getBookTitle();
         // this.cutTitle();
     },
     methods: {
@@ -112,7 +112,7 @@ export default {
 </script>
 
 <style scoped>
-.user_info2 {
+.payresult_user_info2 {
     display: flex;
 }
 .user_name {
@@ -151,12 +151,12 @@ export default {
     border-radius: 10px;
     background-color: white;
 }
-.bill {
+.payresult_bill {
     position: relative;
     border: 1px solid #000000;
     width: 30%;
     height: 100%;
-    top: -418px;
+    top: -430px;
     right: -830px;
     background-image: url("../assets/img/bill.png");
     background-size: 100%;

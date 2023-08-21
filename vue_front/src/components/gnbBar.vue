@@ -536,10 +536,8 @@ export default {
             }
             window.location.href = `/detail/${book.BOOK_ID}`;
         },
-        sendSearchKeyword(e) {
-            this.keyword = e.target.value;
-
-            window.location.href = `/search/${this.keyword}`;
+        sendSearchKeyword() {
+            this.$router.replace({ name: "SearchList", query: { searchKeyword: this.keyword } });
         },
         onClick(e) {
             if (e.target.parentNode !== this.$refs.search_result_box && e.target.parentNode !== this.$refs.search_box) {

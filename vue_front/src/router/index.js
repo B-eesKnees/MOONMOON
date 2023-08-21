@@ -28,7 +28,7 @@ import attendance from "../views/attendance.vue";
 import myPage from "../views/myPage.vue";
 import axios from "axios";
 
-import Admin from '../views/Admin.vue';
+import Admin from "../views/Admin.vue";
 
 const requireLogin = () => (to, from, next) => {
     //로그인안하고 접근하려했을때 실행할 함수?
@@ -99,7 +99,7 @@ const routes = [
         component: RecommendList,
     },
     {
-        path: "/search/:keyword",
+        path: "/search",
         name: "SearchList",
         component: SearchList,
     },
@@ -184,10 +184,10 @@ const routes = [
         component: bookInsert,
     },
     {
-        path: '/admin',
-        name: 'Admin',
-        component: Admin
-      },
+        path: "/admin",
+        name: "Admin",
+        component: Admin,
+    },
     //-------------------------------------------------------------
     //출석체크페이지
     {

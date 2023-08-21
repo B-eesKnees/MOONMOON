@@ -1,29 +1,29 @@
 <template>
-   <nav class="main">
-    <router-view />
-  </nav>
+    <nav class="main">
+        <router-view :key="$route.fullPath" />
+    </nav>
 </template>
 
 <script>
-import CSS from "../src/assets/css/reset.css"
+import CSS from "../src/assets/css/reset.css";
 
 export default {
-  name: 'App',
-  components: {
-    CSS
-  }
-}
+    name: "App",
+    components: {
+        CSS,
+    },
+};
 </script>
 
 <style>
-  a {
+a {
     cursor: pointer;
     text-decoration: none;
-  }
-  button {
+}
+button {
     cursor: pointer;
-  }
-  input[type=submit] {
+}
+input[type="submit"] {
     cursor: pointer;
-  }
+}
 </style>
