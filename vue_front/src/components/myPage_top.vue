@@ -83,6 +83,7 @@ export default {
             },
             likeCountData: 0,
             recentCountData: 0,
+            recListData: [],
         };
     },
     created() {
@@ -90,6 +91,7 @@ export default {
         this.getUser();
         this.getLikeCount();
         this.getRecentCount();
+        this.getRecList();
     },
     methods: {
         getUser() {
@@ -135,20 +137,21 @@ export default {
                 console.error("userlikecount 데이터 받아오기 오류:", error);
             }
         },
-        getRecList() {
-            axios({
-                url: "http://localhost:3000/bookList/getRecList",
-                method: "post",
-                data: {
-                    email: this.email,
-                },
-            })
-                .then((response) => {
-                    this.getUserData = response.data.user;
-                })
-                .catch((error) => {
-                    console.error("user데이터 받아오기 오류:", error);
-                });
+        async getRecList() {
+            if (localStorage.getItem("userID")) {
+                try {
+                    const response = await axios.post("http://localhost:3000/booklist/getRecList", {
+                        email: this.email,
+                    });
+
+                    this.recListData = response.data;
+                    console.log(response.data);
+                    // displayedPosts에 categoryData 데이터 복사
+                } catch (error) {
+                    alert("오류다", error);
+                    console.error(error);
+                }
+            }
         },
     },
 };
