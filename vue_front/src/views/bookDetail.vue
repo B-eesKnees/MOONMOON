@@ -16,7 +16,7 @@
         </div>
         <div class="img_right">
             <div class="det_top_star">
-                <star :rating="rating" />
+                <star :rating="convertRatingToHalfStars(averageRating)" />
                 <div class="top_star_score">
                     {{ averageRating }}
                     <div class="top_star_count">({{ reviewCount }})</div>
@@ -122,7 +122,7 @@
         <div class="total_rec">
             <div class="total_rec_title">구매자 총점</div>
             <div class="total_star_rec">
-                <star :rating="rating" />
+                <star :rating="convertRatingToHalfStars(averageRating)" />
                 <div class="total_rec_num">
                     <!-- {{ formattedAverageRating }} -->
                     <span class="total_rec_num_10">{{ averageRating }}/10</span>
@@ -189,7 +189,7 @@
 import axios, { Axios } from "axios";
 import "../assets/css/bookDetail.css";
 import GnbBar from "../components/gnbBar.vue";
-import star from "@/components/review_star.vue";
+import star from "@/components/star.vue";
 
 export default {
     components: {
@@ -365,6 +365,7 @@ export default {
             try {
                 const res = await axios.get(`http://localhost:3000/review/averagerating/${this.bookId}`);
                 this.averageRating = res.data.averageRating;
+                console.log(this.averageRating);
             } catch (err) {
                 console.error("average Err", err);
             }
@@ -453,8 +454,10 @@ export default {
         //         });
         // },
         convertRatingToHalfStars(number) {
+            console.log(number);
+            number = number / 2;
             if (Number.isInteger(number)) {
-                if (number >= 1 && number <= 10) {
+                if (number >= 1 && number <= 5) {
                     return number;
                 } else {
                     return 0; // 범위를 벗어나는 경우
@@ -463,14 +466,10 @@ export default {
                 const integerPart = Math.floor(number);
                 const decimalPart = number - integerPart;
 
-                if (decimalPart === 0) {
+                if (decimalPart < 0.5) {
                     return integerPart;
-                } else if (decimalPart < 0.25) {
-                    return integerPart + 0.25;
-                } else if (decimalPart >= 0.25 && decimalPart < 0.75) {
-                    return integerPart + 0.5;
                 } else {
-                    return integerPart + 0.75;
+                    return integerPart + 0.5;
                 }
             }
         },
