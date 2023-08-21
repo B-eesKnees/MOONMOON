@@ -159,8 +159,7 @@ router.post('/qnaEdit', async (request, res) => {
     const QNA_TITLE = request.body.qna_title
     const QNA_CON = request.body.qna_con
 
-    let { QNA_ID } = request.body;
-      QNA_ID = Number(QNA_ID);
+    const QNA_ID = request.body;
 
     return res.send(await req(queries.qnaEditQuery, [QNA_TITLE, QNA_CON, QNA_ID]));
     console.log(qna_con);
