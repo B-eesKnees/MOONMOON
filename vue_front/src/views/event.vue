@@ -213,6 +213,7 @@ export default {
             realMonth: new Date().getMonth() + 1,
             startDay: "",
             calendar: [],
+            selectedTap: "",
         };
     },
     mounted() {

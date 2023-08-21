@@ -35,7 +35,9 @@
             <div class="borderSideList">
                 <a href="/event"> <div @click="activeElement = 'myRoul'" :class="{ sideList: true, activeText: isActiveText('myRoul') }">룰렛</div></a
                 ><a href="/event">
-                    <div @click="activeElement = 'myAtt'" :class="{ sideList: true, activeText: isActiveText('myAtt') }">출석체크</div></a
+                    <div @click="[(activeElement = 'myAtt'), setTapName()]" :class="{ sideList: true, activeText: isActiveText('myAtt') }">
+                        출석체크
+                    </div></a
                 >
             </div>
         </h2>
@@ -62,6 +64,9 @@ export default {
         };
     },
     methods: {
+        setTapName() {
+            sessionStorage.setItem("eventTap", "출석체크");
+        },
         isActiveText(element) {
             return this.activeElement === element ? "textBlack" : "";
         },
