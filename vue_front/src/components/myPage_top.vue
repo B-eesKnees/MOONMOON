@@ -17,13 +17,13 @@
                 <a href="#" class="mypage_like">
                     <div class="like_recent_point_cou_text">
                         <div class="like_recent_point_cou_title">찜</div>
-                        <div class="like_recent_point_cou_num" v-if="getLikeCountData.likecount !== undefined">{{ getLikeCountData.likecount }}</div>
+                        <div class="like_recent_point_cou_num">{{ likeCountData }}</div>
                     </div></a
                 >
                 <a href="#" class="mypage_like">
                     <div class="like_recent_point_cou_text">
                         <div class="like_recent_point_cou_title">최근 본</div>
-                        <div class="like_recent_point_cou_num">2</div>
+                        <div class="like_recent_point_cou_num">{{ recentCountData }}</div>
                     </div></a
                 >
                 <a href="#" class="mypage_like">
@@ -81,13 +81,15 @@ export default {
                 USER_EMAIL: "",
                 USER_POINT: "",
             },
-            likeCount: undefined,
+            likeCountData: 0,
+            recentCountData: 0,
         };
     },
     created() {
         this.email = localStorage.getItem("userID");
         this.getUser();
         this.getLikeCount();
+        this.getRecentCount();
     },
     methods: {
         getUser() {
@@ -113,11 +115,40 @@ export default {
                     },
                 });
 
-                console.log("서버 응답 데이터:", response.data);
-                this.likeCount = response.data.likecount;
+                // console.log("서버 응답 데이터:", response.data.likecount);
+                this.likeCountData = response.data.likecount; // 할당
             } catch (error) {
                 console.error("userlikecount 데이터 받아오기 오류:", error);
             }
+        },
+        async getRecentCount() {
+            try {
+                const response = await axios.get("http://localhost:3000/mypage/recentcount", {
+                    params: {
+                        userEmail: this.email,
+                    },
+                });
+
+                // console.log("서버 응답 데이터:", response.data.recentCount);
+                this.recentCountData = response.data.recentCount; // 할당
+            } catch (error) {
+                console.error("userlikecount 데이터 받아오기 오류:", error);
+            }
+        },
+        getRecList() {
+            axios({
+                url: "http://localhost:3000/bookList/getRecList",
+                method: "post",
+                data: {
+                    email: this.email,
+                },
+            })
+                .then((response) => {
+                    this.getUserData = response.data.user;
+                })
+                .catch((error) => {
+                    console.error("user데이터 받아오기 오류:", error);
+                });
         },
     },
 };

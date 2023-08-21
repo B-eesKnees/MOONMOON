@@ -79,29 +79,29 @@ router.get("/recentcount", (req, res) => {
 });
 
 //총 포인트
-router.get("/userpoint", (req, res) => {
-  const userEmail = req.query.userEmail;
+// router.get("/userpoint", (req, res) => {
+//   const userEmail = req.query.userEmail;
 
-  if (!userEmail) {
-    res.status(400).json({ error: "이메일이 필요합니다" });
-    return;
-  }
+//   if (!userEmail) {
+//     res.status(400).json({ error: "이메일이 필요합니다" });
+//     return;
+//   }
 
-  const query = `SELECT user_point FROM user WHERE user_email =?; `;
-  db.query(query, [userEmail], (err, results) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: "서버에러" });
-    } else {
-      if (results.length > 0) {
-        const userPoint = results[0].user_point;
-        res.json({ userPoint });
-      } else {
-        res.json({ userPoint: 0 });
-      }
-    }
-  });
-});
+//   const query = `SELECT user_point FROM user WHERE user_email =?; `;
+//   db.query(query, [userEmail], (err, results) => {
+//     if (err) {
+//       console.error(err);
+//       res.status(500).json({ error: "서버에러" });
+//     } else {
+//       if (results.length > 0) {
+//         const userPoint = results[0].user_point;
+//         res.json({ userPoint });
+//       } else {
+//         res.json({ userPoint: 0 });
+//       }
+//     }
+//   });
+// });
 
 //쿠폰 업데이트(6개월간의 user_total_pay 산정해서 지급)
 router.post("/updatecoupon/:userEmail", (req, res) => {
