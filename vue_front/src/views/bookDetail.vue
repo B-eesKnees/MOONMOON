@@ -216,6 +216,7 @@ export default {
     mounted() {
         this.bookDetail();
         this.fetchReviewData();
+        this.setRecentview(); //최근 본 책 db에 삽입
         // this.averageRating();
         // this.reviewAverageData();
     },
@@ -406,6 +407,27 @@ export default {
             } else {
                 return number.toString(); // 소수인 경우 그대로 문자열로 변환
             }
+        },
+        //최근본 책 데이터 삽입
+        //------------------------
+        setRecentview() {
+            const useremail = localStorage.getItem("userID");
+            const bookid = this.bookId;
+
+            axios({
+                url: "http://localhost:3000/detail/setRec",
+                method: "POST",
+                data: {
+                    email: useremail,
+                    bookid: bookid,
+                },
+            })
+                .then((res) => {
+                    console.log(res.data);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         },
     },
 };

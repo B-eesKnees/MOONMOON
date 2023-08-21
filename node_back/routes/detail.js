@@ -202,4 +202,33 @@ router.post("/gotoRecent", async (req, res) => {
     });
 });
 
+router.post("/setRec", async (req, res) => {
+    const email = req.body.email;
+    const bookid = req.body.bookid;
+
+    db.query(`select * from recentbook where REC_USER_EMAIL = ? and REC_BOOK_ID = ?`, [email, bookid], (err, result) => {
+        if (err) {
+            res.status(200).send(err);
+        } else {
+            if (result.length === 0) {
+                db.query(`insert into recentbook (REC_USER_EMAIL, REC_BOOK_ID, REC_VIEWED_AT) value (?, ?, NOW())`, [email, bookid], (err, result) => {
+                    if (err) {
+                        res.status(200).send(err);
+                    } else {
+                        res.status(200).send("성공");
+                    }
+                });
+            } else {
+                db.query(`update recentbook set REC_VIEWED_AT = NOW() where REC_USER_EMAIL = ? and REC_BOOK_ID = ?`, [email, bookid], (err, result) => {
+                    if (err) {
+                        res.status(200).send(err);
+                    } else {
+                        res.status(200).send("업데이트 성공");
+                    }
+                });
+            }
+        }
+    });
+});
+
 module.exports = router;
