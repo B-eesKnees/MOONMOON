@@ -16,7 +16,7 @@
         </div>
         <div class="img_right">
             <div class="det_top_star">
-                <star :rating="rating" />
+                <star :rating="convertRatingToHalfStars(averageRating)" />
                 <div class="top_star_score">
                     {{ averageRating }}
                     <div class="top_star_count">({{ reviewCount }})</div>
@@ -58,7 +58,7 @@
                 <div class="won_4">원</div>
             </div>
             <div id="likeButton" class="pay_cart_like">
-                <button class="pay_btn">결제하러 가기</button>
+                <button class="pay_btn" @click="gotoPay">결제하러 가기</button>
                 <button class="go_to_cart">
                     <img @click="addToCart(bookDetailData.BOOK_ID)" src="@/assets/img/detail_cart.png" alt="detail_cart" />
                 </button>
@@ -122,7 +122,7 @@
         <div class="total_rec">
             <div class="total_rec_title">구매자 총점</div>
             <div class="total_star_rec">
-                <star :rating="rating" />
+                <star :rating="convertRatingToHalfStars(averageRating)" />
                 <div class="total_rec_num">
                     <!-- {{ formattedAverageRating }} -->
                     <span class="total_rec_num_10">{{ averageRating }}/10</span>
@@ -189,7 +189,7 @@
 import axios, { Axios } from "axios";
 import "../assets/css/bookDetail.css";
 import GnbBar from "../components/gnbBar.vue";
-import star from "@/components/review_star.vue";
+import star from "@/components/star.vue";
 
 export default {
     components: {
@@ -365,6 +365,7 @@ export default {
             try {
                 const res = await axios.get(`http://localhost:3000/review/averagerating/${this.bookId}`);
                 this.averageRating = res.data.averageRating;
+                console.log(this.averageRating);
             } catch (err) {
                 console.error("average Err", err);
             }
@@ -453,8 +454,9 @@ export default {
         //         });
         // },
         convertRatingToHalfStars(number) {
+            number = number / 2;
             if (Number.isInteger(number)) {
-                if (number >= 1 && number <= 10) {
+                if (number >= 1 && number <= 5) {
                     return number;
                 } else {
                     return 0; // 범위를 벗어나는 경우
@@ -463,14 +465,10 @@ export default {
                 const integerPart = Math.floor(number);
                 const decimalPart = number - integerPart;
 
-                if (decimalPart === 0) {
+                if (decimalPart < 0.5) {
                     return integerPart;
-                } else if (decimalPart < 0.25) {
-                    return integerPart + 0.25;
-                } else if (decimalPart >= 0.25 && decimalPart < 0.75) {
-                    return integerPart + 0.5;
                 } else {
-                    return integerPart + 0.75;
+                    return integerPart + 0.5;
                 }
             }
         },
@@ -518,6 +516,39 @@ export default {
                 })
                 .catch((err) => {
                     console.log(err);
+                });
+        },
+        //결제
+        //----------------------
+        gotoPay() {
+            const bookPrice = this.bookDetailData.BOOK_PRICE;
+            const bookfee = bookPrice >= 50000 ? 0 : 2500;
+            const totalPoint = bookPrice * 0.05;
+            console.log(this.$route.params.id);
+            console.log(this.bookDetailData.BOOK_PRICE);
+            console.log(bookfee);
+            console.log(totalPoint);
+            console.log(this.bookDetailData.BOOK_TITLE);
+            console.log(localStorage.getItem("userID"));
+
+            axios({
+                url: "http://localhost:3000/detail/gotoPay",
+                method: "POST",
+                data: {
+                    bookId: this.$route.params.id,
+                    bookNum: 1,
+                    email: localStorage.getItem("userID"),
+                    total_pay: bookPrice,
+                    total_point: totalPoint,
+                    fee: bookfee,
+                },
+            })
+                .then((res) => {
+                    console.log(res.data.payID);
+                    this.$router.push({ name: "paymentPage", query: { payid: res.data.payID } });
+                })
+                .catch((error) => {
+                    console.error("Error goToPay :", error);
                 });
         },
     },
