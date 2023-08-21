@@ -116,7 +116,7 @@
 
         <!-- 이벤트배너-->
         <div class="main_event">
-            <img class="main_event_img" src="../assets/img/event1.jpg" alt="" />
+            <a href="event"> <img class="main_event_img" src="../assets/img/testimg.png" alt="" /> </a>
         </div>
 
         <!-- 굿즈-->

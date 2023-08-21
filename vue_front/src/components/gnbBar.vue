@@ -537,6 +537,11 @@ export default {
             window.location.href = `/detail/${book.BOOK_ID}`;
         },
         sendSearchKeyword() {
+            var specialRule = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
+            if (specialRule.test(this.keyword)) {
+                alert("특수문자는 검색 불가입니다.");
+                return;
+            }
             this.$router.replace({ name: "SearchList", query: { searchKeyword: this.keyword } });
         },
         onClick(e) {
