@@ -151,7 +151,7 @@ router.post("/updatecoupon/:userEmail", (req, res) => {
   const userPaymentQuery = `
     SELECT SUM(u.user_total_pay) AS totalPayment
     FROM user u
-    JOIN \`order\` o ON u.user_email = o.order_useremail
+    JOIN \`order\` o ON u.user_email = o.order_user_email
     WHERE u.user_email = ? AND o.order_paydate >= ? AND o.order_paydate <= ?
   `;
 
@@ -313,7 +313,7 @@ router.get("/coupongrade/:userEmail", (req, res) => {
   const userPaymentQuery = `
     SELECT SUM(u.user_total_pay) AS totalPayment
     FROM user u
-    JOIN \`order\` o ON u.user_email = o.order_useremail
+    JOIN \`order\` o ON u.user_email = o.order_user_email
     WHERE u.user_email = ? AND o.order_paydate >= ? AND o.order_paydate <= ?
   `;
   db.query(
@@ -383,7 +383,7 @@ router.get("/couponupgrade/:userEmail", (req, res) => {
   const userPaymentQuery = `
     SELECT SUM(u.user_total_pay) AS totalPayment
     FROM user u
-    JOIN \`order\` o ON u.user_email = o.order_useremail
+    JOIN \`order\` o ON u.user_email = o.order_user_email
     WHERE u.user_email = ? AND o.order_paydate >= ? AND o.order_paydate <= ?
   `;
 
@@ -453,7 +453,7 @@ router.get("/orderdelivery", (req, res) => {
   const orderState = req.query.orderState;
 
   const query =
-    "SELECT * from `order` WHERE ORDER_USEREMAIL = ? AND ORDER_STATE = ?";
+    "SELECT * from `order` WHERE ORDER_USER_EMAIL = ? AND ORDER_STATE = ?";
 
   db.query(query, [userEmail, ORDER_STATE[orderState]], (err, results) => {
     if (err) {
@@ -479,7 +479,7 @@ router.get("/ordersearchbook", (req, res) => {
   `;
 
   if (userEmail) {
-    query += ` AND o.ORDER_USEREMAIL = '${userEmail}'`;
+    query += ` AND o.ORDER_USER_EMAIL = '${userEmail}'`;
   }
 
   if (bookKeyword) {
@@ -512,7 +512,7 @@ router.get("/orderdate", (req, res) => {
   const queryParams = [formattedStartDate, formattedEndDate];
 
   if (userEmail) {
-    query += " AND ORDER_USEREMAIL = ?";
+    query += " AND ORDER_USER_EMAIL = ?";
     queryParams.push(userEmail);
   }
 
@@ -535,7 +535,7 @@ router.get("/orderpaydate", (req, res) => {
   }
 
   const query =
-    "SELECT ORDER_USEREMAIL, DATE_FORMAT(ORDER_DATE, '%m-%d') AS ORDER_DATE FROM `order` WHERE ORDER_USEREMAIL = ?";
+    "SELECT ORDER_USER_EMAIL, DATE_FORMAT(ORDER_DATE, '%m-%d') AS ORDER_DATE FROM `order` WHERE ORDER_USER_EMAIL = ?";
 
   db.query(query, [userEmail], (err, results) => {
     if (err) {
@@ -588,7 +588,7 @@ router.get("/notYetReview/:userEmail", (req, res) => {
     WHERE oi.ORDERITEM_ORDERID IN (
       SELECT o.ORDER_ID
       FROM \`order\` o
-      WHERE o.ORDER_USEREMAIL = ? AND o.ORDER_STATE = '배송완료'
+      WHERE o.ORDER_USER_EMAIL = ? AND o.ORDER_STATE = '배송완료'
     )
     AND oi.ORDERITEM_BUYCHECK = 1 AND oi.ORDERITEM_REVCHECK = 0
   `;
@@ -608,7 +608,7 @@ router.put("/updatebuycheck/:orderItemId", (req, res) => {
   const orderItemId = req.params.orderItemId;
 
   const selectQuery =
-    "SELECT o.ORDER_STATE, oi.ORDERITEM_BUYCHECK, o.ORDER_USEREMAIL FROM `order` o JOIN orderitem oi ON o.ORDER_ID = oi.ORDERITEM_ORDERID WHERE oi.ORDERITEM_ID = ? ";
+    "SELECT o.ORDER_STATE, oi.ORDERITEM_BUYCHECK, o.ORDER_USER_EMAIL FROM `order` o JOIN orderitem oi ON o.ORDER_ID = oi.ORDERITEM_ORDERID WHERE oi.ORDERITEM_ID = ? ";
   db.query(selectQuery, [orderItemId], (err, results) => {
     if (err) {
       console.error(err);
@@ -621,7 +621,7 @@ router.put("/updatebuycheck/:orderItemId", (req, res) => {
     }
     const orderState = results[0].ORDER_STATE;
     const buyCheck = results[0].ORDERITEM_BUYCHECK;
-    const userEmail = results[0].ORDER_USEREMAIL;
+    const userEmail = results[0].ORDER_USER_EMAIL;
 
     if (orderState !== "배송완료") {
       res
@@ -699,7 +699,7 @@ router.get("/notYetReview/:userEmail", (req, res) => {
     WHERE oi.ORDERITEM_ORDERID IN (
       SELECT o.ORDER_ID
       FROM \`order\` o
-      WHERE o.ORDER_USEREMAIL = ? AND o.ORDER_STATE = '배송완료'
+      WHERE o.ORDER_USER_EMAIL = ? AND o.ORDER_STATE = '배송완료'
     )
     AND oi.ORDERITEM_BUYCHECK = 1 AND oi.ORDERITEM_REVCHECK = 0
   `;

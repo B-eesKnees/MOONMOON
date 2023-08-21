@@ -281,16 +281,18 @@ export default {
         //좋아요 추가/취소
         toggleLike() {
             if (localStorage.getItem("userID")) {
-                const likeEndPoint = this.isLiked ? "/dellikebooks" : "addlikebook";
                 const data = {
-                    userEmail: this.email,
                     bookId: this.bookId,
                 };
 
                 axios
-                    .post(`http://localhost:3000/floating/${likeEndPoint}`, data)
+                    .post(`http://localhost:3000/floating/cancellikebooks?userEmail=${localStorage.getItem("userID")}`, data)
                     .then(() => {
                         this.isLiked = !this.isLiked;
+                        // 좋아요 토글 이후에 리뷰 개수 및 평균 평점 업데이트
+                        this.fetchReviewData();
+                        this.fetchReviewCount();
+                        this.fetchAverageRating();
                     })
                     .catch((error) => {
                         console.error("좋아요 에러", error);
@@ -303,6 +305,7 @@ export default {
             }
         },
 
+        // ... (
         // 리뷰 시작-------------------------------------------------------------------------------------------------------
         //리뷰 개수 가져오기
         fetchReviewCount() {
