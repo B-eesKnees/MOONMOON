@@ -145,7 +145,7 @@ router.get("/new", async (req, res) => {
     try {
         const searchKeyword = req.query.searchKeyword;
 
-        const search_query = `SELECT b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, date_format(b.BOOK_PUBDATE, '%Y.%m.%d') as PUBDATE, b.BOOK_PRICE, b.BOOK_DESCRIPTION, b.BOOK_COVER, b.BOOK_PUBLISHER, COALESCE(ROUND(AVG(r.REV_RATING), 1), 0) AS reviewpoint
+        const search_query = `SELECT b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, date_format(b.BOOK_PUBDATE, '%Y.%m.%d') as PUBDATE, b.BOOK_PRICE, b.BOOK_DESCRIPTION, BOOK_CATEGORYNAME, b.BOOK_COVER, b.BOOK_PUBLISHER, COALESCE(ROUND(AVG(r.REV_RATING), 1), 0) AS reviewpoint
                                 FROM book b 
                                 left join review r on b.BOOK_ID = r.REV_ORDERITEM_BOOK 
                                 WHERE BOOK_TITLE LIKE ? OR BOOK_AUTHOR LIKE ?

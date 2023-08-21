@@ -200,7 +200,7 @@ export default {
 
         const scrollToTop = () => {
             const startTime = performance.now();
-            const duration = 500;
+            const duration = 200; //스크롤 속도
             const startTop = window.scrollY;
 
             const scrollStep = (timestamp) => {
@@ -238,32 +238,8 @@ export default {
         this.getNewestBook();
         // 이미지 슬라이드가 렌더링되고 준비가 완료되면 slidesReady를 true로 설정
         this.slidesReady = true;
-        this.visit(); //방문시 작동
     },
     methods: {
-        visit() {
-            //방문관련
-            if (sessionStorage.getItem("see")) {
-                //세션에 방문기록이 있으면 함수 정지
-                console.log("재방문");
-                return;
-            }
-            axios({
-                url: "/visit",
-                method: "POST",
-                data: { errtoday: new Date().toLocaleDateString() }, //오늘 날짜 전달
-            })
-                .then((res) => {
-                    //방문후 방문기록을 세션에 남김
-                    sessionStorage.setItem("see", "yes");
-                    console.log(res.data);
-                    //백에서 처리
-                })
-                .catch((err) => {
-                    console.log(err);
-                    //에러 처리
-                });
-        },
         // 이전 슬라이드로 이동하는 메서드 (이미지가 오른쪽으로 넘어가는 애니메이션 추가)
         prevSlide() {
             if (this.slidesReady) {

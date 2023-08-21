@@ -9,11 +9,11 @@
         <div class="new_items">
             <div v-for="(item, i) in displayedPosts" :key="i" class="new_item">
                 <div class="new_item_img">
-                    <a href=""><img :src="item.BOOK_COVER" alt="" /></a>
+                    <a :href="`/detail/${item.BOOK_ID}`"><img :src="item.BOOK_COVER" alt="" /></a>
                 </div>
                 <div class="new_item_info">
                     <h2 class="best_item_info_title">
-                        <a href="">{{ item.BOOK_TITLE }}</a>
+                        <a :href="`/detail/${item.BOOK_ID}`">{{ item.BOOK_TITLE }}</a>
                     </h2>
                     <span class="new_item_info_author">{{ item.BOOK_AUTHOR }} | {{ item.BOOK_PUBDATE }}</span>
                     <div class="new_item_info_price">

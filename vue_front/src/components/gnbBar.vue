@@ -19,7 +19,7 @@
     <div class="gnb_bar_header_wrap">
         <div class="gnb_bar_header">
             <div class="gnb_bar_header_logo">
-                <a href="/"><img src="../assets/img/logo.png" alt="logo" /></a>
+                <a href="/"><img src="../assets/img/logo.png" alt="" /></a>
             </div>
             <div class="gnb_bar_header_search" ref="search_box">
                 <input
@@ -66,7 +66,7 @@
                 <a class="nav_category_link" href="/new">
                     <li>신상품</li>
                 </a>
-                <a class="nav_category_link" href="/event">
+                <a class="nav_category_link" href="/event1">
                     <li>이벤트</li>
                 </a>
                 <a class="nav_category_link" href="/goods">
@@ -296,8 +296,8 @@ export default {
                         "영미소설",
                         "추리/미스터리소설",
                         "과학소설(SF)",
-                        "호러/공포소설",
-                        " 액션/스릴러소설",
+                        "호러,공포소설",
+                        "액션/스릴러소설",
                         "로맨스소설",
                         "시",
                         "희곡",
@@ -312,7 +312,7 @@ export default {
                     middle: [
                         "국가기술자격",
                         "국가전문자격",
-                        " 공무원 수험서",
+                        "공무원 수험서",
                         "한국사능력검정시험",
                         "공인중개사/주택관리사",
                         "운전면허",

@@ -5,9 +5,9 @@ const router = express.Router();
 
 
 const queries = {
-  adminBookLatestQuery: `select BOOK_ID, BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, '%Y-%m-%d') as BOOK_PUBDATE, BOOK_PRICE, BOOK_COVER, BOOK_CATEGORYNAME, BOOK_PUBLISHER, BOOK_SALESPOINT
+  adminBookLatestQuery: `select BOOK_ID, BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, '%Y-%m-%d') as PUBDATE, BOOK_PRICE, BOOK_COVER, BOOK_CATEGORYNAME, BOOK_PUBLISHER, BOOK_SALESPOINT
                          from book
-                         order by BOOK_ID desc;`,
+                         order by BOOK_PUBDATE desc;`,
 
   adminBookSalesPointQuery: `select BOOK_ID, BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, '%Y-%m-%d') as BOOK_PUBDATE, BOOK_PRICE, BOOK_COVER, BOOK_CATEGORYNAME, BOOK_PUBLISHER, BOOK_SALESPOINT
                              from book
