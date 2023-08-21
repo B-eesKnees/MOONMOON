@@ -13,7 +13,7 @@ router.post("/postreview", (req, res) => {
     WHERE oi.ORDERITEM_ORDERID IN (
       SELECT o.ORDER_ID
       FROM \`order\` o
-      WHERE o.ORDER_USEREMAIL = ? AND o.ORDER_STATE = '배송완료'
+      WHERE o.ORDER_USER_EMAIL = ? AND o.ORDER_STATE = '배송완료'
     )
     AND oi.ORDERITEM_BOOKID = ?
   `;
@@ -53,7 +53,7 @@ router.post("/postreview", (req, res) => {
               WHERE ORDERITEM_ORDERID IN (
                 SELECT o.ORDER_ID
                 FROM \`order\` o
-                WHERE o.ORDER_USEREMAIL = ? AND o.ORDER_STATE = '배송완료'
+                WHERE o.ORDER_USER_EMAIL = ? AND o.ORDER_STATE = '배송완료'
               )
               AND ORDERITEM_BOOKID = ?
               `;
