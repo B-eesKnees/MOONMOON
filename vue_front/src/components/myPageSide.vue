@@ -57,11 +57,18 @@
     </div>
 </template>
 <script>
+import axios from "axios";
 export default {
     data() {
         return {
             activeElement: null,
+            orderInfo: [],
+            myReviews: [],
+            reviewsToWrite: [],
         };
+    },
+    created() {
+        this.email = localStorage.getItem("userID");
     },
     methods: {
         setTapName() {
@@ -69,6 +76,22 @@ export default {
         },
         isActiveText(element) {
             return this.activeElement === element ? "textBlack" : "";
+        },
+        fetchOrderInfo(orderState) {
+            const userEmail = this.email;
+            axios
+                .get("/orderdelivery", {
+                    params: {
+                        userEmail: userEmail,
+                        orderState: orderState,
+                    },
+                })
+                .then((response) => {
+                    this.orderInfo = response.data;
+                })
+                .catch((error) => {
+                    console.error("fetching order info error", error);
+                });
         },
     },
 };
