@@ -71,20 +71,19 @@ export default {
       }
     },
     async qnaEdit() {
-      try {
-        const qna_id = this.$route.params.qna_id; // assuming you have the qna_id as a parameter in the route
-        const response = await axios.post("/qna/qnaEdit", {
-          qna_id,
-          qna_con: this.qna.qna_con
-        });
-        
-        // 서버 응답 처리
-        // ... (원하는 처리 방식으로 추가)
-        
-        this.$router.push("/qna"); // 문의 작성 후에 목록 페이지로 이동
-      } catch (error) {
-        console.error("Error editing Q&A:", error);
+      const editData = {
+        QNA_TITLE: this.qna_title,
+        QNA_CON: this.qna_con,
+        QNA_ID: this.qna_id
       }
+
+      axios.post("/qna/qnaEdit", editData)
+          .then(response => {
+            window.location.reload();
+          })
+          .catch(error => {
+            console.error("Error deleting Q&A", error);
+          });
     },
   }
   

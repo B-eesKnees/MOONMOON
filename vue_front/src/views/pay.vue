@@ -66,10 +66,10 @@
                 <select v-model="selectedCoupon" class="choice_coupon">
                     <option disabled value="">쿠폰을 선택하세요</option>
                     <option v-for="coupon in coupons" :key="coupon.name" :value="coupon.value">
-                        {{ coupon.name }}
+                        {{ coupon.name }} {{ coupon.ratio }}
                     </option>
                 </select>
-                <button @click="applyCoupon">사용</button>
+                <button @click="applyCoupon(coupon.ratio)">사용</button>
             </div>
             <div class="use_point">
                 <div class="point_text">포인트</div>
@@ -134,11 +134,11 @@ export default {
             isModalOpen: true,
             payID: this.$route.query.payid,
             userEmail: localStorage.getItem("userID"),
-            originalPrice: "12345",
-            deliveryFee: "1234",
-            discountAmount: "1234",
-            finalPrice: "1234",
-            earnPoint: "23",
+            originalPrice: "",
+            deliveryFee: "",
+            discountAmount: "",
+            finalPrice: "",
+            earnPoint: "",
             applyCouponPrice: "",
         };
     },
@@ -149,6 +149,8 @@ export default {
         this.getBookInfo();
         this.getCouponList();
         this.getUserPoint();
+        this.getOriginalPrice();
+        this.applyCoupon();
         console.log(this.$route.query.payid);
         console.log(this.payID);
     },
@@ -218,6 +220,17 @@ export default {
                 this.point = res.data[0].USER_POINT;
             });
         },
+        getOriginalPrice() {
+            const payid = this.payID;
+
+            axios({
+                url: "/pay/originalPrice",
+                method: "get",
+                params: { payID: [ payid ] },
+            }).then((res) => {
+                this.originalPrice = res.data[0].oP;
+            });
+        },
         openAdd() {
             const confmKey = "devU01TX0FVVEgyMDIzMDgwMzE2NTY0NDExMzk4ODQ=";
             const returnUrl = "http://localhost:8080/pay";
@@ -233,18 +246,18 @@ export default {
         applyCoupon() {
             const payload = {
                 selectedCoupon: this.selectedCoupon,
-                selectedCouponRatio: this.coupons.ratio,
-                originalPrice: 10000,
+                originalPrice: this.originalPrice,
             };
 
-            axios
-                .post("/pay/applyCoupon", payload)
-                .then((response) => {
-                    const applyCouponPrice = response.data.applyCouponPrice;
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
+            axios.post("/pay/applyCoupon", payload)
+                 .then((response) => {
+                   const applyCouponPrice = response.data.applyCouponPrice;
+                   this.applyCouponPrice = applyCouponPrice;
+                   console.log(applyCouponPrice);
+                 })
+                 .catch((error) => {
+                     console.error(error);
+                 });
         },
         startPay() {
             const IMP = window.IMP;
