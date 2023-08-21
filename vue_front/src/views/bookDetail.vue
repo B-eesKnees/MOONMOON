@@ -107,8 +107,8 @@
                 </fieldset>
             </div>
             <div class="write_rev_under_set">
-                <textarea class="write_text" placeholder="댓글을 입력하세요" />
-                <button type="button" class="rev_send">
+                <textarea class="write_text" placeholder="댓글을 입력하세요" ref="reviewComment" />
+                <button type="button" class="rev_send" @click="sendReview">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="23" viewBox="0 0 22 23" fill="none">
                         <path d="M1 1.74097V9.74097L13.5 11.241L1 12.741V21.241L20.5 11.241L1 1.74097Z" fill="#6969FF" stroke="#6969FF" />
                     </svg>
@@ -158,7 +158,7 @@
     <div class="exc_return_set">
         <div class="exc_return_top">
             <div class="review_con_title">교환/반품/품절 안내</div>
-            <RouterLink to="/" class="go_to_review">1:1 문의</RouterLink>
+            <RouterLink to="/qnaWrite" class="go_to_review">1:1 문의</RouterLink>
         </div>
         <hr class="review_title_next_hr" />
         <div class="exc_return_con_title">반품/교환 방법</div>
@@ -307,6 +307,42 @@ export default {
 
         // ... (
         // 리뷰 시작-------------------------------------------------------------------------------------------------------
+        async sendReview() {
+            const ratingInput = document.querySelector("input[name='rating']:checked");
+            const rating = ratingInput ? parseFloat(ratingInput.value) : 0; // Get selected rating value
+
+            const comment = this.$refs.reviewComment.value; // Get the review comment from the textarea
+
+            if (!rating || !comment) {
+                alert("리뷰 내용과 별점 추가해주세요");
+                return;
+            }
+
+            const reviewData = {
+                REV_WRITER: localStorage.getItem("userID"), // Assuming you store the user's ID in localStorage
+                REV_ORDERITEM_BOOK: this.bookId,
+                REV_COMMENT: comment,
+                REV_RATING: rating,
+            };
+
+            try {
+                const response = await axios.post("http://localhost:3000/review/postreview", reviewData);
+
+                // Reset the review form
+                this.$refs.reviewComment.value = "";
+                ratingInput.checked = false;
+
+                // Fetch updated review data and average rating
+                this.fetchReviewData();
+                this.fetchReviewCount();
+                this.fetchAverageRating();
+
+                alert(response.data.message); // Display success message
+            } catch (error) {
+                console.error("리뷰 전송 실패:", error);
+                alert("리뷰 전송 실패.");
+            }
+        },
         //리뷰 개수 가져오기
         fetchReviewCount() {
             axios({
