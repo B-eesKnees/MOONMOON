@@ -29,6 +29,10 @@ const queries = {
   originalPriceQuery: `select sum(ORDERITEM_PRICE*ORDERITEM_CNT) as oP
                        from orderitem
                        where ORDERITEM_ORDER_ID = ?`,
+
+  updatePriceDataQuery: `update \`order\`
+                         set ORDER_PAY = ?, ORDER_COST = ?, ORDER_COUPON = ?, ORDER_USEPOINT = ?, ORDER_ADDPOINT = ?
+                         where ORDER_ID = ?;`,
 }
 
 // 데이터베이스 작업 함수
@@ -190,6 +194,20 @@ router.get("/originalPrice", async (request, res) => {
 
     res.send(await req(queries.originalPriceQuery, ORDERITEM_ORDER_ID));
     console.log(ORDERITEM_ORDER_ID);
+  } catch (err) {
+    res.status(500).send({
+      error:err
+    });
+  }
+});
+// 가격 디비에 저장
+router.post("/updatePriceData", async (request, res) => {
+    
+  try {
+    const userEmail = request.body.userEmail; 
+
+    res.send(await req(queries.payUserInfoQuery, userEmail));
+    console.log(userEmail); 
   } catch (err) {
     res.status(500).send({
       error:err

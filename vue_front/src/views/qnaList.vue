@@ -36,6 +36,45 @@
                         <a href="http://localhost:8080/qnaWrite">
                             <div class="qna-btn" v-if="!nodata">1:1 문의하기</div>
                         </a>
+  <div>
+    <GnbBar />
+
+    <div class="mypage_menu"></div>
+    <div class="right_box">
+      <h1 class="qna_title_big">1:1 문의</h1>
+      <!-- 탭시작 -->
+      <section class="tabWrap">
+        <TabsWrapper>
+          <TabItem title="전체(11)">           
+            <a href="http://localhost:8080/qnaWrite">
+              <div class="qna-btn" v-if="!nodata">
+                1:1 문의하기
+              </div>
+            </a>
+            
+            <div class="qna-all">
+              <div v-if="qnaAllList.length === 0">
+                <div id="nodata" class="nodata">작성한 문의글이 없습니다</div>
+              </div>
+              <qnaAll
+                v-if="!nodata && qnaAllList.length > 0"
+                :qnaAllList="qnaAllList"
+                :showQnaAllContent="showQnaAllContent"                  
+                :toggleContent1="toggleContent1"      
+                :conOpenBotton="conOpenBotton"
+                :conCloseBotton="conCloseBotton"        
+                :editMode="editMode"
+                :qnaDelFunction="qnaDel"
+                :getEditQnaId="EditId"
+              ></qnaAll>
+            </div>
+          </TabItem>
+          <TabItem title="답변 대기(2)">
+            <a href="http://localhost:8080/qnaWrite">
+              <div class="qna-btn" v-if="!nodata">
+                1:1 문의하기
+              </div>
+            </a>
 
                         <div class="qna-wait">
                             <div v-if="qnaWaitList.length === 0">
@@ -188,24 +227,33 @@ export default {
                     })
                 ).data;
 
-                if (qnaDoneList.length > 0) {
-                    this.qnaDoneList = qnaDoneList;
-                }
-                console.log(this.qnaDoneList);
-            } catch (error) {
-                console.log(error);
-            }
-        },
-        qnaDel(qna_id) {
-            axios
-                .post("/qna/qnaDel", { QNA_ID: qna_id })
-                .then((response) => {
-                    window.location.reload();
-                })
-                .catch((error) => {
-                    console.error("Error deleting Q&A", error);
-                });
-        },
-    },
+        if (qnaDoneList.length > 0) {
+        this.qnaDoneList = qnaDoneList;
+
+      }
+      console.log(this.qnaDoneList);
+      } catch (error) {
+        console.log(error);
+      }      
+      },
+      qnaDel(qna_id) {
+        axios.post("/qna/qnaDel", { QNA_ID: qna_id })
+          .then(response => {
+            window.location.reload();
+          })
+          .catch(error => {
+            console.error("Error deleting Q&A", error);
+          });
+      },
+      EditId(qna_id) {
+        axios.post("/qna/qnaEditId", { QNA_ID: qna_id })
+          .then(response => {
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+    }, 
+ 
 };
 </script>

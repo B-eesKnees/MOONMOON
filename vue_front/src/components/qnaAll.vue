@@ -12,6 +12,7 @@ export default {
     conOpenBotton: String,
     conCloseBotton: String,
     qnaDelFunction: Function,
+    getEditQnaId: Function
   },
   methods: {
     async toggleContent1(index) {
@@ -21,6 +22,9 @@ export default {
     handleQnaDel(qna_id) {
       this.qnaDelFunction(qna_id);
     },
+    getEditId(qna_id) {
+      this.getEditQnaId(qna_id);
+    }
   },
   /* computed: {
     truncatedContents() {
@@ -58,7 +62,7 @@ export default {
           <div class="qna-con">{{ all.QNA_CON }}</div>
             <div v-if="all.QNA_REP === 0">
               <a href="http://localhost:8080/qnaEdit">
-                <button>수정</button>
+                <button @click="getEditId(all.QNA_ID)">수정</button>
               </a>          
               <button @click="handleQnaDel(all.QNA_ID)">삭제</button>
             </div>
