@@ -2,17 +2,15 @@
 <template>
     <div>
         <GnbBar />
-        <myPage_top />
-        <div class="mypage_menu">
-            <myPageSide />
-        </div>
+
+        <div class="mypage_menu"></div>
         <div class="right_box">
             <h1 class="qna_title_big">1:1 문의</h1>
             <!-- 탭시작 -->
             <section class="tabWrap">
                 <TabsWrapper>
                     <TabItem title="전체(11)">
-                        <a href="/qnaWrite">
+                        <a href="http://localhost:8080/qnaWrite">
                             <div class="qna-btn" v-if="!nodata">1:1 문의하기</div>
                         </a>
 
@@ -29,6 +27,7 @@
                                 :conCloseBotton="conCloseBotton"
                                 :editMode="editMode"
                                 :qnaDelFunction="qnaDel"
+                                :getEditQnaId="EditId"
                             ></qnaAll>
                         </div>
                     </TabItem>
@@ -204,6 +203,14 @@ export default {
                 })
                 .catch((error) => {
                     console.error("Error deleting Q&A", error);
+                });
+        },
+        EditId(qna_id) {
+            axios
+                .post("/qna/qnaEditId", { QNA_ID: qna_id })
+                .then((response) => {})
+                .catch((error) => {
+                    console.error(error);
                 });
         },
     },
