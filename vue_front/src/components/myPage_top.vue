@@ -17,7 +17,7 @@
                 <a href="#" class="mypage_like">
                     <div class="like_recent_point_cou_text">
                         <div class="like_recent_point_cou_title">찜</div>
-                        <div class="like_recent_point_cou_num">1</div>
+                        <div class="like_recent_point_cou_num" v-if="getLikeCountData.likecount !== undefined">{{ getLikeCountData.likecount }}</div>
                     </div></a
                 >
                 <a href="#" class="mypage_like">
@@ -81,11 +81,13 @@ export default {
                 USER_EMAIL: "",
                 USER_POINT: "",
             },
+            likeCount: undefined,
         };
     },
     created() {
         this.email = localStorage.getItem("userID");
         this.getUser();
+        this.getLikeCount();
     },
     methods: {
         getUser() {
@@ -102,6 +104,20 @@ export default {
                 .catch((error) => {
                     console.error("user데이터 받아오기 오류:", error);
                 });
+        },
+        async getLikeCount() {
+            try {
+                const response = await axios.get("http://localhost:3000/mypage/getlikecount", {
+                    params: {
+                        userEmail: this.email,
+                    },
+                });
+
+                console.log("서버 응답 데이터:", response.data);
+                this.likeCount = response.data.likecount;
+            } catch (error) {
+                console.error("userlikecount 데이터 받아오기 오류:", error);
+            }
         },
     },
 };
