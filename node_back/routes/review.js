@@ -5,6 +5,7 @@ const db = require("../db");
 //구매확정한 사람만 리뷰 작성 가능
 router.post("/postreview", (req, res) => {
   const reviewData = req.body;
+  const now = new Date();
 
   // Check if the user has bought the product and rev_check is 0
   const checkBuyAndRevCheckQuery = `
@@ -37,7 +38,7 @@ router.post("/postreview", (req, res) => {
             REV_WRITER: reviewData.REV_WRITER,
             REV_COMMENT: reviewData.REV_COMMENT,
             REV_RATING: reviewData.REV_RATING,
-            REV_CREATED_AT: new Date(),
+            REV_CREATED_AT: now.toISOString,
           };
 
           const insertReviewQuery = "INSERT INTO REVIEW SET ?";
