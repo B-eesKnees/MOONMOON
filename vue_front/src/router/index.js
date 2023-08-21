@@ -12,7 +12,7 @@ import NewList from "../views/newList.vue";
 import bookDetail from "../views/bookDetail.vue";
 import startest from "@/views/test.vue";
 import Goods from "../views/goods.vue";
-import Categories from '../views/categories.vue'
+import Categories from "../views/categories.vue";
 
 import booktestPage from "../views/bookTest.vue";
 import cart from "../views/cart.vue";
@@ -27,11 +27,13 @@ import attendance from "../views/attendance.vue";
 import mypage from "../views/myPage.vue";
 import axios from "axios";
 
-import Admin from '../views/Admin.vue';
-import AdminBookManage from '../components/adminBookManage.vue';
-import AdminUserManage from '../components/adminUserManage.vue';
-import AdminQnaManage from '../components/adminQnaManage.vue';
+import Admin from "../views/Admin.vue";
+import AdminBookManage from "../components/adminBookManage.vue";
+import AdminUserManage from "../components/adminUserManage.vue";
+import AdminQnaManage from "../components/adminQnaManage.vue";
 import bookInsert from "../components/bookInsert.vue";
+
+import mypageOrderInfo from "../views/mypageOrderInfo.vue";
 
 const requireLogin = () => (to, from, next) => {
     //로그인안하고 접근하려했을때 실행할 함수?
@@ -197,24 +199,24 @@ const routes = [
         component: bookInsert,
     },
     {
-        path: '/admin',
-        name: 'Admin',
-        component: Admin
+        path: "/admin",
+        name: "Admin",
+        component: Admin,
     },
     {
-        path: '/admin/bookmanage',
-        name: 'AdminBookManage',
-        component: AdminBookManage
+        path: "/admin/bookmanage",
+        name: "AdminBookManage",
+        component: AdminBookManage,
     },
     {
-        path: '/admin/usermanage',
-        name: 'AdminUserManage',
-        component: AdminUserManage
+        path: "/admin/usermanage",
+        name: "AdminUserManage",
+        component: AdminUserManage,
     },
     {
-        path: '/admin/qnamanage',
-        name: 'AdminQnaManage',
-        component: AdminQnaManage
+        path: "/admin/qnamanage",
+        name: "AdminQnaManage",
+        component: AdminQnaManage,
     },
     //-------------------------------------------------------------
     //출석체크페이지
@@ -223,11 +225,28 @@ const routes = [
         name: "attendanceEventPage",
         component: attendance,
     },
+
+    //마이페이지
     {
         path: "/mypage",
         name: "mypage",
         component: mypage,
     },
+    // {
+    //     path: "/mypageReview",
+    //     name: "mypageReview",
+    //     component: mypageReview,
+    // },
+    {
+        path: "/mypageorderinfo",
+        name: "mypageOrderInfo",
+        component: mypageOrderInfo,
+    },
+    // {
+    //     path: "/mypageuserinfo",
+    //     name: "mypageUserInfo",
+    //     component: mypageUserInfo,
+    // },
 ];
 
 const router = createRouter({
