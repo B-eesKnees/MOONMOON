@@ -12,23 +12,26 @@ import NewList from "../views/newList.vue";
 import bookDetail from "../views/bookDetail.vue";
 import startest from "@/views/test.vue";
 import Goods from "../views/goods.vue";
-import Categories from "../views/categories.vue";
+import Categories from '../views/categories.vue'
 
 import booktestPage from "../views/bookTest.vue";
 import cart from "../views/cart.vue";
 import resultpage from "../views/paymentResult.vue";
-import bookInsert from "../views/bookInsert.vue";
 import pay from "../views/pay.vue";
 
 import qnaList from "../views/qnaList.vue";
 import qnaWrite from "../views/qnaWrite.vue";
 import qnaEdit from "../views/qnaEdit.vue";
-import eventPage from "../views/event.vue";
+import eventPage1 from "../views/event.vue";
 import attendance from "../views/attendance.vue";
-import myPage from "../views/myPage.vue";
+import mypage from "../views/mypage.vue";
 import axios from "axios";
 
 import Admin from '../views/Admin.vue';
+import AdminBookManage from '../components/adminBookManage.vue';
+import AdminUserManage from '../components/adminUserManage.vue';
+import AdminQnaManage from '../components/adminQnaManage.vue';
+import bookInsert from "../components/bookInsert.vue";
 
 const requireLogin = () => (to, from, next) => {
     //로그인안하고 접근하려했을때 실행할 함수?
@@ -114,7 +117,7 @@ const routes = [
         component: NewList,
     },
     {
-        path: "/detail/:id",
+        path: "/detail/:bookNum",
         name: "bookDetail",
         component: bookDetail,
         props: true, // 라우트 파라미터를 컴포넌트의 프롭스로 전달
@@ -143,7 +146,7 @@ const routes = [
         component: cart,
     },
     {
-        path: "/pay",
+        path: "/pay/:payID",
         name: "paymentPage",
         component: pay,
     },
@@ -171,11 +174,21 @@ const routes = [
     },
     //-------------------------------------------------------------
     //룰렛, 쿠폰주는 화면
+    // {
+    //     path: "/event",
+    //     name: "eventPage",
+    //     component: eventPage,
+    // },
     {
-        path: "/event",
-        name: "eventPage",
-        component: eventPage,
+        path: "/event1",
+        name: "eventPage1",
+        component: eventPage1,
     },
+    // {
+    //     path: "/roulette",
+    //     name: "roulette",
+    //     component: roulette,
+    // },
     //-------------------------------------------------------------
     //관리자페이지
     {
@@ -187,7 +200,22 @@ const routes = [
         path: '/admin',
         name: 'Admin',
         component: Admin
-      },
+    },
+    {
+        path: '/admin/bookmanage',
+        name: 'AdminBookManage',
+        component: AdminBookManage
+    },
+    {
+        path: '/admin/usermanage',
+        name: 'AdminUserManage',
+        component: AdminUserManage
+    },
+    {
+        path: '/admin/qnamanage',
+        name: 'AdminQnaManage',
+        component: AdminQnaManage
+    },
     //-------------------------------------------------------------
     //출석체크페이지
     {
@@ -198,7 +226,7 @@ const routes = [
     {
         path: "/mypage",
         name: "mypage",
-        component: myPage,
+        component: mypage,
     },
 ];
 

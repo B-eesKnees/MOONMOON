@@ -42,7 +42,7 @@ export default {
 
         const scrollToTop = () => {
             const startTime = performance.now();
-            const duration = 500;
+            const duration = 200;
             const startTop = window.scrollY;
 
             const scrollStep = (timestamp) => {

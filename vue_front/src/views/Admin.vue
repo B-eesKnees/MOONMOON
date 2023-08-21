@@ -9,182 +9,8 @@
         <div id="wrapper">
 
             <!-- Sidebar -->
-            <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
-
-                <!-- Sidebar - Brand -->
-                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/admin">
-                    <div class="sidebar-brand-icon rotate-n-15">
-                        <i class="fa-solid fa-moon"></i>
-                    </div>
-                    <div class="sidebar-brand-text mx-3">관리자 페이지</div>
-                </a>
-
-                <!-- Divider -->
-                <hr class="sidebar-divider my-0">
-
-                <!-- Nav Item - Dashboard -->
-                <li class="nav-item active">
-                    <a class="nav-link" href="/admin">
-                        <i class="fas fa-fw fa-tachometer-alt"></i>
-                        <span> 대쉬보드</span></a>
-                </li>
-
-                <!-- Divider -->
-                <hr class="sidebar-divider">
-
-                <!-- Heading -->
-                <div class="sidebar-heading">
-                    관리
-                </div>
-
-                <!-- Nav Item - Pages Collapse Menu -->
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
-                        aria-expanded="true" aria-controls="collapseTwo">
-                        <i class="fa-solid fa-book"></i>
-                        <span> 책 관리</span>
-                    </a>
-                    <div id="collapseTwo" class="collapse" aria-labelledby="headingUtilities"
-                        data-parent="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">책 관리</h6>
-                            <a class="collapse-item" href="#">책 조회/삭제</a>
-                            <a class="collapse-item" href="/admin/bookinsert">책 추가</a>
-                        </div>
-                    </div>
-                </li>
-
-                <!-- Nav Item - Utilities Collapse Menu -->
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                        aria-expanded="true" aria-controls="collapseUtilities">
-                        <i class="fa-solid fa-user-gear"></i>
-                        <span>회원 관리</span>
-                    </a>
-                    <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                        data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">Custom Utilities:</h6>
-                            <a class="collapse-item" href="utilities-color.html">Colors</a>
-                            <a class="collapse-item" href="utilities-border.html">Borders</a>
-                            <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                            <a class="collapse-item" href="utilities-other.html">Other</a>
-                        </div>
-                    </div>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                        aria-expanded="true" aria-controls="collapseUtilities">
-                        <i class="fa-solid fa-comment-dots"></i>
-                        <span>문의 관리</span>
-                    </a>
-                    <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                        data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">Custom Utilities:</h6>
-                            <a class="collapse-item" href="utilities-color.html">Colors</a>
-                            <a class="collapse-item" href="utilities-border.html">Borders</a>
-                            <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                            <a class="collapse-item" href="utilities-other.html">Other</a>
-                        </div>
-                    </div>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                        aria-expanded="true" aria-controls="collapseUtilities">
-                        <i class="fa-solid fa-truck-moving"></i>
-                        <span>주문 관리</span>
-                    </a>
-                    <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                        data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">Custom Utilities:</h6>
-                            <a class="collapse-item" href="utilities-color.html">Colors</a>
-                            <a class="collapse-item" href="utilities-border.html">Borders</a>
-                            <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                            <a class="collapse-item" href="utilities-other.html">Other</a>
-                        </div>
-                    </div>
-                </li>
-                <!-- Divider -->
-                <hr class="sidebar-divider">
-
-                <!-- Heading -->
-                <div class="sidebar-heading">
-                    분석
-                </div>
-
-                <!-- Nav Item - Pages Collapse Menu -->
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                        aria-expanded="true" aria-controls="collapsePages">
-                        <i class="fas fa-fw fa-folder"></i>
-                        <span>회원 분석</span>
-                    </a>
-                    <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">Login Screens:</h6>
-                            <a class="collapse-item" href="login.html">Login</a>
-                            <a class="collapse-item" href="register.html">Register</a>
-                            <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                            <div class="collapse-divider"></div>
-                            <h6 class="collapse-header">Other Pages:</h6>
-                            <a class="collapse-item" href="404.html">404 Page</a>
-                            <a class="collapse-item" href="blank.html">Blank Page</a>
-                        </div>
-                    </div>
-                </li>
-
-                <!-- Nav Item - Charts -->
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                        aria-expanded="true" aria-controls="collapsePages">
-                        <i class="fas fa-fw fa-folder"></i>
-                        <span>구매 분석</span>
-                    </a>
-                    <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">Login Screens:</h6>
-                            <a class="collapse-item" href="login.html">Login</a>
-                            <a class="collapse-item" href="register.html">Register</a>
-                            <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                            <div class="collapse-divider"></div>
-                            <h6 class="collapse-header">Other Pages:</h6>
-                            <a class="collapse-item" href="404.html">404 Page</a>
-                            <a class="collapse-item" href="blank.html">Blank Page</a>
-                        </div>
-                    </div>
-                </li>
-
-                <!-- Nav Item - Tables -->
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                        aria-expanded="true" aria-controls="collapsePages">
-                        <i class="fas fa-fw fa-folder"></i>
-                        <span>매출 분석</span>
-                    </a>
-                    <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">Login Screens:</h6>
-                            <a class="collapse-item" href="login.html">Login</a>
-                            <a class="collapse-item" href="register.html">Register</a>
-                            <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                            <div class="collapse-divider"></div>
-                            <h6 class="collapse-header">Other Pages:</h6>
-                            <a class="collapse-item" href="404.html">404 Page</a>
-                            <a class="collapse-item" href="blank.html">Blank Page</a>
-                        </div>
-                    </div>
-                </li>
-
-                <!-- Divider -->
-                <hr class="sidebar-divider d-none d-md-block">
-
-            </ul>
+            <SideBar />
             <!-- End of Sidebar -->
-
             <!-- Content Wrapper -->
             <div id="content-wrapper" class="d-flex flex-column">
 
@@ -235,7 +61,7 @@
                                             <div class="col mr-2">
                                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                                     전일 대비 매출</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">₩ 215,000</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">₩ 215,000 <i class="fa-solid fa-up-long"></i></div>
                                             </div>
                                             <div class="col-auto">
                                                 <i class="fa-solid fa-won-sign fa-2x text-gray-300"></i>
@@ -308,7 +134,7 @@
                                     </div>
                                     <!-- Card Body -->
                                     <div class="card-body">
-                                        <div class="chart-area">
+                                        <div class="chart-area d-flex align-items-center justify-content-center">
                                             <canvas ref="dailySalesChart" width="1000" height="300"></canvas>
                                         </div>
                                     </div>
@@ -453,8 +279,10 @@ import { ref, onMounted } from 'vue';
 import Chart from 'chart.js/auto';
 import 'bootstrap'; // Import Bootstrap JavaScript
 import 'chartjs-adapter-luxon';
+import SideBar from '../components/adminSidebar.vue';
 
 export default {
+    components: { SideBar },
     setup() {
         const myChart = ref(null);
         const dailySalesChart = ref(null);
@@ -476,6 +304,7 @@ export default {
                     options: {
                         maintainAspectRatio: false,
                         aspectRatio: 2,
+                        cutout: 100, // 굵기를 조절하는 옵션
                         radius: '100%',
                         plugins: {
                             legend: {
@@ -511,9 +340,12 @@ export default {
                             {
                                 label: '금액', // Add dataset label
                                 data: [725000, 210000, 5723000, 6234000, 4230000, 1210000],
-                                backgroundColor: 'transparent', // Set to transparent to only show border
-                                borderColor: '#e74a3b', // Set the border color for lines
+                                backgroundColor: 'rgba(231, 74, 59, 0.1)', // 반투명 배경색 설정
+                                borderColor: '#e74a3b', // 선 색상 설정
+                                borderWidth: 2, // 선 두께 설정
                                 hoverOffset: 1,
+                                tension: 0.3, // 곡선의 강도 설정 (0에서 1 사이의 값)
+                                fill: true,
                             },
                         ],
                     },

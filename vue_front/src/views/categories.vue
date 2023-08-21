@@ -53,12 +53,14 @@
             </div>
         </div>
         <div class="booklist_paging">
+            <button @click="changePage('first')" :disabled="currentPage === 1">맨앞</button>
             <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1">이전</button>
             <button v-for="pageNumber in pageNumbers" :key="pageNumber" @click="changePage(pageNumber)"
                 :class="{ active: pageNumber === currentPage }">
                 {{ pageNumber }}
             </button>
             <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages">다음</button>
+            <button @click="changePage('last')" :disabled="currentPage === totalPages">맨뒤</button>
         </div>
         <!-- 플로팅-->
         <Floating />
@@ -120,8 +122,8 @@ export default {
                         "영미소설",
                         "추리/미스터리소설",
                         "과학소설(SF)",
-                        "호러/공포소설",
-                        " 액션/스릴러소설",
+                        "호러,공포소설",
+                        "액션/스릴러소설",
                         "로맨스소설",
                         "시",
                         "희곡",
@@ -235,7 +237,7 @@ export default {
         this.getLikeBook();
     },
     mounted() {
-        this.currentCategory = this.$route.params.category;
+        this.$route.params.category == '장르소설' ? this.currentCategory = '소설/시/희곡' : this.currentCategory = this.$route.params.category;
         this.isCategoryHeaderMatch();
         console.log(this.currentCategory);
         this.$nextTick(() => {
@@ -256,7 +258,7 @@ export default {
     },
     watch: {
         '$route'(to, from) {
-            this.currentCategory = this.$route.params.category;
+            this.$route.params.category == '장르소설' ? this.currentCategory = '소설/시/희곡' : this.currentCategory = this.$route.params.category;
             this.getCateGoryData();
             this.isCategoryHeaderMatch();
         }
@@ -264,7 +266,15 @@ export default {
     methods: {
 
         changePage(pageNumber) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (pageNumber === 'first') { // 맨 앞 페이지로 이동
+                pageNumber = 1;
+            } else if (pageNumber === 'last') { // 맨 뒤 페이지로 이동
+                pageNumber = this.totalPages;
+            } else {
+                pageNumber = parseInt(pageNumber); // 페이지 번호로 변환
+            }
+
+            window.scrollTo({ top: 0, behavior: 'auto' });
             if (pageNumber >= 1 && pageNumber <= this.totalPages) {
                 this.currentPage = pageNumber;
                 // 페이지 변경 시 추가 로직 수행

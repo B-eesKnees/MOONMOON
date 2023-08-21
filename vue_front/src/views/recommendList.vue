@@ -14,10 +14,10 @@
       <!-- 로그인시 -->
       <div v-if="logined == true" v-for="(item, i) in displayedPosts" :key="i" class="best_item">
         <div class="best_item_img">
-          <a href=""><img :src="item.BOOK_COVER" alt="" /></a>
+          <a :href="`/detail/${item.BOOK_ID}`"><img :src="item.BOOK_COVER" alt="" /></a>
         </div>
         <div class="best_item_info">
-          <h2 class="best_item_info_title"><a href="">{{ item.BOOK_TITLE }}</a></h2>
+          <h2 class="best_item_info_title"><a :href="`/detail/${item.BOOK_ID}`">{{ item.BOOK_TITLE }}</a></h2>
           <span class="best_item_info_author">{{ item.BOOK_AUTHOR }} | {{ item.BOOK_PUBDATE }}</span>
           <div class="best_item_info_price">
             <span>{{ formatNumber(item.BOOK_PRICE) }}</span>
@@ -79,12 +79,14 @@
       </div>
     </div>
     <div class="booklist_paging">
+      <button @click="changePage('first')" :disabled="currentPage === 1">맨앞</button>
       <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1">이전</button>
       <button v-for="pageNumber in pageNumbers" :key="pageNumber" @click="changePage(pageNumber)"
         :class="{ active: pageNumber === currentPage }">
         {{ pageNumber }}
       </button>
       <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages">다음</button>
+      <button @click="changePage('last')" :disabled="currentPage === totalPages">맨뒤</button>
     </div>
     <!-- 플로팅-->
     <Floating />
@@ -153,7 +155,15 @@ export default {
   },
   methods: {
     changePage(pageNumber) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (pageNumber === 'first') { // 맨 앞 페이지로 이동
+        pageNumber = 1;
+      } else if (pageNumber === 'last') { // 맨 뒤 페이지로 이동
+        pageNumber = this.totalPages;
+      } else {
+        pageNumber = parseInt(pageNumber); // 페이지 번호로 변환
+      }
+
+      window.scrollTo({ top: 0, behavior: 'auto' });
       if (pageNumber >= 1 && pageNumber <= this.totalPages) {
         this.currentPage = pageNumber;
         // 페이지 변경 시 추가 로직 수행

@@ -19,17 +19,11 @@
     <div class="gnb_bar_header_wrap">
         <div class="gnb_bar_header">
             <div class="gnb_bar_header_logo">
-                <a href="/"><img src="../assets/img/logo.png" alt="logo" /></a>
+                <a href="/"><img src="../assets/img/logo.png" alt="" /></a>
             </div>
             <div class="gnb_bar_header_search" ref="search_box">
-                <input
-                    class="gnb_bar_header_search_input"
-                    type="text"
-                    placeholder="검색어를 입력하세요"
-                    @keyup.enter="sendSearchKeyword"
-                    :value="keyword"
-                    @input="rec_search"
-                />
+                <input class="gnb_bar_header_search_input" type="text" placeholder="검색어를 입력하세요"
+                    @keyup.enter="sendSearchKeyword" :value="keyword" @input="rec_search" />
                 <!-- 검색 결과 미리보기 창 모달 -->
                 <div v-show="rec_show" class="rec_search_back" ref="search_result_box">
                     <div class="rec_search_area">
@@ -41,8 +35,7 @@
                 <img @click="sendSearchKeyword" class="gnb_bar_header_search_icon" src="../assets/img/search.png" alt="" />
             </div>
             <div class="gnb_bar_header_user">
-                <a href="/cart"
-                    ><img class="gnb_bar_header_cart" src="../assets/img/cart1.png" alt="" />
+                <a href="/cart"><img class="gnb_bar_header_cart" src="../assets/img/cart1.png" alt="" />
                     <span class="gnb_bar_header_cart_num">{{ cartNum }}</span>
                 </a>
                 <a href="/mypage"><img class="gnb_bar_header_userimg" src="../assets/img/user.png" alt="" /></a>
@@ -66,7 +59,7 @@
                 <a class="nav_category_link" href="/new">
                     <li>신상품</li>
                 </a>
-                <a class="nav_category_link" href="/event">
+                <a class="nav_category_link" href="/event1">
                     <li>이벤트</li>
                 </a>
                 <a class="nav_category_link" href="/goods">
@@ -74,9 +67,9 @@
                 </a>
             </ul>
             <div class="nav_sub">
-                <a class="nav_sub_link" href="/event">룰렛</a>
+                <a class="nav_sub_link" href="/event1">룰렛</a>
                 •
-                <a class="nav_sub_link" href="/event">출석체크</a>
+                <a class="nav_sub_link" href="/attendance">출석체크</a>
             </div>
             <!-- 카테고리 모달 -->
             <div v-if="showCategoryModal" class="nav_category_modal">
@@ -88,18 +81,17 @@
                             <div class="nav_modal_main_category_list_wrap">
                                 <div class="nav_modal_main_category_list">
                                     <!-- <a href="/categorys/:category">{{ main.top }}</a> -->
-                                    <router-link @click="closeCategoryModal" :to="`/categories/${encodeURIComponent(main.top)}`">{{
-                                        main.top
+                                    <router-link @click="closeCategoryModal" :to="`/categories/${encodeURIComponent(main.top)}`">{{ main.top
                                     }}</router-link>
                                 </div>
                                 <div class="nav_modal_category_btn">
-                                    <span @click="showCategoryMiddleBtn($event, main.id)">{{ main.expanded ? "―" : "＋" }}</span>
+                                    <span @click="showCategoryMiddleBtn($event, main.id)">{{ main.expanded ? "―" : "＋"
+                                    }}</span>
                                 </div>
                             </div>
                             <ul v-if="main.expanded" class="nav_modal_middle_category_list">
                                 <li v-for="(middle, index) in main.middle" :key="index">
-                                    <router-link @click="closeCategoryModal" :to="`/categories/${encodeURIComponent(middle)}`">{{
-                                        middle
+                                    <router-link @click="closeCategoryModal" :to="`/categories/${encodeURIComponent(middle)}`">{{ middle
                                     }}</router-link>
                                 </li>
                             </ul>
@@ -296,8 +288,8 @@ export default {
                         "영미소설",
                         "추리/미스터리소설",
                         "과학소설(SF)",
-                        "호러/공포소설",
-                        " 액션/스릴러소설",
+                        "호러,공포소설",
+                        "액션/스릴러소설",
                         "로맨스소설",
                         "시",
                         "희곡",
@@ -312,7 +304,7 @@ export default {
                     middle: [
                         "국가기술자격",
                         "국가전문자격",
-                        " 공무원 수험서",
+                        "공무원 수험서",
                         "한국사능력검정시험",
                         "공인중개사/주택관리사",
                         "운전면허",
