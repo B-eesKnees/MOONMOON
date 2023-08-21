@@ -74,9 +74,9 @@
                 </a>
             </ul>
             <div class="nav_sub">
-                <a class="nav_sub_link" href="/event">룰렛</a>
+                <a class="nav_sub_link" @click="setTapR" href="/event">룰렛</a>
                 •
-                <a class="nav_sub_link" href="/event">출석체크</a>
+                <a class="nav_sub_link" @click="setTapA" href="/event">출석체크</a>
             </div>
             <!-- 카테고리 모달 -->
             <div v-if="showCategoryModal" class="nav_category_modal">
@@ -548,6 +548,12 @@ export default {
             if (e.target.parentNode !== this.$refs.search_result_box && e.target.parentNode !== this.$refs.search_box) {
                 this.rec_show = false;
             }
+        },
+        setTapR() {
+            sessionStorage.setItem("eventTap", "룰렛");
+        },
+        setTapA() {
+            sessionStorage.setItem("eventTap", "출석체크");
         },
     },
     beforeUnmount() {
