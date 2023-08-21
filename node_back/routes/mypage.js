@@ -106,14 +106,14 @@ router.get("/recentcount", (req, res) => {
 //총 쿠폰 개수
 
 // 라우터 예시
-router.get("/couponcount/:userEmail", (req, res) => {
-  const userEmail = req.params.userEmail;
+router.get("/couponcount", (req, res) => {
+  const userEmail = req.query.userEmail; // userEmail은 쿼리 파라미터로 변경
   const getCouponCount = `
-  SELECT cpuser_user_email, COUNT(*) AS coupon_count
-  FROM cpuser
-  WHERE cpuser_user_email = ?;
+    SELECT cpuser_user_email, COUNT(*) AS coupon_count
+    FROM cpuser
+    WHERE cpuser_user_email = ?;
+  `;
 
-`;
   // 데이터베이스 쿼리 실행
   db.query(getCouponCount, [userEmail], (err, results) => {
     if (err) {
