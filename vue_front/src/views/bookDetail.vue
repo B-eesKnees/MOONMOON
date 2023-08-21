@@ -58,7 +58,7 @@
                 <div class="won_4">원</div>
             </div>
             <div id="likeButton" class="pay_cart_like">
-                <button class="pay_btn">결제하러 가기</button>
+                <button class="pay_btn" @click="gotoPay">결제하러 가기</button>
                 <button class="go_to_cart">
                     <img @click="addToCart(bookDetailData.BOOK_ID)" src="@/assets/img/detail_cart.png" alt="detail_cart" />
                 </button>
@@ -454,7 +454,6 @@ export default {
         //         });
         // },
         convertRatingToHalfStars(number) {
-            console.log(number);
             number = number / 2;
             if (Number.isInteger(number)) {
                 if (number >= 1 && number <= 5) {
@@ -517,6 +516,39 @@ export default {
                 })
                 .catch((err) => {
                     console.log(err);
+                });
+        },
+        //결제
+        //----------------------
+        gotoPay() {
+            const bookPrice = this.bookDetailData.BOOK_PRICE;
+            const bookfee = bookPrice >= 50000 ? 0 : 2500;
+            const totalPoint = bookPrice * 0.05;
+            console.log(this.$route.params.id);
+            console.log(this.bookDetailData.BOOK_PRICE);
+            console.log(bookfee);
+            console.log(totalPoint);
+            console.log(this.bookDetailData.BOOK_TITLE);
+            console.log(localStorage.getItem("userID"));
+
+            axios({
+                url: "http://localhost:3000/detail/gotoPay",
+                method: "POST",
+                data: {
+                    bookId: this.$route.params.id,
+                    bookNum: 1,
+                    email: localStorage.getItem("userID"),
+                    total_pay: bookPrice,
+                    total_point: totalPoint,
+                    fee: bookfee,
+                },
+            })
+                .then((res) => {
+                    console.log(res.data.payID);
+                    this.$router.push({ name: "paymentPage", query: { payid: res.data.payID } });
+                })
+                .catch((error) => {
+                    console.error("Error goToPay :", error);
                 });
         },
     },
