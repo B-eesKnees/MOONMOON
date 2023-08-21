@@ -2,7 +2,7 @@
 <template>
     <div>
         <GnbBar />
-
+        <myPage_top />
         <div class="mypage_menu">
             <myPageSide />
         </div>
@@ -126,6 +126,7 @@ import GnbBar from "../components/gnbBar.vue";
 import TabsWrapper from "../components/TabsWrapper.vue";
 import TabItem from "../components/TabItem.vue";
 import myPageSide from "../components/myPageSide.vue";
+import myPage_top from "@/components/myPage_top.vue";
 axios.defaults.baseURL = "http://localhost:3000";
 axios.defaults.headers.post["Content-Type"] = "application/json;charset=utf-8";
 axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
@@ -136,6 +137,7 @@ export default {
         TabsWrapper,
         TabItem,
         myPageSide,
+        myPage_top,
     },
     data() {
         return {
