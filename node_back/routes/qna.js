@@ -135,14 +135,14 @@ router.post('/qnaWrite', async (request, res) => {
   });
 
 
-// 문의 내용 수정 - 원래 내용 불러오기
-router.post('/qnaOriginal', async (request, res) => {
+// 수정할 문의 아이디 받아오기
+router.post('/qnaEditId', async (request, res) => {
   
   try {
     let { QNA_ID } = request.body;
       QNA_ID = Number(QNA_ID);
 
-      res.send(await req(queries.qnaOriginalQuery, QNA_ID));
+      res.send(await req(queries.qnaOriginalQuery, [QNA_ID]));
       console.log(QNA_ID);
   } catch (err) {
     res.status(500).send({
@@ -156,12 +156,13 @@ router.post('/qnaOriginal', async (request, res) => {
 router.post('/qnaEdit', async (request, res) => {
   
   try {
-    const QNA_TITLE = request.body.qna_title
-    const QNA_CON = request.body.qna_con
+    const QNA_TITLE = request.body.qna_title;
+    const QNA_CON = request.body.qna_con;
 
-    const QNA_ID = request.body;
+    const QNA_ID = request.body.qna_id;
 
     return res.send(await req(queries.qnaEditQuery, [QNA_TITLE, QNA_CON, QNA_ID]));
+    console.log(qna_title);
     console.log(qna_con);
     console.log(qna_id);
   } catch (err) {

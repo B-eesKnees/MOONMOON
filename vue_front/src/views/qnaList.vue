@@ -29,6 +29,7 @@
                 :conCloseBotton="conCloseBotton"        
                 :editMode="editMode"
                 :qnaDelFunction="qnaDel"
+                :getEditQnaId="EditId"
               ></qnaAll>
             </div>
           </TabItem>
@@ -202,6 +203,14 @@ export default {
             console.error("Error deleting Q&A", error);
           });
       },
+      EditId(qna_id) {
+        axios.post("/qna/qnaEditId", { QNA_ID: qna_id })
+          .then(response => {
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
     }, 
  
 };
