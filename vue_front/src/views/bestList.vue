@@ -42,7 +42,12 @@
         </div>
         <div class="booklist_paging">
             <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1">이전</button>
-            <button v-for="pageNumber in pageNumbers" :key="pageNumber" @click="changePage(pageNumber)" :class="{ active: pageNumber === currentPage }">
+            <button
+                v-for="pageNumber in pageNumbers"
+                :key="pageNumber"
+                @click="changePage(pageNumber)"
+                :class="{ active: pageNumber === currentPage }"
+            >
                 {{ pageNumber }}
             </button>
             <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages">다음</button>
@@ -258,7 +263,7 @@ export default {
             })
                 .then((res) => {
                     console.log(res.data.payID);
-                    window.location.href = `/pay/${res.data.payID}`;
+                    this.$router.push({ name: "paymentPage", query: { payid: res.data.payID } });
                 })
                 .catch((error) => {
                     console.error("Error goToPay :", error);

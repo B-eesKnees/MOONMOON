@@ -12,7 +12,9 @@
                     <a href=""><img :src="item.BOOK_COVER" alt="" /></a>
                 </div>
                 <div class="new_item_info">
-                    <h2 class="best_item_info_title"><a href="">{{ item.BOOK_TITLE }}</a></h2>
+                    <h2 class="best_item_info_title">
+                        <a href="">{{ item.BOOK_TITLE }}</a>
+                    </h2>
                     <span class="new_item_info_author">{{ item.BOOK_AUTHOR }} | {{ item.BOOK_PUBDATE }}</span>
                     <div class="new_item_info_price">
                         <span>{{ formatNumber(item.BOOK_PRICE) }}</span>
@@ -32,18 +34,20 @@
                     <p><span>내일(7/28)</span> 도착예정</p>
                 </div>
                 <div class="new_item_btn">
-                    <img v-if="item.isLiked == true" @click="likeToggle(item.BOOK_ID)" src="../assets/img/heartFill.png"
-                        alt="Heart Filled" />
-                    <img v-else-if="item.isLiked == false" @click="likeToggle(item.BOOK_ID)" src="../assets/img/heart.png"
-                        alt="Heart" />
+                    <img v-if="item.isLiked == true" @click="likeToggle(item.BOOK_ID)" src="../assets/img/heartFill.png" alt="Heart Filled" />
+                    <img v-else-if="item.isLiked == false" @click="likeToggle(item.BOOK_ID)" src="../assets/img/heart.png" alt="Heart" />
                     <img @click="addToCart(item.BOOK_ID)" src="../assets/img/cart2.png" alt="" />
                 </div>
             </div>
         </div>
         <div class="booklist_paging">
             <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1">이전</button>
-            <button v-for="pageNumber in pageNumbers" :key="pageNumber" @click="changePage(pageNumber)"
-                :class="{ active: pageNumber === currentPage }">
+            <button
+                v-for="pageNumber in pageNumbers"
+                :key="pageNumber"
+                @click="changePage(pageNumber)"
+                :class="{ active: pageNumber === currentPage }"
+            >
                 {{ pageNumber }}
             </button>
             <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages">다음</button>
@@ -57,7 +61,7 @@
 
 <script>
 import GnbBar from "../components/gnbBar.vue";
-import Floating from "../components/floating.vue"
+import Floating from "../components/floating.vue";
 import StarIcon from "../components/star.vue"; // 별점 아이콘 컴포넌트의 경로를 수정해주세요.
 import ScrollTop from "@/components/scrollTop.vue";
 
@@ -67,7 +71,6 @@ axios.defaults.headers.post["Contents-Type"] = "application/json;charset=utf-8";
 axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 
 export default {
-
     name: "",
     components: { GnbBar, StarIcon, Floating, ScrollTop },
     data() {
@@ -89,16 +92,17 @@ export default {
         };
     },
 
-    setup() { },
+    setup() {},
     created() {
         this.email = localStorage.getItem("userID");
         this.getLikeBook();
         this.getNewList();
     },
-    mounted() { },
-    unmounted() { },
+    mounted() {},
+    unmounted() {},
     computed: {
-        totalPages() { // 전체 페이지 수 계산
+        totalPages() {
+            // 전체 페이지 수 계산
             this.totalPages = Math.ceil(this.newListData.length / this.perPage);
             return Math.ceil(this.newListData.length / this.perPage);
         },
@@ -106,59 +110,52 @@ export default {
             const start = Math.max(1, this.currentPage - Math.floor(this.maxDisplayedPages / 2));
             const end = Math.min(this.totalPages, start + this.maxDisplayedPages - 1);
             return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-        }
+        },
     },
     methods: {
         changePage(pageNumber) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: "smooth" });
             if (pageNumber >= 1 && pageNumber <= this.totalPages) {
                 this.currentPage = pageNumber;
                 // 페이지 변경 시 추가 로직 수행
                 // 예: API 호출하여 해당 페이지 데이터 가져오기
                 // displayedPosts 업데이트
-                this.displayedPosts = this.newListData.slice(
-                    (this.currentPage - 1) * this.perPage,
-                    this.currentPage * this.perPage
-                );
+                this.displayedPosts = this.newListData.slice((this.currentPage - 1) * this.perPage, this.currentPage * this.perPage);
             }
         },
         async getNewList() {
             await axios({
                 url: "http://localhost:3000/booklist/getNew",
                 method: "POST",
-                data: {
-                },
+                data: {},
             })
                 .then((res) => {
                     if (localStorage.getItem("userID")) {
-                        this.newListData = res.data.map(book => {
+                        this.newListData = res.data.map((book) => {
                             return {
                                 ...book,
-                                isLiked: this.likeBook.includes(book.BOOK_ID) // 해당 책의 BOOK_ID가 likeBook 배열에 포함되어 있는지 확인하여 isLiked 값을 설정
+                                isLiked: this.likeBook.includes(book.BOOK_ID), // 해당 책의 BOOK_ID가 likeBook 배열에 포함되어 있는지 확인하여 isLiked 값을 설정
                             };
                         });
                         for (var i in res.data) {
                             //별이 5개이므로 총점10점을 2로 나눔
-                            this.reviewScore.push((res.data[i].reviewpoint) / 2)
+                            this.reviewScore.push(res.data[i].reviewpoint / 2);
                         }
                     } else {
-                        this.newListData = res.data.map(book => {
+                        this.newListData = res.data.map((book) => {
                             return {
                                 ...book,
-                                isLiked: false // 해당 책의 BOOK_ID가 likeBook 배열에 포함되어 있는지 확인하여 isLiked 값을 설정
+                                isLiked: false, // 해당 책의 BOOK_ID가 likeBook 배열에 포함되어 있는지 확인하여 isLiked 값을 설정
                             };
                         });
                         for (var i in res.data) {
                             this.newListData.push(res.data[i]);
                             //별이 5개이므로 총점10점을 2로 나눔
-                            this.reviewScore.push((res.data[i].reviewpoint) / 2)
+                            this.reviewScore.push(res.data[i].reviewpoint / 2);
                         }
                     }
                     // displayedPosts에 categoryData 데이터 복사
-                    this.displayedPosts = this.newListData.slice(
-                        (this.currentPage - 1) * this.perPage,
-                        this.currentPage * this.perPage
-                    );
+                    this.displayedPosts = this.newListData.slice((this.currentPage - 1) * this.perPage, this.currentPage * this.perPage);
                 })
                 .catch((err) => {
                     alert(err);
@@ -170,12 +167,11 @@ export default {
                 url: "http://localhost:3000/bookList/checkLikeList",
                 method: "POST",
                 data: {
-                    email: this.email
-                }
-            })
-                .then((res) => {
-                    this.likeBook = res.data;
-                })
+                    email: this.email,
+                },
+            }).then((res) => {
+                this.likeBook = res.data;
+            });
         },
         async likeToggle(bookId) {
             if (localStorage.getItem("userID")) {
@@ -185,20 +181,17 @@ export default {
                     method: "POST",
                     data: {
                         email: this.email,
-                        bookId: this.bookId
-                    }
-                })
-                    .then((res) => {
-                        console.log(res.data, "좋아요 추가삭제")
-                        this.getLikeBook();
-                        this.getNewList();
-                    })
-
+                        bookId: this.bookId,
+                    },
+                }).then((res) => {
+                    console.log(res.data, "좋아요 추가삭제");
+                    this.getLikeBook();
+                    this.getNewList();
+                });
             } else {
                 const conResult = confirm("로그인이 필요합니다. \n 로그인 하시겠습니까?");
-                conResult ? window.location.href = "/login" : null;
+                conResult ? (window.location.href = "/login") : null;
             }
-
         },
         //입력된 숫자를 주어진 범위에 따라 적절한 별점으로 변환
         convertRatingToHalfStars(number) {
@@ -239,16 +232,15 @@ export default {
                     method: "POST",
                     data: {
                         email: this.email,
-                        bookId: this.bookId
-                    }
-                })
-                    .then((res) => {
-                        alert("장바구니에 추가되었습니다.");
-                        this.$refs.childComponent.getCartNum();
-                    })
+                        bookId: this.bookId,
+                    },
+                }).then((res) => {
+                    alert("장바구니에 추가되었습니다.");
+                    this.$refs.childComponent.getCartNum();
+                });
             } else {
                 const conResult = confirm("로그인이 필요합니다. \n 로그인 하시겠습니까?");
-                conResult ? window.location.href = "/login" : null;
+                conResult ? (window.location.href = "/login") : null;
             }
         },
         // 결제하기 버튼 클릭시 서버로 보낼 데이터
@@ -264,12 +256,12 @@ export default {
                     email: this.email,
                     total_pay: bookPrice,
                     total_point: totalPoint,
-                    fee: bookfee
+                    fee: bookfee,
                 },
             })
                 .then((res) => {
                     console.log(res.data.payID);
-                    window.location.href = `/pay/${res.data.payID}`;
+                    this.$router.push({ name: "paymentPage", query: { payid: res.data.payID } });
                 })
                 .catch((error) => {
                     console.error("Error goToPay :", error);
