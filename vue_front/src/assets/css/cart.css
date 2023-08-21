@@ -53,8 +53,6 @@
     padding-left: 10px;
 }
 
-
-
 .cart_book_info_set {
     display: flex;
     /* border: #000 1px solid; */
@@ -73,12 +71,6 @@
     /* border: #000 1px solid; */
     padding: 30px;
 }
-
-
-
-
-
-
 
 .cart_book_name {
     position: relative;
@@ -122,12 +114,6 @@
     display: inline-block;
     /* border: #000 1px solid; */
 }
-
-
-
-
-
-
 
 .changeQua {
     float: right;
@@ -273,26 +259,26 @@
     display: none;
 }
 
-.cart_container input[type="checkbox"] + label {
+.cart_header input[type="checkbox"] + label {
     display: inline-block;
     max-width: 22px;
     width: 22px;
     height: 22px;
     border: 0.5px solid #707070;
     border-radius: 50%;
-    position: relative;
     margin-right: 2%;
     bottom: 70%;
 }
 
-.cart_container input[id^="book_checkbox"]:checked + label::after {
+.cart_header input[id^="book_checkbox"]:checked + label::after {
+    display: block;
     content: "";
     width: 22px;
     height: 22px;
     text-align: center;
-    position: absolute;
-    left: -2px;
-    top: -3px;
+    position: relative;
+    top: -2px;
+    left: -1px;
     border-radius: 50%;
     background-image: url(../img/ico_checkbox_active@2x.png);
     background-size: 10px 7px;
@@ -301,6 +287,35 @@
     background-color: #4e4eff;
     border: 1px solid #000000;
     transition: background-color 0.3s, border-color 0.3s, content 0.3s;
+}
+.cart_book_info_img_set input[type="checkbox"] + label {
+    display: inline-block;
+    max-width: 22px;
+    width: 22px;
+    height: 22px;
+    border: 0.5px solid #707070;
+    border-radius: 50%;
+    margin-right: 2%;
+    bottom: 70%;
+    margin-top: 2%;
+}
+
+.cart_book_info_img_set input[id^="book_checkbox"]:checked + label::after {
+    display: block;
+    position: relative;
+    top: -2px;
+    left: -1px;
+    content: "";
+    width: 22px;
+    height: 22px;
+    text-align: center;
+    border-radius: 50%;
+    background-image: url(../img/ico_checkbox_active@2x.png);
+    background-size: 10px 7px;
+    background-position: center 8px;
+    background-repeat: no-repeat;
+    background-color: #4e4eff;
+    border: 1px solid #000000;
 }
 .if_nodata {
     text-align: center;
