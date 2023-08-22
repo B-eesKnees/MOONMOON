@@ -1,9 +1,10 @@
-<style src="../assets/css/qnaList.css"></style>
 <template>
     <div>
         <GnbBar />
-
-        <div class="mypage_menu"></div>
+        <myPage_top />
+        <div class="mypage_menu">
+            <myPageSide />
+        </div>
         <div class="right_box">
             <h1 class="qna_title_big">1:1 문의</h1>
             <!-- 탭시작 -->
@@ -77,8 +78,10 @@
 </template>
 <script>
 import axios from "axios";
+import "@/assets/css/qnaList.css";
 
 import GnbBar from "../components/gnbBar.vue";
+
 import TabsWrapper from "../components/TabsWrapper.vue";
 import TabItem from "../components/TabItem.vue";
 import qnaAll from "../components/qnaAll.vue";
