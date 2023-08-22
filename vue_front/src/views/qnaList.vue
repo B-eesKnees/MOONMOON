@@ -9,7 +9,7 @@
             <!-- 탭시작 -->
             <section class="tabWrap">
                 <TabsWrapper>
-                    <TabItem title="전체(11)">
+                    <TabItem title="답변 전체">
                         <a href="http://localhost:8080/qnaWrite">
                             <div class="qna-btn" v-if="!nodata">1:1 문의하기</div>
                         </a>
@@ -31,7 +31,7 @@
                             ></qnaAll>
                         </div>
                     </TabItem>
-                    <TabItem title="답변 대기(2)">
+                    <TabItem title="답변 대기">
                         <a href="http://localhost:8080/qnaWrite">
                             <div class="qna-btn" v-if="!nodata">1:1 문의하기</div>
                         </a>
@@ -52,7 +52,7 @@
                             ></qnaWait>
                         </div>
                     </TabItem>
-                    <TabItem title="답변 완료" `${fff}`>
+                    <TabItem title="답변 완료">
                         <a href="http://localhost:8080/qnaWrite">
                             <div class="qna-btn" v-if="!nodata">1:1 문의하기</div>
                         </a>
@@ -116,6 +116,7 @@ export default {
             qnaAllList: [],
             qnaWaitList: [],
             qnaDoneList: [],
+            doneCount: 0,
         };
     },
     created() {
@@ -124,6 +125,7 @@ export default {
         this.getQnaAllList();
         this.getQnaWaitList();
         this.getQnaDoneList();
+        this.getQnaDoneCount();
     },
     methods: {
         async getQnaAllList() {
@@ -194,6 +196,17 @@ export default {
             } catch (error) {
                 console.log(error);
             }
+        },
+        getQnaDoneCount() {
+            const email = this.userEmail;
+
+            axios({
+                url: "/qna/qnaDoneCount",
+                method: "get",
+                params: { userEmail: email },
+            }).then((res) => {
+                this.doneCount = res.data.doneCount;
+            });
         },
         qnaDel(qna_id) {
             axios
