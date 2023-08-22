@@ -34,6 +34,7 @@ import AdminQnaManage from "../components/adminQnaManage.vue";
 import bookInsert from "../components/bookInsert.vue";
 
 import mypageOrderInfo from "../views/mypageOrderInfo.vue";
+import mypageUserInfo from "../views/mypageUserInfo.vue";
 
 const requireLogin = () => (to, from, next) => {
     //로그인안하고 접근하려했을때 실행할 함수?
@@ -242,11 +243,11 @@ const routes = [
         name: "mypageOrderInfo",
         component: mypageOrderInfo,
     },
-    // {
-    //     path: "/mypageuserinfo",
-    //     name: "mypageUserInfo",
-    //     component: mypageUserInfo,
-    // },
+    {
+        path: "/mypageuserinfo",
+        name: "mypageUserInfo",
+        component: mypageUserInfo,
+    },
 ];
 
 const router = createRouter({
