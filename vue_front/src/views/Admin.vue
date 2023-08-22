@@ -43,7 +43,8 @@
                                             <div class="col mr-2">
                                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                                     오늘 매출</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">₩ 40,000</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">₩
+                                                    {{ formatNumber(weekSales.today) }}</div>
                                             </div>
                                             <div class="col-auto">
                                                 <i class="fa-solid fa-won-sign fa-2x text-gray-300"></i>
@@ -61,7 +62,12 @@
                                             <div class="col mr-2">
                                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                                     전일 대비 매출</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">₩ 215,000 <i class="fa-solid fa-up-long"></i></div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">₩
+                                                    {{ formatNumber(weekSales.yesday) }}
+                                                    <i v-if="yesterdaySales > 0" class="fa-solid fa-up-long"></i>
+                                                    <i v-else-if="yesterdaySales < 0" class="fa-solid fa-down-long"></i>
+                                                    <i v-else class="fa-solid fa-minus"></i>
+                                                </div>
                                             </div>
                                             <div class="col-auto">
                                                 <i class="fa-solid fa-won-sign fa-2x text-gray-300"></i>
@@ -108,7 +114,8 @@
                                             <div class="col mr-2">
                                                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                                     회원 수</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">5283</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                    {{ formatNumber(userCount) }}</div>
                                             </div>
                                             <div class="col-auto">
                                                 <i class="fa-solid fa-eye fa-2x text-gray-300"></i>
@@ -275,19 +282,61 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, reactive } from 'vue';
 import Chart from 'chart.js/auto';
 import 'bootstrap'; // Import Bootstrap JavaScript
 import 'chartjs-adapter-luxon';
 import SideBar from '../components/adminSidebar.vue';
+import axios from 'axios';
 
 export default {
     components: { SideBar },
+    data() {
+        return {
+            //매출
+            weekSales: {
+                today: "",
+                yesday: "",
+                twoDayAgo: "",
+                threeDayAgo: "",
+                fourDayAgo: "",
+                fiveDayAgo: "",
+            },
+
+
+
+            userCount: 0,
+        }
+    },
     setup() {
         const myChart = ref(null);
         const dailySalesChart = ref(null);
 
-        onMounted(() => {
+        // 데이터를 reactive로 정의
+        const userSex = reactive({
+            female: 0,
+            male: 0,
+        });
+
+        // 데이터를 업데이트하는 함수 정의
+        const updateUserSex = async () => {
+            try {
+                const response = await axios.post('http://localhost:3000/admin/adminUserLatest', {});
+                const data = response.data;
+
+                // 회원수를 저장
+                userSex.female = data.filter(item => item.USER_SEX === 'f').length;
+                userSex.male = data.filter(item => item.USER_SEX === 'm').length;
+
+                // 차트를 다시 그리는 함수 호출
+                drawUserChart();
+            } catch (error) {
+                alert(error);
+            }
+        };
+
+        // 차트를 그리는 함수 정의
+        const drawUserChart = () => {
             if (myChart.value) {
                 const ctx = myChart.value.getContext('2d');
                 new Chart(ctx, {
@@ -296,15 +345,15 @@ export default {
                         labels: ['남성', '여성'],
                         datasets: [
                             {
-                                data: [10, 20],
-                                backgroundColor: ['#4e73df', '#e74a3b']
-                            }
-                        ]
+                                data: [userSex.female, userSex.male],
+                                backgroundColor: ['#4e73df', '#e74a3b'],
+                            },
+                        ],
                     },
                     options: {
                         maintainAspectRatio: false,
                         aspectRatio: 2,
-                        cutout: 100, // 굵기를 조절하는 옵션
+                        cutout: 100,
                         radius: '100%',
                         plugins: {
                             legend: {
@@ -322,6 +371,12 @@ export default {
                     },
                 });
             }
+        };
+
+        onMounted(() => {
+            updateUserSex();
+
+
 
             if (dailySalesChart) {
                 const ctx = dailySalesChart.value.getContext('2d');
@@ -364,7 +419,210 @@ export default {
         return {
             myChart,
             dailySalesChart,
+            userSex, // 이렇게 userSex를 반환 객체에 추가
         };
     },
+    mounted() {
+        this.getSales();
+        this.getTodayVisit();
+        this.getUserData();
+    },
+    methods: {
+        async getSales() {
+            const dateRange = [];
+            const today = new Date();
+
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() - i);
+
+                // 날짜를 'YYYY-MM-DD' 형식의 문자열로 변환
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1하고 두 자리로 패딩
+                const day = String(date.getDate()).padStart(2, '0'); // 일자도 두 자리로 패딩
+
+                const formattedDate = `${year}-${month}-${day}`;
+
+                dateRange.push(formattedDate);
+            }
+
+            console.log(dateRange[0]);
+
+            var day1_start = dateRange[0] + " 00:00:00";
+            var day1_end = dateRange[0] + " 23:59:59";
+            console.log(day1_start,"뭐야이거 왜안돼")
+            await axios({ //오늘매출
+                url: "http://localhost:3000/admin/adminDaySales",
+                method: "POST",
+                data: {
+                    date_start: day1_start,
+                    date_end: day1_end,
+                },
+            })
+                .then((res) => {
+                    this.weekSales.today = res.data[0].daySales;
+                    console.log(res,"이거이거")
+                })
+                .catch((err) => {
+                    alert(err);
+                });
+
+            await axios({ //어제매출
+                url: "http://localhost:3000/admin/adminDaySales",
+                method: "POST",
+                data: {
+                    date_start: dateRange[1] + "00:00:00",
+                    date_end: dateRange[1] + "23:59:59",
+                },
+            })
+                .then((res) => {
+                    this.weekSales.yesday = res.data[0].daySales;
+                    var salesPreviousDay = this.weekSales.today - this.weekSales.yesday;
+                    this.weekSales.yesday = parseInt(salesPreviousDay);
+                })
+                .catch((err) => {
+                    alert(err);
+                });
+
+            await axios({ //2일전 매출
+                url: "http://localhost:3000/admin/adminDaySales",
+                method: "POST",
+                data: {
+                    date_start: dateRange[2] + "00:00:00",
+                    date_end: dateRange[2] + "23:59:59",
+                },
+            })
+                .then((res) => {
+                    this.yesterdaySales = res.data[0].daySales;
+                    var salesPreviousDay = this.todaySales - this.yesterdaySales;
+                    this.yesterdaySales = parseInt(salesPreviousDay);
+                    console.log(this.yesterdaySales);
+                })
+                .catch((err) => {
+                    alert(err);
+                });
+
+            await axios({ //3일전 매출
+                url: "http://localhost:3000/admin/adminDaySales",
+                method: "POST",
+                data: {
+                    date_start: dateRange[3] + "00:00:00",
+                    date_end: dateRange[3] + "23:59:59",
+                },
+            })
+                .then((res) => {
+                    this.yesterdaySales = res.data[0].daySales;
+                    var salesPreviousDay = this.todaySales - this.yesterdaySales;
+                    this.yesterdaySales = parseInt(salesPreviousDay);
+                    console.log(this.yesterdaySales);
+                })
+                .catch((err) => {
+                    alert(err);
+                });
+
+            await axios({ //4일전 매출
+                url: "http://localhost:3000/admin/adminDaySales",
+                method: "POST",
+                data: {
+                    date_start: dateRange[4] + "00:00:00",
+                    date_end: dateRange[4] + "23:59:59",
+                },
+            })
+                .then((res) => {
+                    this.yesterdaySales = res.data[0].daySales;
+                    var salesPreviousDay = this.todaySales - this.yesterdaySales;
+                    this.yesterdaySales = parseInt(salesPreviousDay);
+                    console.log(this.yesterdaySales);
+                })
+                .catch((err) => {
+                    alert(err);
+                });
+
+            await axios({ //5일전 매출
+                url: "http://localhost:3000/admin/adminDaySales",
+                method: "POST",
+                data: {
+                    date_start: dateRange[5] + "00:00:00",
+                    date_end: dateRange[5] + "23:59:59",
+                },
+            })
+                .then((res) => {
+                    this.yesterdaySales = res.data[0].daySales;
+                    var salesPreviousDay = this.todaySales - this.yesterdaySales;
+                    this.yesterdaySales = parseInt(salesPreviousDay);
+                    console.log(this.yesterdaySales);
+                })
+                .catch((err) => {
+                    alert(err);
+                });
+
+            await axios({ //6일전 매출
+                url: "http://localhost:3000/admin/adminDaySales",
+                method: "POST",
+                data: {
+                    date_start: dateRange[6] + "00:00:00",
+                    date_end: dateRange[6] + "23:59:59",
+                },
+            })
+                .then((res) => {
+                    this.yesterdaySales = res.data[0].daySales;
+                    var salesPreviousDay = this.todaySales - this.yesterdaySales;
+                    this.yesterdaySales = parseInt(salesPreviousDay);
+                    console.log(this.yesterdaySales);
+                })
+                .catch((err) => {
+                    alert(err);
+                });
+        },
+        async getTodayVisit() {
+            var day = new Date();
+            var year = day.getFullYear();
+            var month = day.getMonth() + 1;
+            var date = day.getDate();
+
+            // 오늘 날짜
+            var today = year + "-" + month + "-" + date;
+            await axios({
+                url: "http://localhost:3000/admin/getTodayV",
+                method: "POST",
+                data: {
+                    today: today
+                },
+            })
+                .then((res) => {
+                    console.log(res);
+                })
+                .catch((err) => {
+                    alert(err);
+                });
+        },
+        async getUserData() {
+            await axios({
+                url: "http://localhost:3000/admin/adminUserLatest",
+                method: "POST",
+                data: {
+                },
+            })
+                .then((res) => {
+                    //회원수를 저장
+                    this.userCount = res.data.length;
+
+                    //성별에 따른 회원수 저장
+                    const femaleMembers = res.data.filter(item => item.USER_SEX === 'f');
+                    const maleMembers = res.data.filter(item => item.USER_SEX === 'm');
+
+                    this.userSex.female = femaleMembers.length;
+                    this.userSex.male = maleMembers.length;
+                    console.log(this.userSex, "회원데이터")
+                })
+                .catch((err) => {
+                    alert(err);
+                });
+        },
+        formatNumber(number) {
+            // 숫자를 천 단위마다 쉼표가 있는 형식으로 변환
+            return new Intl.NumberFormat().format(number);
+        },
+    }
 };
 </script>

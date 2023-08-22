@@ -40,7 +40,7 @@
                                 <h6 class="m-0 font-weight-bold text-primary">문의 목록</h6>
 
                                 <div class="btn-group">
-                                    <select class="btn btn-secondary dropdown-toggle" @change="getUserData"
+                                    <select class="btn btn-secondary dropdown-toggle" @change="getQnaData"
                                         v-model="filterValue">
                                         <option class="dropdown-item btn cursor-pointer" value="답변 대기">답변 대기</option>
                                         <option class="dropdown-item btn cursor-pointer" value="답변 완료">답변 완료</option>
@@ -58,7 +58,6 @@
                                                 <th>문의 날짜</th>
                                                 <th>고객 이메일</th>
                                                 <th>답변 여부</th>
-                                                <th>답변 달기</th>
                                             </tr>
                                         </thead>
                                         <tfoot>
@@ -69,62 +68,59 @@
                                                 <th>문의 날짜</th>
                                                 <th>고객 이메일</th>
                                                 <th>답변 여부</th>
-                                                <th>답변 달기</th>
+
                                             </tr>
                                         </tfoot>
                                         <tbody>
                                             <tr ref="userData" v-for="(item, i) in displayedPosts" :key="i">
                                                 <td class="col-1 align-middle" style="font-size: small;">{{
-                                                    item.USER_NAME }}</td>
-                                                <td class="col-2 align-middle"
-                                                    style="font-size: small;">여성</td>
-                                                <td class="col-4 align-middle" style="font-size: small;">
-                                                    {{ item.USER_AGEGROUP }}</td>
+                                                    item.QNA_ID }}</td>
+                                                <td class="col-2 align-middle" style="font-size: small;">
+                                                    {{ item.QNA_TITLE }}</td>
+                                                <td class="col-5 align-middle" style="font-size: small;">
+                                                    {{ item.QNA_CON }}</td>
                                                 <td class="col-1 align-middle" style="font-size: small;">
-                                                    {{ item.USER_EMAIL }}</td>
-                                                <td class="col-1 align-middle" :style="{
-                                                    color: item.USER_TOTAL_PAY === '프렌즈' ? '#47C867' :
-                                                        item.USER_TOTAL_PAY === '실버' ? '#8F99BF' :
-                                                            item.USER_TOTAL_PAY === '골드' ? '#F6A621' :
-                                                                item.USER_TOTAL_PAY === '플래티넘' ? '#5D59E1' : 'black'
-                                                }">{{ item.USER_TOTAL_PAY }}</td>
+                                                    {{ item.QNA_DATE }}</td>
                                                 <td class="col-1 align-middle" style="font-size: small;">
-                                                    {{ item.USER_EMAIL }}</td>
-                                                <td class="col-1 align-middle" style="font-size: small;"><button
-                                                        type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                        data-bs-target="#exampleModal">
-                                                        답변하기
-                                                    </button>
-                                                    <!-- 모달 -->
-                                                    <div class="modal fade position-fixed" id="exampleModal" tabindex="-1"
-                                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                        <div class="modal-dialog col-8" style="top: 15%; left: 0">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">문의
-                                                                        답변하기</h1>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <form>
-                                                                        <div class="mb-3">
-                                                                            <label for="message-text"
-                                                                                class="col-form-label">답변내용 : </label>
-                                                                            <textarea class="form-control"
-                                                                                id="message-text"></textarea>
-                                                                        </div>
-                                                                    </form>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary"
-                                                                        data-bs-dismiss="modal">닫기</button>
-                                                                    <button type="button"
-                                                                        class="btn btn-primary">완료</button>
-                                                                </div>
+                                                    {{ item.QNA_USER_EMAIL }}</td>
+                                                <td v-if="item.QNA_REP === 0" class="col-1 align-middle"
+                                                    style="font-size: small;">
+                                                    대기중</td>
+                                                <td v-else class="col-1 align-middle" style="font-size: small;">
+                                                    완료</td>
+                                                <button v-if="item.QNA_REP === 0" type="button" class="btn btn-primary align-middle ml-2"
+                                                    data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                    답변하기
+                                                </button>
+                                                <!-- 모달 -->
+                                                <div class="modal fade position-fixed" id="exampleModal" tabindex="-1"
+                                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog col-8" style="top: 15%; left: 0">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5" id="exampleModalLabel">문의
+                                                                    답변하기</h1>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form>
+                                                                    <div class="mb-3">
+                                                                        <label for="message-text"
+                                                                            class="col-form-label">답변내용 : </label>
+                                                                        <textarea v-model="answerDetail" class="form-control"
+                                                                            id="message-text" rows="8"></textarea>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">닫기</button>
+                                                                <button @click="sendQnaAnswer(item.QNA_ID)" type="button" class="btn btn-primary" data-bs-dismiss="modal">완료</button>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                </div>
 
-                                                </td>
+
                                                 <!-- <td class="d-flex align-items-center border-0 col-1"><button
                                                         class="btn btn-danger btn-circle btn-sm  p-3"
                                                         @click="deleteBookData(item.BOOK_ID)"><i
@@ -226,7 +222,10 @@ export default {
     components: { SideBar },
     data() {
         return {
-            userData: [],
+            qnaData: [],
+
+            //답변내용
+            answerDetail: "",
 
             //정렬
             filterValue: "답변 대기",
@@ -241,17 +240,17 @@ export default {
     setup() { },
     created() { },
     mounted() {
-        this.getUserData();
+        this.getQnaData();
     },
     unmounted() { },
     computed: {
         totalPages() {
-            return Math.ceil(this.userData.length / this.perPage);
+            return Math.ceil(this.qnaData.length / this.perPage);
         },
         displayedPosts() {
             const start = Math.max(0, (this.currentPage - 1) * this.perPage);
-            const end = Math.min(this.userData.length, this.currentPage * this.perPage);
-            return this.userData.slice(start, end);
+            const end = Math.min(this.qnaData.length, this.currentPage * this.perPage);
+            return this.qnaData.slice(start, end);
         },
         pageNumbers() {
             const start = Math.max(1, this.currentPage - Math.floor(this.maxDisplayedPages / 2));
@@ -260,23 +259,54 @@ export default {
         },
     },
     methods: {
-        async getUserData() {
-            await axios({
-                url: "http://localhost:3000/admin/adminQnaWait",
-                method: "POST",
-                data: {
-                },
-            })
-                .then((res) => {
-                   if(this.filterValue === "답변 대기") {
-                    console.log(res.data);
-                   } else if(this.filterValue === "답변 완료") {
-
-                   }
+        async getQnaData() {
+            if (this.filterValue === "답변 대기") {
+                await axios({
+                    url: "http://localhost:3000/admin/adminQnaWait",
+                    method: "POST",
+                    data: {
+                    },
                 })
-                .catch((err) => {
-                    alert(err);
-                });
+                    .then((res) => {
+                        this.qnaData = res.data;
+                        console.log(res.data);
+                    })
+                    .catch((err) => {
+                        alert(err);
+                    });
+            } else if (this.filterValue === "답변 완료") {
+                await axios({
+                    url: "http://localhost:3000/admin/adminQnaDone",
+                    method: "POST",
+                    data: {
+                    },
+                })
+                    .then((res) => {
+                        this.qnaData = res.data;
+                        console.log(res.data);
+                    })
+                    .catch((err) => {
+                        alert(err);
+                    });
+            }
+
+        },
+        async sendQnaAnswer(qnaId) {
+            await axios({
+                    url: "http://localhost:3000/admin/adminQnaReply",
+                    method: "POST",
+                    data: {
+                        qna_id: qnaId,
+                        qna_reply: this.answerDetail
+                    },
+                })
+                    .then((res) => {
+                        alert("답변 완료했습니다.");
+                        this.getQnaData();
+                    })
+                    .catch((err) => {
+                        alert(err);
+                    });
         },
         formatNumber(number) {
             // 숫자를 천 단위마다 쉼표가 있는 형식으로 변환

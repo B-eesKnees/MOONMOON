@@ -110,6 +110,10 @@
                                                 <td class="col-1 align-middle" style="font-size: small;">{{
                                                     item.USER_ZIPCODE }}
                                                 </td>
+                                                <td class="d-flex align-items-center border-0 col-1"><button
+                                                        class="btn btn-danger btn-circle btn-sm  p-3"
+                                                        @click="deleteUserData(item.USER_EMAIL)"><i
+                                                            class="fa-solid fa-user-minus"></i></button></td>
                                                 <!-- <td class="d-flex align-items-center border-0 col-1"><button
                                                         class="btn btn-danger btn-circle btn-sm  p-3"
                                                         @click="deleteBookData(item.BOOK_ID)"><i
@@ -287,6 +291,22 @@ export default {
         changeUserData() {
 
             console.log(this.filterValue, "필터밸류");
+        },
+        async deleteUserData(userEmail) { //회원 탈퇴
+            await axios({
+                url: "http://localhost:3000/admin/adminUserDel",
+                method: "POST",
+                data: {
+                    userEmail: userEmail,
+                },
+            })
+                .then((res) => {
+                    alert(userEmail + " 회원을 탈퇴시켰습니다.");
+                    this.getUserData();
+                })
+                .catch((err) => {
+                    alert(err);
+                });
         },
         formatNumber(number) {
             // 숫자를 천 단위마다 쉼표가 있는 형식으로 변환

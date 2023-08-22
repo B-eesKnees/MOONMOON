@@ -23,7 +23,7 @@ const queries = {
   adminUserDelQuery: `delete from user
                       where USER_EMAIL = ?`,
 
-  adminQnaWaitQuery: `select QNA_ID, date_format(QNA_DATE, '%Y-%m-%d') as QNA_DATE, QNA_USER_EMAIL, QNA_TITLE, QNA_CON
+  adminQnaWaitQuery: `select QNA_ID, date_format(QNA_DATE, '%Y-%m-%d') as QNA_DATE, QNA_USER_EMAIL, QNA_TITLE, QNA_CON, QNA_REP
                       from qna
                       where QNA_REP = 0`,
 
