@@ -204,10 +204,21 @@ router.get("/originalPrice", async (request, res) => {
 router.post("/updatePriceData", async (request, res) => {
     
   try {
-    const userEmail = request.body.userEmail; 
+    const ORDER_PAY = request.body.finalPrice;
+    const ORDER_COST = request.body.deliveryFee;
+    const ORDER_COUPON = request.body.applyCouponPrice;
+    const ORDER_USEPOINT = request.body.applyPointPrice;
+    const ORDER_ADDPOINT = request.body.earnPoint;
+    const ORDER_ID = request.body.payID;
 
-    res.send(await req(queries.payUserInfoQuery, userEmail));
-    console.log(userEmail); 
+
+    res.send(await req(queries.updatePriceDataQuery, [ ORDER_PAY, ORDER_COST, ORDER_COUPON, ORDER_USEPOINT, ORDER_ADDPOINT, ORDER_ID ]));
+    console.log("ORDER_PAY:", ORDER_PAY);
+    console.log("ORDER_COST:", ORDER_COST);
+    console.log("ORDER_COUPON:", ORDER_COUPON);
+    console.log("ORDER_USEPOINT:", ORDER_USEPOINT);
+    console.log("ORDER_ADDPOINT:", ORDER_ADDPOINT);
+    console.log("ORDER_ID:", ORDER_ID);
   } catch (err) {
     res.status(500).send({
       error:err
