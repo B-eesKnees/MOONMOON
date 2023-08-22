@@ -524,14 +524,14 @@ router.post("/ordercancel", (req, res) => {
     }
 
     const orderResult = results[0];
-    console.log(orderResult.order_state);
-    if (orderResult.order_state !== "배송준비") {
+    console.log(orderResult.ORDER_STATE);
+    if (orderResult.ORDER_STATE !== "배송준비") {
       return res
         .status(200)
         .json({ message: "주문 취소가 불가능한 상태입니다." });
     }
 
-    const query = `UPDATE moonmoon.order SET order_state = '주문취소' WHERE order_id = ?`;
+    const query = `UPDATE moonmoon.order SET ORDER_STATE = '주문취소' WHERE ORDER_ID = ?`;
 
     db.query(query, [orderId], (updateErr) => {
       if (updateErr) {
