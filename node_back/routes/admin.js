@@ -51,7 +51,7 @@ const queries = {
   
   adminStatusChangeQuery: `update \`order\`
                            set ORDER_STATE = '배송중'
-                           where ORDER_STATE = '배송준비' and ORDER_ID = ?`,
+                           where ORDER_STATE = '배송준비' and ORDER_ID in (?)`,
 
   adminDaySalesQuery: `select sum(ORDER_PAY) as daySales
                        from \`order\`
@@ -233,7 +233,7 @@ router.post('/adminStatusChange', async (request, res) => {
   try {
     const ORDER_ID = request.body.order_id;
 
-    return res.send(await req(queries.adminStatusChangeQuery, ORDER_ID));
+    return res.send(await req(queries.adminStatusChangeQuery, [ORDER_ID]));
     console.log(order_id);
   } catch (err) {
     res.status(500).send({

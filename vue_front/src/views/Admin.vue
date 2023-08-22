@@ -64,8 +64,8 @@
                                                     전일 대비 매출</div>
                                                 <div class="h5 mb-0 font-weight-bold text-gray-800">₩
                                                     {{ formatNumber(weekSales.yesday) }}
-                                                    <i v-if="yesterdaySales > 0" class="fa-solid fa-up-long"></i>
-                                                    <i v-else-if="yesterdaySales < 0" class="fa-solid fa-down-long"></i>
+                                                    <i v-if="weekSales.yesday > 0" class="fa-solid fa-up-long"></i>
+                                                    <i v-else-if="weekSales.yesday < 0" class="fa-solid fa-down-long"></i>
                                                     <i v-else class="fa-solid fa-minus"></i>
                                                 </div>
                                             </div>
@@ -87,7 +87,8 @@
                                                 </div>
                                                 <div class="row no-gutters align-items-center">
                                                     <div class="col-auto">
-                                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">300</div>
+                                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                                            {{ formatNumber(toDayVisit) }}</div>
                                                     </div>
                                                     <div class="col">
                                                         <div class="progress progress-sm mr-2">
@@ -221,8 +222,9 @@
                                     <div class="card-header py-3">
                                         <h6 class="m-0 font-weight-bold text-primary">미완료 문의</h6>
                                     </div>
-                                    <div class="card-body">
-                                        <a class="small font-weight-bold ">환불관련 문의 드립니다. - <span
+                                    <div class="card-body d-flex flex-column">
+                                        <a href="/admin/qnamanage" v-for="(item, i) in qnaData" :key="i"
+                                            class="small font-weight-bold mb-2">{{ item.QNA_TITLE }} - <span
                                                 class="badge bg-danger">미완료</span></a>
 
                                     </div>
@@ -302,10 +304,15 @@ export default {
                 fourDayAgo: "",
                 fiveDayAgo: "",
             },
+            //오늘 포함 일주일전까지의 날짜
+            dateRange: [],
 
-
-
+            //오늘 방문자수
+            toDayVisit: 0,
             userCount: 0,
+
+            //미완료문의
+            qnaData: [],
         }
     },
     setup() {
@@ -317,6 +324,7 @@ export default {
             female: 0,
             male: 0,
         });
+
 
         // 데이터를 업데이트하는 함수 정의
         const updateUserSex = async () => {
@@ -335,11 +343,144 @@ export default {
             }
         };
 
+        const weekSales = reactive({
+            today: "",
+            yesday: "",
+            twoDayAgo: "",
+            threeDayAgo: "",
+            fourDayAgo: "",
+            fiveDayAgo: "",
+        });
+        // 데이터를 reactive로 정의
+        const dateRange = reactive([]);
+
+        const today = new Date();
+
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(today);
+            date.setDate(today.getDate() - i);
+
+            // 날짜를 'YYYY-MM-DD' 형식의 문자열로 변환
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+
+            const formattedDate = `${year}-${month}-${day}`;
+
+            // dateRange 배열에 reactive 요소로 추가
+            dateRange.push(formattedDate);
+        }
+
+        // 데이터를 업데이트하는 함수 정의
+        const updateSales = async () => {
+            try {
+                const response = await axios.post('http://localhost:3000/admin/adminDaySales', {
+                    date_start: dateRange[0] + " 00:00:00",
+                    date_end: dateRange[0] + " 23:59:59",
+                });
+                const res = response.data;
+
+                weekSales.today = res[0].daySales;
+                console.log(res, "이거이거")
+
+                // 차트를 다시 그리는 함수 호출
+                drawSalesChart();
+            } catch (error) {
+                alert(error);
+            }
+
+            try {
+                const response = await axios.post('http://localhost:3000/admin/adminDaySales', {
+                    date_start: dateRange[1] + " 00:00:00",
+                    date_end: dateRange[1] + " 23:59:59",
+                });
+                const res = response.data;
+
+                weekSales.yesday = res[0].daySales;
+                console.log(res, "이거이거")
+
+                // 차트를 다시 그리는 함수 호출
+                drawSalesChart();
+            } catch (error) {
+                alert(error);
+            }
+
+            try {
+                const response = await axios.post('http://localhost:3000/admin/adminDaySales', {
+                    date_start: dateRange[2] + " 00:00:00",
+                    date_end: dateRange[2] + " 23:59:59",
+                });
+                const res = response.data;
+
+                weekSales.twoDayAgo = res[0].daySales;
+                console.log(res, "이거이거")
+
+                // 차트를 다시 그리는 함수 호출
+                drawSalesChart();
+            } catch (error) {
+                alert(error);
+            }
+
+            try {
+                const response = await axios.post('http://localhost:3000/admin/adminDaySales', {
+                    date_start: dateRange[3] + " 00:00:00",
+                    date_end: dateRange[3] + " 23:59:59",
+                });
+                const res = response.data;
+
+                weekSales.threeDayAgo = res[0].daySales;
+                console.log(res, "이거이거")
+
+                // 차트를 다시 그리는 함수 호출
+                drawSalesChart();
+            } catch (error) {
+                alert(error);
+            }
+
+            try {
+                const response = await axios.post('http://localhost:3000/admin/adminDaySales', {
+                    date_start: dateRange[4] + " 00:00:00",
+                    date_end: dateRange[4] + " 23:59:59",
+                });
+                const res = response.data;
+
+                weekSales.fourDayAgo = res[0].daySales;
+                console.log(res, "이거이거")
+
+                // 차트를 다시 그리는 함수 호출
+                drawSalesChart();
+            } catch (error) {
+                alert(error);
+            }
+
+            try {
+                const response = await axios.post('http://localhost:3000/admin/adminDaySales', {
+                    date_start: dateRange[5] + " 00:00:00",
+                    date_end: dateRange[5] + " 23:59:59",
+                });
+                const res = response.data;
+
+                weekSales.fiveDayAgo = res[0].daySales;
+                console.log(res, "이거이거")
+
+                // 차트를 다시 그리는 함수 호출
+                drawSalesChart();
+            } catch (error) {
+                alert(error);
+            }
+        };
+
         // 차트를 그리는 함수 정의
         const drawUserChart = () => {
+            // 이전 차트 인스턴스 제거
+            if (myChart.value && myChart.value.chart) {
+                myChart.value.chart.destroy();
+            }
+
+
             if (myChart.value) {
                 const ctx = myChart.value.getContext('2d');
-                new Chart(ctx, {
+                myChart.value.chart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
                         labels: ['남성', '여성'],
@@ -373,28 +514,29 @@ export default {
             }
         };
 
-        onMounted(() => {
-            updateUserSex();
-
-
+        const drawSalesChart = () => {
+            // 이전 차트 인스턴스 제거
+            if (dailySalesChart.value && dailySalesChart.value.chart) {
+                dailySalesChart.value.chart.destroy();
+            }
 
             if (dailySalesChart) {
                 const ctx = dailySalesChart.value.getContext('2d');
-                new Chart(ctx, {
+                dailySalesChart.value.chart = new Chart(ctx, {
                     type: 'line',
                     data: {
                         labels: [
-                            '2023-08-18',
-                            '2023-08-19',
-                            '2023-08-20',
-                            '2023-08-21',
-                            '2023-08-22',
-                            '2023-08-23'
+                            dateRange[5],
+                            dateRange[4],
+                            dateRange[3],
+                            dateRange[2],
+                            dateRange[1],
+                            dateRange[0],
                         ],
                         datasets: [
                             {
                                 label: '금액', // Add dataset label
-                                data: [725000, 210000, 5723000, 6234000, 4230000, 1210000],
+                                data: [weekSales.fiveDayAgo, weekSales.fourDayAgo, weekSales.threeDayAgo, weekSales.twoDayAgo, weekSales.yesday, weekSales.today],
                                 backgroundColor: 'rgba(231, 74, 59, 0.1)', // 반투명 배경색 설정
                                 borderColor: '#e74a3b', // 선 색상 설정
                                 borderWidth: 2, // 선 두께 설정
@@ -414,6 +556,15 @@ export default {
                     },
                 });
             }
+        };
+
+        onMounted(() => {
+            updateUserSex();
+            updateSales();
+
+
+
+
         });
 
         return {
@@ -426,6 +577,7 @@ export default {
         this.getSales();
         this.getTodayVisit();
         this.getUserData();
+        this.getQnaData();
     },
     methods: {
         async getSales() {
@@ -444,24 +596,21 @@ export default {
                 const formattedDate = `${year}-${month}-${day}`;
 
                 dateRange.push(formattedDate);
+                this.dateRange.push(formattedDate);
             }
 
             console.log(dateRange[0]);
-
-            var day1_start = dateRange[0] + " 00:00:00";
-            var day1_end = dateRange[0] + " 23:59:59";
-            console.log(day1_start,"뭐야이거 왜안돼")
             await axios({ //오늘매출
                 url: "http://localhost:3000/admin/adminDaySales",
                 method: "POST",
                 data: {
-                    date_start: day1_start,
-                    date_end: day1_end,
+                    date_start: dateRange[0] + " 00:00:00",
+                    date_end: dateRange[0] + " 23:59:59",
                 },
             })
                 .then((res) => {
                     this.weekSales.today = res.data[0].daySales;
-                    console.log(res,"이거이거")
+                    console.log(res, "이거이거")
                 })
                 .catch((err) => {
                     alert(err);
@@ -471,8 +620,8 @@ export default {
                 url: "http://localhost:3000/admin/adminDaySales",
                 method: "POST",
                 data: {
-                    date_start: dateRange[1] + "00:00:00",
-                    date_end: dateRange[1] + "23:59:59",
+                    date_start: dateRange[1] + " 00:00:00",
+                    date_end: dateRange[1] + " 23:59:59",
                 },
             })
                 .then((res) => {
@@ -488,8 +637,8 @@ export default {
                 url: "http://localhost:3000/admin/adminDaySales",
                 method: "POST",
                 data: {
-                    date_start: dateRange[2] + "00:00:00",
-                    date_end: dateRange[2] + "23:59:59",
+                    date_start: dateRange[2] + " 00:00:00",
+                    date_end: dateRange[2] + " 23:59:59",
                 },
             })
                 .then((res) => {
@@ -506,8 +655,8 @@ export default {
                 url: "http://localhost:3000/admin/adminDaySales",
                 method: "POST",
                 data: {
-                    date_start: dateRange[3] + "00:00:00",
-                    date_end: dateRange[3] + "23:59:59",
+                    date_start: dateRange[3] + " 00:00:00",
+                    date_end: dateRange[3] + " 23:59:59",
                 },
             })
                 .then((res) => {
@@ -524,8 +673,8 @@ export default {
                 url: "http://localhost:3000/admin/adminDaySales",
                 method: "POST",
                 data: {
-                    date_start: dateRange[4] + "00:00:00",
-                    date_end: dateRange[4] + "23:59:59",
+                    date_start: dateRange[4] + " 00:00:00",
+                    date_end: dateRange[4] + " 23:59:59",
                 },
             })
                 .then((res) => {
@@ -542,8 +691,8 @@ export default {
                 url: "http://localhost:3000/admin/adminDaySales",
                 method: "POST",
                 data: {
-                    date_start: dateRange[5] + "00:00:00",
-                    date_end: dateRange[5] + "23:59:59",
+                    date_start: dateRange[5] + " 00:00:00",
+                    date_end: dateRange[5] + " 23:59:59",
                 },
             })
                 .then((res) => {
@@ -560,8 +709,8 @@ export default {
                 url: "http://localhost:3000/admin/adminDaySales",
                 method: "POST",
                 data: {
-                    date_start: dateRange[6] + "00:00:00",
-                    date_end: dateRange[6] + "23:59:59",
+                    date_start: dateRange[6] + " 00:00:00",
+                    date_end: dateRange[6] + " 23:59:59",
                 },
             })
                 .then((res) => {
@@ -575,13 +724,8 @@ export default {
                 });
         },
         async getTodayVisit() {
-            var day = new Date();
-            var year = day.getFullYear();
-            var month = day.getMonth() + 1;
-            var date = day.getDate();
-
             // 오늘 날짜
-            var today = year + "-" + month + "-" + date;
+            var today = new Date().toLocaleDateString();
             await axios({
                 url: "http://localhost:3000/admin/getTodayV",
                 method: "POST",
@@ -590,7 +734,7 @@ export default {
                 },
             })
                 .then((res) => {
-                    console.log(res);
+                    this.toDayVisit = res.data[0].vc_count;
                 })
                 .catch((err) => {
                     alert(err);
@@ -614,6 +758,23 @@ export default {
                     this.userSex.female = femaleMembers.length;
                     this.userSex.male = maleMembers.length;
                     console.log(this.userSex, "회원데이터")
+                })
+                .catch((err) => {
+                    alert(err);
+                });
+        },
+
+        // 미완료 문의(답변대기 문의들 가져오기)
+        async getQnaData() {
+            await axios({
+                url: "http://localhost:3000/admin/adminQnaWait",
+                method: "POST",
+                data: {
+                },
+            })
+                .then((res) => {
+                    this.qnaData = res.data;
+                    console.log(this.qnaData, "미완료 문의 데이터");
                 })
                 .catch((err) => {
                     alert(err);

@@ -24,13 +24,14 @@ import qnaWrite from "../views/qnaWrite.vue";
 import qnaEdit from "../views/qnaEdit.vue";
 import eventPage1 from "../views/event.vue";
 import attendance from "../views/attendance.vue";
-import mypage from "../views/myPage.vue";
+import mypage from "../views/mypage.vue";
 import axios from "axios";
 
 import Admin from "../views/Admin.vue";
 import AdminBookManage from "../components/adminBookManage.vue";
 import AdminUserManage from "../components/adminUserManage.vue";
 import AdminQnaManage from "../components/adminQnaManage.vue";
+import AdminOrderManage from "../components/adminOrderManage.vue";
 import bookInsert from "../components/bookInsert.vue";
 
 import mypageOrderInfo from "../views/mypageOrderInfo.vue";
@@ -217,6 +218,11 @@ const routes = [
         path: "/admin/qnamanage",
         name: "AdminQnaManage",
         component: AdminQnaManage,
+    },
+    {
+        path: "/admin/ordermanage",
+        name: "AdminOrderManage",
+        component: AdminOrderManage,
     },
     //-------------------------------------------------------------
     //출석체크페이지

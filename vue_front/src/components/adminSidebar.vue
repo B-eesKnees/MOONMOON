@@ -83,7 +83,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#" >
+            <a class="nav-link collapsed" href="/admin/ordermanage" >
                 <i class="fa-solid fa-truck-moving"></i>
                 <span>주문 관리</span>
             </a>
