@@ -443,18 +443,29 @@ router.get("/couponupgrade/:userEmail", (req, res) => {
 router.get("/orderHistory", async (req, res) => {
   const userEmail = req.query.userEmail; // 사용자 이메일 파라미터 받아오기
 
-  const query = `SELECT o.ORDER_ID, o.ORDER_PAYDATE, o.ORDER_STATE, o.ORDER_PAY, o.ORDER_CNT, oi.ORDERITEM_ID, oi.ORDERITEM_BOOK_ID, b.BOOK_TITLE, b.BOOK_COVER, b.BOOK_AUTHOR
-  FROM \`order\` o
-  JOIN orderitem oi ON o.ORDER_ID = oi.ORDERITEM_ORDER_ID
-  JOIN book b ON oi.ORDERITEM_BOOK_ID = b.BOOK_ID
-  WHERE o.ORDER_USER_EMAIL = ?;`;
+  const query = `SELECT o.ORDER_ID, o.ORDER_PAYDATE, o.ORDER_STATE, o.ORDER_PAY, o.ORDER_USER_EMAIL,
+  SUM(oi.ORDERITEM_CNT) AS TOTAL_CNT,
+  GROUP_CONCAT(DISTINCT b.BOOK_TITLE SEPARATOR ', ') AS BOOK_TITLES,
+  GROUP_CONCAT(DISTINCT b.BOOK_AUTHOR SEPARATOR ', ') AS BOOK_AUTHORS
+FROM \`order\` o
+JOIN orderitem oi ON o.ORDER_ID = oi.ORDERITEM_ORDER_ID
+JOIN book b ON oi.ORDERITEM_BOOK_ID = b.BOOK_ID
+WHERE o.ORDER_USER_EMAIL = ?
+GROUP BY o.ORDER_ID, o.ORDER_PAYDATE, o.ORDER_STATE, o.ORDER_PAY, o.ORDER_USER_EMAIL;`;
 
   db.query(query, [userEmail], (err, results) => {
     if (err) {
       console.error(err);
       res.status(500).json({ error: "서버 에러" });
     } else {
-      res.status(200).json(results);
+      // 데이터 가공
+      const modifiedResults = results.map((result) => ({
+        ...result,
+        BOOK_TITLE: result.BOOK_TITLES.split(", ")[0],
+        BOOK_AUTHOR: result.BOOK_AUTHORS.split(", ")[0],
+      }));
+
+      res.status(200).json(modifiedResults);
     }
   });
 });
