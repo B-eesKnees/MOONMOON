@@ -17,9 +17,28 @@
                     <input type="text" id="name" v-model="originalData.name" :readonly="true" />
                 </div>
 
-                <div class="input-item">
-                    <label for="password">비밀번호</label>
-                    <input type="password" id="password" v-model="originalData.password" />
+                <div>
+                    <div class="input-item">
+                        <label for="password">비밀번호</label>
+                        <input type="password" id="password" v-model="originalData.password" @click="openPasswordModal" />
+                    </div>
+
+                    <!-- 모달 요소 -->
+                    <div v-if="passwordModal" class="modal">
+                        <div class="modal-content">
+                            <h3>비밀번호 변경</h3>
+                            <label for="newPassword">새 비밀번호</label>
+                            <input type="password" id="newPassword" v-model="newPassword" @input="checkNewPassword" />
+                            <span v-if="passwordValidationMessage">{{ passwordValidationMessage }}</span>
+                            <label for="confirmPassword">비밀번호 확인</label>
+                            <input type="password" id="confirmPassword" v-model="confirmPassword" />
+                            <span v-if="passwordMatchMessage">{{ passwordMatchMessage }}</span>
+                            <div class="button-group-center">
+                                <button @click="changePassword">비밀번호 변경</button>
+                                <button @click="closePasswordModal">취소</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="input-item">
                     <label for="sex">성별</label>
@@ -53,19 +72,6 @@
             </div>
         </form>
         <div v-if="message" class="status-message">{{ message }}</div>
-    </div>
-    <div v-if="passwordModal" class="modal">
-        <div class="modal-content">
-            <h3>비밀번호 변경</h3>
-            <label for="newPassword">새 비밀번호</label>
-            <input type="password" id="newPassword" v-model="newPassword" @input="checkNewPassword" />
-            <span v-if="passwordValidationMessage">{{ passwordValidationMessage }}</span>
-            <label for="confirmPassword">비밀번호 확인</label>
-            <input type="password" id="confirmPassword" v-model="confirmPassword" />
-            <span v-if="passwordMatchMessage">{{ passwordMatchMessage }}</span>
-            <button @click="changePassword">비밀번호 변경</button>
-            <button @click="closePasswordModal">취소</button>
-        </div>
     </div>
 </template>
 <script>
@@ -127,7 +133,7 @@ export default {
             const email = localStorage.getItem("userID");
 
             // POST 요청을 보내기 위한 데이터 구성
-            const requestData = {
+            const updatedFields = {
                 email: email,
                 updatedFields: {
                     add1: this.updatedFields.add1,
@@ -136,6 +142,11 @@ export default {
                     phone_num: this.updatedFields.phone_num,
                     password: this.updatedFields.password,
                 },
+            };
+
+            const requestData = {
+                email: email,
+                updatedFields: updatedFields,
             };
 
             try {
@@ -193,13 +204,27 @@ export default {
                 this.passwordValidationMessage = "";
             }
         },
-        changePassword() {
+
+        async changePassword() {
             if (this.newPassword === this.confirmPassword) {
-                // 서버에 비밀번호 변경 요청을 보내는 로직 추가
-                // 변경 완료 후 모달을 닫는다.
-                this.closePasswordModal();
+                try {
+                    const email = localStorage.getItem("userID");
+
+                    const requestData = {
+                        email: email,
+                        updatedFields: {
+                            password: this.newPassword,
+                        },
+                    };
+
+                    const response = await axios.post("/updateUserInfo", requestData);
+                    this.message = response.data.message;
+
+                    this.closePasswordModal();
+                } catch (error) {
+                    console.error("비밀번호 변경 오류:", error);
+                }
             } else {
-                // 비밀번호 불일치 에러 처리
                 console.error("비밀번호가 일치하지 않습니다.");
             }
         },
@@ -268,5 +293,64 @@ export default {
 .section-divider {
     margin-top: 40px;
     margin-bottom: 40px;
+}
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    width: 400px;
+}
+
+.modal h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.modal label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.modal input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.modal span {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+.modal button {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.modal button + button {
+    margin-left: 10px;
 }
 </style>
