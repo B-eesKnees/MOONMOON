@@ -443,28 +443,53 @@ router.get("/couponupgrade/:userEmail", (req, res) => {
 router.get("/orderHistory", async (req, res) => {
   const userEmail = req.query.userEmail; // 사용자 이메일 파라미터 받아오기
 
-  const query = `SELECT o.ORDER_ID, o.ORDER_PAYDATE, o.ORDER_STATE, o.ORDER_PAY, o.ORDER_USER_EMAIL,
-  SUM(oi.ORDERITEM_CNT) AS TOTAL_CNT,
-  GROUP_CONCAT(DISTINCT b.BOOK_TITLE SEPARATOR ', ') AS BOOK_TITLES,
-  GROUP_CONCAT(DISTINCT b.BOOK_AUTHOR SEPARATOR ', ') AS BOOK_AUTHORS
-FROM \`order\` o
-JOIN orderitem oi ON o.ORDER_ID = oi.ORDERITEM_ORDER_ID
-JOIN book b ON oi.ORDERITEM_BOOK_ID = b.BOOK_ID
-WHERE o.ORDER_USER_EMAIL = ?
-GROUP BY o.ORDER_ID, o.ORDER_PAYDATE, o.ORDER_STATE, o.ORDER_PAY, o.ORDER_USER_EMAIL;`;
+  const query = `
+    SELECT
+      o.ORDER_ID,
+      o.ORDER_PAYDATE,
+      o.ORDER_STATE,
+      o.ORDER_PAY,
+      o.ORDER_USER_EMAIL,
+      oi.ORDERITEM_CNT,
+      b.BOOK_TITLE,
+      b.BOOK_AUTHOR,
+      b.BOOK_COVER
+    FROM \`order\` o
+    JOIN orderitem oi ON o.ORDER_ID = oi.ORDERITEM_ORDER_ID
+    JOIN book b ON oi.ORDERITEM_BOOK_ID = b.BOOK_ID
+    WHERE o.ORDER_USER_EMAIL = ?;
+  `;
 
   db.query(query, [userEmail], (err, results) => {
     if (err) {
       console.error(err);
       res.status(500).json({ error: "서버 에러" });
     } else {
-      // 데이터 가공
-      const modifiedResults = results.map((result) => ({
-        ...result,
-        BOOK_TITLE: result.BOOK_TITLES.split(", ")[0],
-        BOOK_AUTHOR: result.BOOK_AUTHORS.split(", ")[0],
-      }));
+      const orders = {}; // 각 주문 정보를 저장할 객체
 
+      results.forEach((result) => {
+        if (!orders[result.ORDER_ID]) {
+          orders[result.ORDER_ID] = {
+            ORDER_ID: result.ORDER_ID,
+            ORDER_PAYDATE: result.ORDER_PAYDATE,
+            ORDER_STATE: result.ORDER_STATE,
+            ORDER_PAY: result.ORDER_PAY,
+            ORDER_USER_EMAIL: result.ORDER_USER_EMAIL,
+            items: [], // 주문에 대한 책 정보를 저장할 배열
+          };
+        }
+
+        // 주문에 대한 책 정보 객체를 배열에 추가
+        orders[result.ORDER_ID].items.push({
+          ORDERITEM_CNT: result.ORDERITEM_CNT,
+          BOOK_TITLE: result.BOOK_TITLE,
+          BOOK_AUTHOR: result.BOOK_AUTHOR,
+          BOOK_COVER: result.BOOK_COVER,
+        });
+      });
+
+      // 객체를 배열로 변환하여 응답
+      const modifiedResults = Object.values(orders);
       res.status(200).json(modifiedResults);
     }
   });
@@ -538,7 +563,7 @@ router.get("/orderdate", (req, res) => {
   const formattedStartDate = `${startDate} 00:00:00`;
   const formattedEndDate = `${endDate} 23:59:59`;
 
-  let query = "SELECT * FROM `order` WHERE ORDER_DATE BETWEEN ? AND ?";
+  let query = "SELECT * FROM `order` WHERE ORDER_PAYDATE BETWEEN ? AND ?";
   const queryParams = [formattedStartDate, formattedEndDate];
 
   if (userEmail) {
@@ -565,7 +590,7 @@ router.get("/orderpaydate", (req, res) => {
   }
 
   const query =
-    "SELECT ORDER_USER_EMAIL, DATE_FORMAT(ORDER_DATE, '%m-%d') AS ORDER_DATE FROM `order` WHERE ORDER_USER_EMAIL = ?";
+    "SELECT ORDER_USER_EMAIL, DATE_FORMAT(ORDER_PAYDATE, '%m-%d') AS ORDER_PAYDATE FROM `order` WHERE ORDER_USER_EMAIL = ?";
 
   db.query(query, [userEmail], (err, results) => {
     if (err) {
@@ -822,7 +847,7 @@ router.get("/getUserInfo", async (req, res) => {
           name: user.USER_NAME,
           password: "", // 비밀번호는 보내지 않도록 설정
           sex: user.USER_SEX,
-          age: user.USER_AGE,
+          age: user.USER_AGEGROUP,
           add1: user.USER_ADD1,
           add2: user.USER_ADD2,
           zipcode: user.USER_ZIPCODE,

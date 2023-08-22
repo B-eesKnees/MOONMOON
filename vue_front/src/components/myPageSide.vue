@@ -19,11 +19,13 @@
             회원정보
             <hr />
             <div class="borderSideList">
-                <a href="#">
+                <a href="/mypageuserinfo">
                     <div @click="activeElement = 'userInfoControl'" :class="{ sideList: true, activeText: isActiveText('userInfoControl') }">
                         회원정보관리
-                    </div>
-                    <div @click="activeElement = 'userGrade'" :class="{ sideList: true, activeText: isActiveText('userGrade') }">회원등급</div>
+                    </div></a
+                >
+                <a href="#"
+                    ><div @click="activeElement = 'userGrade'" :class="{ sideList: true, activeText: isActiveText('userGrade') }">회원등급</div>
                 </a>
             </div>
         </h2>
@@ -62,9 +64,6 @@ export default {
     data() {
         return {
             activeElement: null,
-            orderInfo: [],
-            myReviews: [],
-            reviewsToWrite: [],
         };
     },
     created() {
