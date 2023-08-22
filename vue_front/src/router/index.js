@@ -31,6 +31,7 @@ import Admin from "../views/Admin.vue";
 import AdminBookManage from "../components/adminBookManage.vue";
 import AdminUserManage from "../components/adminUserManage.vue";
 import AdminQnaManage from "../components/adminQnaManage.vue";
+import AdminOrderManage from "../components/adminOrderManage.vue";
 import bookInsert from "../components/bookInsert.vue";
 
 import mypageOrderInfo from "../views/mypageOrderInfo.vue";
@@ -219,6 +220,11 @@ const routes = [
         path: "/admin/qnamanage",
         name: "AdminQnaManage",
         component: AdminQnaManage,
+    },
+    {
+        path: "/admin/ordermanage",
+        name: "AdminOrderManage",
+        component: AdminOrderManage,
     },
     //-------------------------------------------------------------
     //출석체크페이지
