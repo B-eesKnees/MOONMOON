@@ -8,6 +8,10 @@ const queries = {
                      from user
                      where USER_EMAIL = ?`,
 
+    payAddUpdateQuery: `update \`order\`
+                      set ORDER_ADD = ?, ORDER_ZIPCODE = ?
+                      where ORDER_ID = ?`,
+
     payBookInfoQuery: `SELECT b.BOOK_COVER as image, b.BOOK_TITLE as name, b.BOOK_PRICE as price, o.ORDERITEM_CNT as quantity, o.ORDERITEM_PRICE as totalPrice
                      FROM book b
                      JOIN orderitem o ON b.BOOK_ID = o.ORDERITEM_BOOK_ID
@@ -58,12 +62,31 @@ router.post("/payUserInfo", async (request, res) => {
         console.log(userEmail);
     } catch (err) {
         res.status(500).send({
-            error: err,
+            error: err
         });
     }
 });
 
+
 // 배송지 주소 변경 - 변경한 주소 받아오기
+router.post("/payAddUpdate", async (request, res) => {
+
+    try {
+        const ORDER_ADD = request.body.order_add;
+        const ORDER_ZIPCODE = request.body.order_zip;
+        const ORDER_ID = request.body.payID;
+
+
+        res.send(await req(queries.payAddUpdateQuery, [ORDER_ADD, ORDER_ZIPCODE, ORDER_ID]));
+        console.log("ORDER_ADD:", ORDER_ADD);
+        console.log("ORDER_ZIPCODE:", ORDER_ZIPCODE);
+        console.log("ORDER_ID:", ORDER_ID);
+    } catch (err) {
+        res.status(500).send({
+            error: err
+        });
+    }
+});
 /* router.post('/payAddEdit', (req, res) => {
 
   const {  } = req.body;

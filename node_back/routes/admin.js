@@ -264,6 +264,7 @@ router.post('/adminDaySales', async (request, res) => {
   }
 });
 
+// 성별 분포
 
 
 
