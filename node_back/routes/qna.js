@@ -4,20 +4,20 @@ const db = require("../db");
 const router = express.Router();
 
 const queries = {
-  qnaAllQuery: `select QNA_ID, QNA_REP, QNA_TITLE, date_format(QNA_DATE, '%Y-%m-%d') as QNA_DATE, QNA_CON, QNA_REPLY
+  qnaAllQuery: `select QNA_ID, QNA_REP, QNA_TITLE, QNA_DATE as qd, date_format(QNA_DATE, '%Y-%m-%d') as QNA_DATE, QNA_CON, QNA_REPLY
                 from qna
                 where QNA_USER_EMAIL = ?
-                order by QNA_DATE desc;`,
+                order by qd desc;`,
 
-  qnaWaitQuery: `select QNA_ID, QNA_TITLE, date_format(QNA_DATE, '%Y-%m-%d') as QNA_DATE, QNA_CON, QNA_REPLY
+  qnaWaitQuery: `select QNA_ID, QNA_TITLE, QNA_DATE as qd, date_format(QNA_DATE, '%Y-%m-%d') as QNA_DATE, QNA_CON, QNA_REPLY
                     from qna
                     where QNA_USER_EMAIL = ? and QNA_REP = 0
-                    order by QNA_DATE desc;`,
+                    order by qd desc;`,
 
-  qnaDoneQuery: `select QNA_ID, QNA_TITLE, date_format(QNA_DATE, '%Y-%m-%d') as QNA_DATE, QNA_CON, QNA_REPLY
+  qnaDoneQuery: `select QNA_ID, QNA_TITLE, QNA_DATE as qd, date_format(QNA_DATE, '%Y-%m-%d') as QNA_DATE, QNA_CON, QNA_REPLY
                  from qna
                  where QNA_USER_EMAIL = ? and QNA_REP = 1
-                 order by QNA_DATE desc;`,
+                 order by qd desc;`,
 
   qnaWriteQuery: `INSERT INTO qna (QNA_USER_EMAIL, QNA_TITLE, QNA_CON, QNA_REP)
                   VALUES (?,?,?,?)`,
