@@ -52,7 +52,7 @@ router.post("/getRecBook", async (req, res) => {
                         SELECT ORDERITEM_BOOK_ID
                         FROM moonmoon.order o
                         JOIN orderitem oi ON o.ORDER_ID = oi.ORDERITEM_ORDER_ID
-                        WHERE o.ORDER_USER_EMAIL = ?
+                        WHERE o.ORDER_USER_EMAIL = ? and oi.ORDERITEM_BUYCHECK = 1
                     )
                     GROUP BY BOOK_CATEGORYNAME
                     ORDER BY COUNT(*) DESC
@@ -64,7 +64,39 @@ router.post("/getRecBook", async (req, res) => {
                         if (err) {
                             res.status(200).send(err);
                         } else {
-                            res.status(200).send(results2);
+                            if (results2.length === 0) {
+                                db.query(`select * from survey where SUR_USER_EMAIL = ?`, email, (err, result) => {
+                                    if (err) {
+                                        res.status(200).send(err);
+                                    } else {
+                                        const sur1 = result[0].SUR_LIKE_1 || "없음";
+                                        const sur2 = result[0].SUR_LIKE_2 || "없음";
+                                        const sur3 = result[0].SUR_LIKE_3 || "없음";
+                                        const sur4 = result[0].SUR_LIKE_4 || "없음";
+                                        const sur5 = result[0].SUR_LIKE_5 || "없음";
+
+                                        const search1 = `%${sur1}%`;
+                                        const search2 = `%${sur2}%`;
+                                        const search3 = `%${sur3}%`;
+                                        const search4 = `%${sur4}%`;
+                                        const search5 = `%${sur5}%`;
+
+                                        const query = `select BOOK_ID, BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, '%Y.%m.%d') as PUBDATE, BOOK_PRICE, BOOK_DESCRIPTION, BOOK_COVER, BOOK_PUBLISHER 
+                                    from book 
+                                    where BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? or BOOK_CATEGORYNAME like ? 
+                                    order by BOOK_SALESPOINT desc 
+                                    limit 8`;
+                                        console.log([search1, search2, search3, search4, search5]);
+                                        db.query(query, [search1, search2, search3, search4, search5], (err, results) => {
+                                            if (err) {
+                                                res.status(200).send("error" + err);
+                                            } else {
+                                                res.status(200).send(results);
+                                            }
+                                        });
+                                    }
+                                });
+                            }
                         }
                     }
                 );
