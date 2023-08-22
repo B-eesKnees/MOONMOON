@@ -31,7 +31,9 @@ const queries = {
 
   qnaEditQuery: `update qna
                  set QNA_TITLE = ?, QNA_CON = ?
-                 where QNA_ID = ?`
+                 where QNA_ID = ?`,
+
+  qnaDoneCountQuery: ``,
 }
 
 // 데이터베이스 작업 함수
@@ -188,6 +190,9 @@ router.post('/qnaDel', async (request, res) => {
     });
    }  
 });
+
+
+//
 
 
 // 문의 답변 작성(admin 계정만) - update로 써야할 듯

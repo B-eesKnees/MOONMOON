@@ -52,7 +52,7 @@
                             ></qnaWait>
                         </div>
                     </TabItem>
-                    <TabItem title="답변 완료(9)">
+                    <TabItem title="답변 완료" `${fff}`>
                         <a href="http://localhost:8080/qnaWrite">
                             <div class="qna-btn" v-if="!nodata">1:1 문의하기</div>
                         </a>

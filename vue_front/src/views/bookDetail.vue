@@ -535,7 +535,7 @@ export default {
                 url: "http://localhost:3000/detail/gotoPay",
                 method: "POST",
                 data: {
-                    bookId: this.$route.params.id,
+                    bookId: this.bookId,
                     bookNum: 1,
                     email: localStorage.getItem("userID"),
                     total_pay: bookPrice,
@@ -544,7 +544,7 @@ export default {
                 },
             })
                 .then((res) => {
-                    console.log(res.data.payID);
+                    console.log(res.data);
                     this.$router.push({ name: "paymentPage", query: { payid: res.data.payID } });
                 })
                 .catch((error) => {

@@ -135,14 +135,14 @@ export default {
             isModalOpen: true,
             payID: this.$route.query.payid,
             userEmail: localStorage.getItem("userID"),
-            originalPrice: "",
-            deliveryFee: "",
+            originalPrice: 0,
+            deliveryFee: 0,
             discountAmount: 0,
             dfCalPrice: 0,
-            finalPrice: "",
-            earnPoint: "",
-            applyCouponPrice: "",
-            applyPointPrice: "",
+            finalPrice: 0,
+            earnPoint: 0,
+            applyCouponPrice: 0,
+            applyPointPrice: 0,
         };
     },
     mounted() {
@@ -173,7 +173,12 @@ export default {
             }
         },
         calEarnPoint() {
-            this.earnPoint = this.dfCalPrice * 0.05;
+            if (this.usePoint > this.dfCalPrice) {
+                this.earnPoint = 0;
+            }
+            else {
+                this.earnPoint = this.dfCalPrice * 0.05;
+            }
         },
         calFinalPrice() {
             this.finalPrice = this.originalPrice - this.discountAmount + this.deliveryFee;
@@ -263,9 +268,7 @@ export default {
             else {
                 this.applyCouponPrice = this.originalPrice;
             }
-            console.log(this.applyCouponPrice);
-            console.log(this.deliveryFee);
-            
+            console.log("applyCouponPrice:", this.applyCouponPrice);
         },
         getUserPoint() {
             const email = this.userEmail;
@@ -287,7 +290,7 @@ export default {
             else {
                 this.applyPointPrice = this.usePoint;
             }
-            console.log(this.applyPointPrice);
+            console.log("applyPointPrice:", this.applyPointPrice);
         },
         getOriginalPrice() {
             const payid = this.payID;
@@ -300,13 +303,14 @@ export default {
                 this.originalPrice = res.data[0].oP;
             });
         },       
-        goPriceData() {
+        /* goPriceData() {
             const priceData = {
                 finalPrice: this.finalPrice,
                 deliveryFee: this.deliveryFee,
                 applyCouponPrice: this.applyCouponPrice,
-                applyPointPrice: this.applyCouponPrice,
+                applyPointPrice: this.applyPointPrice,
                 earnPoint: this.earnPoint,
+                payID: this.payID
             };
 
             axios({
@@ -314,9 +318,9 @@ export default {
                 method: "post",
                 data: priceData,
             }).then((res) => {
-                this.coupons = res.data;
+                console.log('success');
             });
-        }, 
+        },  */
         openAdd() {
             const confmKey = "devU01TX0FVVEgyMDIzMDgwMzE2NTY0NDExMzk4ODQ=";
             const returnUrl = "http://localhost:8080/pay";
@@ -339,7 +343,7 @@ export default {
                     pg: "inicis",
                     pay_method: "card",
                     name: `${this.user_name}`,
-                    amount: 1, //결제 금액
+                    amount: `${this.finalPrice}`, //결제 금액
                     buyer_email: `${this.user_email}`,
                     buyer_name: `${this.user_name}`,
                     buyer_tel: `${this.user_phone}`,
@@ -349,11 +353,27 @@ export default {
                 (rsp) => {
                     // callback
                     if (rsp.success) {
-                        alert("!");
+                        alert("결제가 완료되었습니다.");
                         console.log(rsp.success);
                         console.log(rsp);
+                        const priceData = {
+                            finalPrice: this.finalPrice,
+                            deliveryFee: this.deliveryFee,
+                            applyCouponPrice: this.applyCouponPrice,
+                            applyPointPrice: this.applyPointPrice,
+                            earnPoint: this.earnPoint,
+                            payID: this.payID
+                        };
+
+                        axios({
+                            url: "/pay/updatePriceData",
+                            method: "post",
+                            data: priceData,
+                        }).then((res) => {
+                            console.log('success');
+                        });
                     } else {
-                        alert("?");
+                        alert("결제에 실패하였습니다.");
                     }
                 }
             );
