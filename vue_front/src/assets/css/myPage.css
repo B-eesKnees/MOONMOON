@@ -482,10 +482,13 @@
     border: 1px solid #ccc;
     margin: 10px;
     padding: 10px;
+    width: 100%;
 }
 
-.order-status {
-    flex: 1;
+.order_status {
+    /* flex: 1; */
+    display: flex;
+    border: #000 1px solid;
 }
 
 .book-cover {
@@ -511,4 +514,12 @@
   margin-left: 10px;
   margin-right: 10px;
   padding: 1px 12px;
+}
+
+
+
+
+.order_cnt_out {
+  font-size: 0.8em;
+  /* color: #FFB800; */
 }
