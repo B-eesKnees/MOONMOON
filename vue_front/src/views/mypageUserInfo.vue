@@ -54,6 +54,19 @@
         </form>
         <div v-if="message" class="status-message">{{ message }}</div>
     </div>
+    <div v-if="passwordModal" class="modal">
+        <div class="modal-content">
+            <h3>비밀번호 변경</h3>
+            <label for="newPassword">새 비밀번호</label>
+            <input type="password" id="newPassword" v-model="newPassword" @input="checkNewPassword" />
+            <span v-if="passwordValidationMessage">{{ passwordValidationMessage }}</span>
+            <label for="confirmPassword">비밀번호 확인</label>
+            <input type="password" id="confirmPassword" v-model="confirmPassword" />
+            <span v-if="passwordMatchMessage">{{ passwordMatchMessage }}</span>
+            <button @click="changePassword">비밀번호 변경</button>
+            <button @click="closePasswordModal">취소</button>
+        </div>
+    </div>
 </template>
 <script>
 import axios from "axios";
@@ -66,6 +79,11 @@ export default {
             originalData: {}, // 기존 데이터를 저장할 객체
             updateData: {}, // 수정한 데이터를 저장할 객체
             message: "",
+            passwordModal: false,
+            newPassword: "",
+            confirmPassword: "",
+            passwordValidationMessage: "",
+            passwordMatchMessage: "",
         };
     },
     created() {
@@ -74,15 +92,15 @@ export default {
     },
     methods: {
         convertAgeRange(age) {
-            if (age === "14~19" || "14-19") {
+            if (age === "14~19" || age === "14-19") {
                 return "10";
-            } else if (age === "20~29" || "20-29") {
+            } else if (age === "20~29" || age === "20-29") {
                 return "20";
-            } else if (age === "30~39" || "30-39") {
+            } else if (age === "30~39" || age === "30-39") {
                 return "30";
-            } else if (age === "40~49" || "40-49") {
+            } else if (age === "40~49" || age === "40-49") {
                 return "40";
-            } else if (age === "50~59") {
+            } else if (age === "50~59" || age === "50-59") {
                 return "50";
             } else {
                 return age;
@@ -154,6 +172,36 @@ export default {
             // 수정 취소 시 원래 데이터로 초기화
             this.updatedFields = { ...this.originalData };
             this.message = ""; // 메시지 초기화
+        },
+
+        openPasswordModal() {
+            this.passwordModal = true;
+        },
+        closePasswordModal() {
+            this.passwordModal = false;
+            this.newPassword = "";
+            this.confirmPassword = "";
+        },
+        checkNewPassword() {
+            const validatePassword = /^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+
+            if (this.newPassword === "") {
+                this.passwordValidationMessage = "";
+            } else if (!validatePassword.test(this.newPassword)) {
+                this.passwordValidationMessage = "비밀번호는 최소 8자리 이상 영문, 숫자, 특수문자가 각각 1개 이상 포함되어야 합니다.";
+            } else {
+                this.passwordValidationMessage = "";
+            }
+        },
+        changePassword() {
+            if (this.newPassword === this.confirmPassword) {
+                // 서버에 비밀번호 변경 요청을 보내는 로직 추가
+                // 변경 완료 후 모달을 닫는다.
+                this.closePasswordModal();
+            } else {
+                // 비밀번호 불일치 에러 처리
+                console.error("비밀번호가 일치하지 않습니다.");
+            }
         },
     },
 };
