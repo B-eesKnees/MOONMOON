@@ -205,7 +205,7 @@ export default {
             sortvalue: "최신순",
             showBtn: true,
             countNum: 1,
-            bookId: this.$route.params.id,
+            bookId: this.$route.params.bookNum,
             averageRating: 0,
 
             // 댓글 데이터를 페이지별로 나눈 배열

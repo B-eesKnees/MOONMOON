@@ -22,7 +22,7 @@ import pay from "../views/pay.vue";
 import qnaList from "../views/qnaList.vue";
 import qnaWrite from "../views/qnaWrite.vue";
 import qnaEdit from "../views/qnaEdit.vue";
-import eventPage1 from "../views/event.vue";
+import eventPage from "../views/event.vue";
 import attendance from "../views/attendance.vue";
 import mypage from "../views/myPage.vue";
 import axios from "axios";
@@ -176,16 +176,16 @@ const routes = [
     },
     //-------------------------------------------------------------
     //룰렛, 쿠폰주는 화면
-    // {
-    //     path: "/event",
-    //     name: "eventPage",
-    //     component: eventPage,
-    // },
     {
-        path: "/event1",
-        name: "eventPage1",
-        component: eventPage1,
+        path: "/event",
+        name: "eventPage",
+        component: eventPage,
     },
+    // {
+    //     path: "/event1",
+    //     name: "eventPage1",
+    //     component: eventPage1,
+    // },
     // {
     //     path: "/roulette",
     //     name: "roulette",
