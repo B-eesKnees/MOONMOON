@@ -148,7 +148,7 @@ const routes = [
         component: cart,
     },
     {
-        path: "/pay/:payID",
+        path: "/pay",
         name: "paymentPage",
         component: pay,
     },
