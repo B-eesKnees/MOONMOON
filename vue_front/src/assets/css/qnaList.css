@@ -79,7 +79,8 @@
   margin-left: 70px;
   width: 700px;
   font-size: 18px;
-  /* border: #000 solid 1px; */
+  border: #000 solid 1px;
+  /* display: inline-block; */
 }
 
 .qna-date {
