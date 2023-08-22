@@ -4,56 +4,55 @@
     </div>
     <div class="right_box">
         <h2 class="userUpdateTitle">회원정보 관리</h2>
-        <hr style="margin-top: 30px; margin-bottom: 50px" />
+        <hr class="section-divider" />
 
         <form @submit.prevent="updateUserInfo">
             <div class="input-group">
-                <label for="email">아이디</label>
-                <input type="text" id="email" v-model="updatedFields.email" :readonly="true" />
-            </div>
-            <div>
-                <label for="name">이름</label>
-                <input type="text" id="name" v-model="updatedFields.name" :readonly="true" />
-            </div>
-            <div>
-                <label for="password">비밀번호</label>
-                <input type="password" id="password" v-model="updatedFields.password" />
-            </div>
-            <div>
-                <label for="password">새 비밀번호</label>
-                <input type="password" id="password" v-model="updatedFields.password" />
-            </div>
-            <div>
-                <label for="sex">성별</label>
-                <input type="text" id="sex" v-model="updatedFields.sex" :readonly="true" />
-            </div>
-            <div>
-                <label for="age">나이</label>
-                <input type="number" id="age" v-model="updatedFields.age" :readonly="true" />
-            </div>
-            <div>
-                <label for="add1">주소</label>
-                <input type="text" id="add1" v-model="updatedFields.add1" @click="openAddressSearch" />
-            </div>
-            <div>
-                <label for="add2">상세주소</label>
-                <input type="text" id="add2" v-model="updatedFields.add2" />
-            </div>
-            <div>
-                <label for="zipcode">우편번호</label>
-                <input type="text" id="zipcode" v-model="updatedFields.zipcode" />
-            </div>
-            <div>
-                <label for="phone_num">전화번호</label>
-                <input type="text" id="phone_num" v-model="updatedFields.phone_num" />
+                <div class="input-item">
+                    <label for="email">아이디</label>
+                    <input type="text" id="email" v-model="originalData.email" :readonly="true" />
+                </div>
+                <div class="input-item">
+                    <label for="name">이름</label>
+                    <input type="text" id="name" v-model="originalData.name" :readonly="true" />
+                </div>
+
+                <div class="input-item">
+                    <label for="password">비밀번호</label>
+                    <input type="password" id="password" v-model="originalData.password" />
+                </div>
+                <div class="input-item">
+                    <label for="sex">성별</label>
+                    <input type="text" id="sex" :value="convertGender(originalData.sex)" :readonly="true" />
+                </div>
+                <div class="input-item">
+                    <label for="age">나이대</label>
+                    <input type="number" id="age" :value="convertAgeRange(originalData.age)" :readonly="true" />
+                </div>
+                <div class="input-item">
+                    <label for="add1">주소</label>
+                    <input type="text" id="add1" v-model="originalData.add1" @click="openAddressSearch" />
+                </div>
+                <div class="input-item">
+                    <label for="add2">상세주소</label>
+                    <input type="text" id="add2" v-model="originalData.add2" />
+                </div>
+                <div class="input-item">
+                    <label for="zipcode">우편번호</label>
+                    <input type="text" id="zipcode" v-model="originalData.zipcode" />
+                </div>
+                <div class="input-item">
+                    <label for="phone_num">전화번호</label>
+                    <input type="text" id="phone_num" v-model="originalData.phone_num" />
+                </div>
             </div>
 
-            <div>
+            <div class="button-group">
                 <button type="button" @click="cancelUpdate">취소</button>
                 <button type="submit">수정</button>
             </div>
         </form>
-        <div v-if="message">{{ message }}</div>
+        <div v-if="message" class="status-message">{{ message }}</div>
     </div>
 </template>
 <script>
@@ -65,22 +64,7 @@ export default {
     data() {
         return {
             originalData: {}, // 기존 데이터를 저장할 객체
-            updatedFields: {
-                email: "",
-                name: "",
-                password: "",
-                sex: "",
-                age: 0,
-                add1: "",
-                add2: "",
-                zipcode: "",
-                phone_num: "",
-                provider: "",
-
-                password_check: false,
-                password_check2: false,
-                phone_check: false,
-            },
+            updateData: {}, // 수정한 데이터를 저장할 객체
             message: "",
         };
     },
@@ -89,21 +73,31 @@ export default {
         this.fetchUserInfo(email); // 컴포넌트 생성 시 기존 데이터를 불러오는 메소드 호출
     },
     methods: {
-        // 연령대 정보 변환 함수
-        convertAgeRange(ageRange) {
-            if (ageRange.includes("~")) {
-                const ageRangeParts = ageRange.split("~");
-                return `${ageRangeParts[0]}대`;
+        convertAgeRange(age) {
+            if (age === "14~19" || "14-19") {
+                return "10";
+            } else if (age === "20~29" || "20-29") {
+                return "20";
+            } else if (age === "30~39" || "30-39") {
+                return "30";
+            } else if (age === "40~49" || "40-49") {
+                return "40";
+            } else if (age === "50~59") {
+                return "50";
+            } else {
+                return age;
             }
-            return ageRange;
         },
         async fetchUserInfo(email) {
             try {
                 const response = await axios.get("mypage/getUserInfo", {
                     params: { userEmail: email },
                 });
+
                 this.originalData = {
                     ...response.data,
+                    //age: response.data.age, // age 프로퍼티에 값을 할당
+                    ageRange: this.convertAgeRange(response.data.age), // 나이대 변환
                 };
 
                 this.updatedFields = { ...this.originalData }; // 수정할 정보를 updatedFields에 복사
@@ -134,6 +128,13 @@ export default {
                 this.message = "회원정보 수정에 실패했습니다.";
             }
         },
+        convertGender(genderCode) {
+            if (genderCode === "f") {
+                return "여자";
+            } else if (genderCode === "m") {
+                return "남자";
+            }
+        },
         openAddressSearch() {
             new daum.Postcode({
                 oncomplete: (data) => {
@@ -161,5 +162,63 @@ export default {
 .userUpdateTitle {
     font-weight: bold;
     font-size: 30px;
+}
+/* ... 기존 스타일 ... */
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+
+    gap: 15px;
+}
+
+.input-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.input-item label {
+    display: inline-block;
+    width: 120px; /* 레이블의 너비 조정 */
+    text-align: left;
+}
+.input-item input {
+    flex: 1; /* 입력 필드 너비 조정 */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100px; /* 너비를 2/5로 조절 */
+    /* readonly 상태일 때의 배경색과 글자색 설정 */
+    background-color: #f5f5f5; /* 배경색 */
+    color: #999; /* 글자색 */
+    pointer-events: none;
+}
+.input-item input:not([readonly]) {
+    /* readonly가 아닌 input에는 배경색과 글자색을 설정하지 않음 */
+    background-color: white;
+    color: black;
+    pointer-events: auto;
+}
+.button-group {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 20px;
+}
+
+.button-group button {
+    padding: 5px 10px; /* 버튼의 내부 여백을 조절하여 크기를 조정 */
+    font-size: 16px; /* 버튼의 폰트 크기를 조정 */
+}
+
+.status-message {
+    margin-top: 10px;
+    font-weight: bold;
+}
+.section-divider {
+    margin-top: 40px;
+    margin-bottom: 40px;
 }
 </style>
