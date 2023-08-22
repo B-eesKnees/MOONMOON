@@ -41,10 +41,20 @@
 .qna-all {
   /* border: 1px solid #000; */
   border-top: 1px solid #000;
-  background-color: aquamarine;
+  /* background-color: aquamarine; */
   margin-top: 115px;
   width: 100%;
+  height: 100%;
+  display: inline-block;
 }
+
+.qna-list {
+  border: #000 1px solid;
+  display: flex;
+}
+
+
+
 
 .qna-box {
   display: flex;
@@ -77,15 +87,17 @@
   margin-top: 43px;
   margin-bottom: 43px;
   margin-left: 70px;
-  width: 700px;
+  width: 50%;
   font-size: 18px;
   border: #000 solid 1px;
-  /* display: inline-block; */
+  display: inline-block;
 }
 
 .qna-date {
   margin-top: 45px;
   margin-right: 40px;
+  position: absolute;
+  right: 0;
 }
 
 .con-open_close {  
@@ -95,6 +107,8 @@
   height: 20px;
   border: none;
   background: none;
+  position: absolute;
+  right: 0;
 }
 
 
@@ -103,8 +117,8 @@
 }
 
 .younju {  
-  position: absolute;
-  left: 120px;
+  position: relative;
+  /* left: 120px; */
   margin-top: 130px;
   width: 80%;
   border: #000 solid 1px;

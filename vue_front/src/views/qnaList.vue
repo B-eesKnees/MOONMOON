@@ -14,22 +14,20 @@
                             <div class="qna-btn" v-if="!nodata">1:1 문의하기</div>
                         </a>
 
-                        <div class="qna-all">
-                            <div v-if="qnaAllList.length === 0">
-                                <div id="nodata" class="nodata">작성한 문의글이 없습니다</div>
-                            </div>
-                            <qnaAll
-                                v-if="!nodata && qnaAllList.length > 0"
-                                :qnaAllList="qnaAllList"
-                                :showQnaAllContent="showQnaAllContent"
-                                :toggleContent1="toggleContent1"
-                                :conOpenBotton="conOpenBotton"
-                                :conCloseBotton="conCloseBotton"
-                                :editMode="editMode"
-                                :qnaDelFunction="qnaDel"
-                                :getEditQnaId="EditId"
-                            ></qnaAll>
+                        <div v-if="qnaAllList.length === 0">
+                            <div id="nodata" class="nodata">작성한 문의글이 없습니다</div>
                         </div>
+                        <qnaAll
+                            v-if="!nodata && qnaAllList.length > 0"
+                            :qnaAllList="qnaAllList"
+                            :showQnaAllContent="showQnaAllContent"
+                            :toggleContent1="toggleContent1"
+                            :conOpenBotton="conOpenBotton"
+                            :conCloseBotton="conCloseBotton"
+                            :editMode="editMode"
+                            :qnaDelFunction="qnaDel"
+                            :getEditQnaId="EditId"
+                        ></qnaAll>
                     </TabItem>
                     <TabItem title="답변 대기">
                         <a href="http://localhost:8080/qnaWrite">
