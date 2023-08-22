@@ -450,14 +450,23 @@ router.get("/orderHistory", async (req, res) => {
       o.ORDER_STATE,
       o.ORDER_PAY,
       o.ORDER_USER_EMAIL,
-      oi.ORDERITEM_CNT,
+      SUM(oi.ORDERITEM_CNT) AS ORDER_CNT,
       b.BOOK_TITLE,
       b.BOOK_AUTHOR,
       b.BOOK_COVER
     FROM \`order\` o
     JOIN orderitem oi ON o.ORDER_ID = oi.ORDERITEM_ORDER_ID
     JOIN book b ON oi.ORDERITEM_BOOK_ID = b.BOOK_ID
-    WHERE o.ORDER_USER_EMAIL = ?;
+    WHERE o.ORDER_USER_EMAIL = ?
+    GROUP BY
+      o.ORDER_ID,
+      o.ORDER_PAYDATE,
+      o.ORDER_STATE,
+      o.ORDER_PAY,
+      o.ORDER_USER_EMAIL,
+      b.BOOK_TITLE,
+      b.BOOK_AUTHOR,
+      b.BOOK_COVER;
   `;
 
   db.query(query, [userEmail], (err, results) => {
@@ -475,13 +484,14 @@ router.get("/orderHistory", async (req, res) => {
             ORDER_STATE: result.ORDER_STATE,
             ORDER_PAY: result.ORDER_PAY,
             ORDER_USER_EMAIL: result.ORDER_USER_EMAIL,
+            ORDER_CNT: 0,
             items: [], // 주문에 대한 책 정보를 저장할 배열
           };
         }
-
+        orders[result.ORDER_ID].ORDER_CNT += result.ORDER_CNT;
         // 주문에 대한 책 정보 객체를 배열에 추가
         orders[result.ORDER_ID].items.push({
-          ORDERITEM_CNT: result.ORDERITEM_CNT,
+          ORDERITEM_CNT: result.ORDER_CNT, // 수정된 부분
           BOOK_TITLE: result.BOOK_TITLE,
           BOOK_AUTHOR: result.BOOK_AUTHOR,
           BOOK_COVER: result.BOOK_COVER,
@@ -657,6 +667,8 @@ router.get("/notYetReview/:userEmail", (req, res) => {
     }
   });
 });
+//주문취소
+router.post("ordercancel", (req, res) => {});
 
 //구매확정업데이트
 router.put("/updatebuycheck/:orderItemId", (req, res) => {
