@@ -8,7 +8,7 @@ const queries = {
                      from user
                      where USER_EMAIL = ?`,
 
-    payBookInfoQuery: `SELECT b.BOOK_COVER as image, b.BOOK_TITLE as name, b.BOOK_PRICE as price, o.ORDERITEM_CNT as quantity, o.ORDERITEM_PRICE as totalPrice
+    payBookInfoQuery: `SELECT b.BOOK_COVER as image, b.BOOK_TITLE as name, b.BOOK_PRICE as price, o.ORDERITEM_CNT as quantity, (o.ORDERITEM_PRICE * o.ORDERITEM_CNT) as totalPrice
                      FROM book b
                      JOIN orderitem o ON b.BOOK_ID = o.ORDERITEM_BOOK_ID
                      where o.ORDERITEM_ORDER_ID = ?`,
@@ -31,7 +31,7 @@ const queries = {
                        where ORDERITEM_ORDER_ID = ?`,
 
     updatePriceDataQuery: `update \`order\`
-                         set ORDER_PAY = ?, ORDER_COST = ?, ORDER_COUPON = ?, ORDER_USEPOINT = ?, ORDER_ADDPOINT = ?, ORDER_PAYMETHOD = ?, ORDER_PAYDATE= CURRENT_TIMESTAMP, ORDER_STATE= ?
+                         set ORDER_PAY = ?, ORDER_COST = ?, ORDER_COUPON = ?, ORDER_USEPOINT = ?, ORDER_ADDPOINT = ?, ORDER_PAYMETHOD = ?, ORDER_PAYDATE= CURRENT_TIMESTAMP, ORDER_STATE= ?, ORDER_CNT = ?
                          where ORDER_ID = ?;`,
 };
 
@@ -199,10 +199,9 @@ router.post("/updatePriceData", async (request, res) => {
         const ORDER_ADDPOINT = request.body.earnPoint;
         const ORDER_ID = request.body.payID;
         const ORDER_PAYMETHOD = request.body.payMethod;
-        const ORDER_PAYDATE = request.body.payDate;
         const ORDER_STATE = request.body.payState;
-
-        res.send(await req(queries.updatePriceDataQuery, [ORDER_PAY, ORDER_COST, ORDER_COUPON, ORDER_USEPOINT, ORDER_ADDPOINT, ORDER_PAYMETHOD, ORDER_STATE, ORDER_ID]));
+        const ORDER_CNT = request.body.payCount;
+        res.send(await req(queries.updatePriceDataQuery, [ORDER_PAY, ORDER_COST, ORDER_COUPON, ORDER_USEPOINT, ORDER_ADDPOINT, ORDER_PAYMETHOD, ORDER_STATE, ORDER_CNT, ORDER_ID]));
         console.log("ORDER_PAY:", ORDER_PAY);
         console.log("ORDER_COST:", ORDER_COST);
         console.log("ORDER_COUPON:", ORDER_COUPON);
@@ -230,5 +229,23 @@ function calAfterCouponPrice(couponRatio, originalPrice) {
 
     return discountPrice;
 }
+//결제 완료한거 안보이게 하기
+//----------------------------------
+router.post("/checkS", async (req, res) => {
+    const bookid = req.body.bookid;
+
+    db.query(`select * from moonmoon.order where ORDER_ID = ?`, bookid, (err, result) => {
+        if (err) {
+            res.status(200).send(err);
+        } else {
+            console.log(result.ORDER_STATE == null);
+            if (result.ORDER_STATE == null) {
+                res.status(200).send("정상접근");
+            } else {
+                res.status(200).send("비정상접근");
+            }
+        }
+    });
+});
 
 module.exports = router;

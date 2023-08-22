@@ -50,9 +50,9 @@
                                     <div class="prod_info_box">
                                         <div class="prod_info">
                                             <div class="prod_name">{{ book.name }}</div>
-                                            <div class="book_price">{{ book.price }}원</div>
+                                            <div class="book_price">{{ comma(book.price) }}원</div>
                                             <div class="book_q">{{ book.quantity }}개</div>
-                                            <div class="book_total">{{ book.totalPrice }}원</div>
+                                            <div class="book_total">{{ comma(book.totalPrice) }}원</div>
                                         </div>
                                     </div>
                                 </div>
@@ -70,6 +70,7 @@
                     </option>
                 </select>
                 <button @click="applyCoupon">사용</button>
+                <button v-show="useCoupon" @click="cancelCoupon">취소</button>
             </div>
             <div class="use_point">
                 <div class="point_text">포인트</div>
@@ -82,20 +83,20 @@
                 <div class="pay_wrap_ex">
                     <div class="pay_before">
                         <span class="pay_text">상품 금액</span>
-                        <span class="won_ex">{{ originalPrice }} 원</span>
+                        <span class="won_ex">{{ comma(originalPrice) }} 원</span>
                     </div>
                     <div class="pay_fee">
                         <span class="pay_text">배송비</span>
-                        <span class="won_ex" v-bind="calDeliveryFee">{{ this.deliveryFee }} 원</span>
+                        <span class="won_ex" v-bind="calDeliveryFee">{{ comma(this.deliveryFee) }} 원</span>
                     </div>
                     <div class="pay_usePoint">
                         <span class="pay_text">할인 금액</span>
-                        <span class="point" v-bind="calDiscountAmount">- {{ this.discountAmount }} 원</span>
+                        <span class="point" v-bind="calDiscountAmount">- {{ comma(this.discountAmount) }} 원</span>
                     </div>
                     <hr />
                     <div class="pay_after">
                         <span class="pay_text">결제 금액</span>
-                        <span class="won_ex" v-bind="calFinalPrice">{{ this.finalPrice }} 원</span>
+                        <span class="won_ex" v-bind="calFinalPrice">{{ comma(this.finalPrice) }} 원</span>
                     </div>
                     <div class="pay_getPoint">
                         <span class="pay_text">총 적립 포인트</span>
@@ -133,6 +134,7 @@ export default {
             selectedCoupon: "",
             usePoint: 0,
             isModalOpen: true,
+            useCoupon: false,
             payID: this.$route.query.payid,
             userEmail: localStorage.getItem("userID"),
             originalPrice: 0,
@@ -153,6 +155,8 @@ export default {
         this.getCouponList();
         this.getUserPoint();
         this.getOriginalPrice();
+        this.checkState();
+
         console.log(this.$route.query.payid);
         console.log(this.payID);
     },
@@ -175,7 +179,7 @@ export default {
             if (this.usePoint > this.dfCalPrice) {
                 this.earnPoint = 0;
             } else {
-                this.earnPoint = this.dfCalPrice * 0.05;
+                this.earnPoint = Math.round(this.dfCalPrice * 0.05);
             }
         },
         calFinalPrice() {
@@ -224,6 +228,7 @@ export default {
                 data: { payID: [payid] },
             }).then((res) => {
                 this.books = res.data;
+                console.log(this.books);
             });
         },
         getCouponList() {
@@ -240,6 +245,8 @@ export default {
         applyCoupon() {
             console.log("selectedCoupon:", this.selectedCoupon);
             console.log("coupons:", this.coupons);
+            this.useCoupon = true;
+            console.log(this.useCoupon);
 
             if (this.selectedCoupon.indexOf("5%") !== -1) {
                 const selectedCouponRatio = 0.05;
@@ -333,7 +340,7 @@ export default {
                     // param
                     pg: "inicis",
                     pay_method: "card",
-                    name: `${this.user_name}`,
+                    name: this.getBookNames(),
                     amount: `1`, //결제 금액
                     buyer_email: `${this.user_email}`,
                     buyer_name: `${this.user_name}`,
@@ -358,8 +365,8 @@ export default {
                             earnPoint: this.earnPoint,
                             payID: this.payID,
                             payMethod: paytype,
-                            payDate: new Date(),
                             payState: "배송준비",
+                            payCount: this.count,
                         };
 
                         axios({
@@ -375,6 +382,39 @@ export default {
                     }
                 }
             );
+        },
+        getBookNames() {
+            const payName = `${this.books[0].name} ...외 ${this.count - 1} 개`;
+            return payName;
+        },
+        cancelCoupon() {
+            this.useCoupon = false;
+            this.selectedCoupon = ""; // 선택된 쿠폰 초기화
+            this.applyCouponPrice = 0; // 쿠폰 적용 가격 초기화
+        },
+        comma(num) {
+            return String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
+        checkState() {
+            console.log(this.payID);
+
+            axios({
+                url: "/pay/checkS",
+                method: "POST",
+                data: { bookid: this.payID },
+            })
+                .then((res) => {
+                    if (res.data === "정상접근") {
+                        console.log("ok");
+                        return;
+                    } else {
+                        alert("잘못된 접근입니다.");
+                        window.location.href = "/";
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         },
     },
 };
