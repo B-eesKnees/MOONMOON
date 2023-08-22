@@ -48,7 +48,9 @@
 
                 <!-- 오른쪽에 책 정보 -->
                 <div class="book-info">
-                    <p>{{ order.items[0].BOOK_TITLE }}</p>
+                    <p>
+                        {{ order.items[0].BOOK_TITLE }} <span>외 {{ order.items.ORDERITEM_CNT }}</span>
+                    </p>
                     <p>가격: {{ order.ORDER_PAY }}</p>
                     <p>주문 상세</p>
                 </div>
