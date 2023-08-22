@@ -439,6 +439,25 @@ router.get("/couponupgrade/:userEmail", (req, res) => {
     }
   );
 });
+//전체 주문내역
+router.get("/orderHistory", async (req, res) => {
+  const userEmail = req.query.userEmail; // 사용자 이메일 파라미터 받아오기
+
+  const query = `SELECT o.ORDER_ID, o.ORDER_PAYDATE,o.ORDER_STATE, oi.ORDERITEM_ID, oi.ORDERITEM_BOOK_ID, b.BOOK_TITLE, b.BOOK_COVER,b.BOOK_AUTHOR, oi.ORDERITEM_PRICE, oi.ORDERITEM_CNT
+  FROM \`order\` o
+  JOIN orderitem oi ON o.ORDER_ID = oi.ORDERITEM_ORDER_ID
+  JOIN book b ON oi.ORDERITEM_BOOK_ID = b.BOOK_ID
+  WHERE o.ORDER_USER_EMAIL = ?`;
+
+  db.query(query, [userEmail], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: "서버 에러" });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
 
 //배송 상태별 조회  + 배송 상세 표시
 const ORDER_STATE = {
@@ -713,46 +732,52 @@ router.get("/notYetReview/:userEmail", (req, res) => {
     }
   });
 });
-
-//회원정보 수정(주소, 번호 , 비밀번호,,,만 )
+//회원정보 업데이트 라우터
 router.post("/updateUserInfo", async (req, res) => {
   const email = req.body.email;
-  const address = req.body.address;
-  const zipcode = req.body.zipcode;
-  const phone_num = req.body.phone_num;
-  const pw = req.body.password;
+  const updatedFields = req.body.updatedFields;
+
+  const add1 = updatedFields.add1;
+  const add2 = updatedFields.add2;
+  const zipcode = updatedFields.zipcode;
+  const phone_num = updatedFields.phone_num;
+  const pw = updatedFields.password;
 
   let encryptedpw = null;
 
   if (pw !== "") {
-    encryptedpw = await bcrypt.hash(pw, 12); // 비밀번호가 null이 아닌 경우에만 암호화
+    encryptedpw = await bcrypt.hash(pw, 12);
   }
+
   let query = `UPDATE moonmoon.user SET`;
   let queryParams = [];
 
-  if (address) {
-    query += ` USER_ADD = ?,`;
-    queryParams.push(address);
+  if (add1 !== null) {
+    query += ` USER_ADD1 = ?,`;
+    queryParams.push(add1);
   }
 
-  if (zipcode) {
+  if (add2 !== null) {
+    query += ` USER_ADD2 = ?,`;
+    queryParams.push(add2);
+  }
+
+  if (zipcode !== null) {
     query += ` USER_ZIPCODE = ?,`;
     queryParams.push(zipcode);
   }
 
-  if (phone_num) {
-    //전화번호가 전달이 되면 쿼리에 추가
+  if (phone_num !== null) {
     query += ` USER_PHONE = ?,`;
     queryParams.push(phone_num);
   }
 
   if (encryptedpw !== null) {
-    //비밀번호가 전달이 되면 쿼리에 추가
     query += ` USER_PW = ?,`;
     queryParams.push(encryptedpw);
   }
 
-  query = query.slice(0, -1); // 마지막 쉼표 제거 쿼리에 추가
+  query = query.slice(0, -1);
   query += ` WHERE USER_EMAIL = ?`;
   queryParams.push(email);
 
@@ -763,6 +788,40 @@ router.post("/updateUserInfo", async (req, res) => {
       console.log(query);
       console.log(queryParams);
       res.status(200).json({ message: "회원정보 수정 완료" });
+    }
+  });
+});
+
+// 회원정보 가져오는 라우터
+router.get("/getUserInfo", async (req, res) => {
+  const userEmail = req.query.userEmail; // 쿼리 파라미터로 사용자 이메일 받아오기
+
+  const query = `SELECT * FROM user WHERE user_email = ?`;
+
+  db.query(query, [userEmail], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: "서버 에러" });
+    } else {
+      if (results.length > 0) {
+        const user = results[0]; // 첫 번째 사용자 정보 가져오기
+
+        const userInfo = {
+          email: user.USER_EMAIL,
+          name: user.USER_NAME,
+          password: "", // 비밀번호는 보내지 않도록 설정
+          sex: user.USER_SEX,
+          age: user.USER_AGE,
+          add1: user.USER_ADD1,
+          add2: user.USER_ADD2,
+          zipcode: user.USER_ZIPCODE,
+          phone_num: user.USER_PHONE,
+        };
+
+        res.status(200).json(userInfo);
+      } else {
+        res.status(404).json({ error: "사용자 정보를 찾을 수 없음" });
+      }
     }
   });
 });
