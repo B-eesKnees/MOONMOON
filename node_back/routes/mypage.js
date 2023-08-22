@@ -443,11 +443,11 @@ router.get("/couponupgrade/:userEmail", (req, res) => {
 router.get("/orderHistory", async (req, res) => {
   const userEmail = req.query.userEmail; // 사용자 이메일 파라미터 받아오기
 
-  const query = `SELECT o.ORDER_ID, o.ORDER_PAYDATE,o.ORDER_STATE, oi.ORDERITEM_ID, oi.ORDERITEM_BOOK_ID, b.BOOK_TITLE, b.BOOK_COVER,b.BOOK_AUTHOR, oi.ORDERITEM_PRICE, oi.ORDERITEM_CNT
+  const query = `SELECT o.ORDER_ID, o.ORDER_PAYDATE, o.ORDER_STATE, o.ORDER_PAY, o.ORDER_CNT, oi.ORDERITEM_ID, oi.ORDERITEM_BOOK_ID, b.BOOK_TITLE, b.BOOK_COVER, b.BOOK_AUTHOR
   FROM \`order\` o
   JOIN orderitem oi ON o.ORDER_ID = oi.ORDERITEM_ORDER_ID
   JOIN book b ON oi.ORDERITEM_BOOK_ID = b.BOOK_ID
-  WHERE o.ORDER_USER_EMAIL = ?`;
+  WHERE o.ORDER_USER_EMAIL = ?;`;
 
   db.query(query, [userEmail], (err, results) => {
     if (err) {
