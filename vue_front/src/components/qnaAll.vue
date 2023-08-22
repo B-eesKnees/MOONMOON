@@ -63,7 +63,15 @@ export default {
                             </a>
                             <button @click="handleQnaDel(all.QNA_ID)">삭제</button>
                         </div>
-                        <div class="qna-reply">{{ all.QNA_REPLY }}</div>
+
+                        <div class="qna-reply">
+                            <hr class="on_reply" v-if="all.QNA_REPLY" />
+                            <svg class="reply_s" xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
+                                <line x1="0.5" x2="0.5" y2="16" stroke="black" />
+                                <line x1="16" y1="16.5" x2="-4.37114e-08" y2="16.5" stroke="black" />
+                            </svg>
+                            {{ all.QNA_REPLY }}
+                        </div>
                     </div>
                 </div>
                 <!-- 버튼 토글-문의 내용/답변 -->

@@ -179,7 +179,7 @@ export default {
             if (this.usePoint > this.dfCalPrice) {
                 this.earnPoint = 0;
             } else {
-                this.earnPoint = Math.round(this.dfCalPrice * 0.05);
+                this.earnPoint = Math.floor(this.dfCalPrice * 0.05);
             }
         },
         calFinalPrice() {
@@ -366,6 +366,7 @@ export default {
                 (rsp) => {
                     // callback
                     if (rsp.success) {
+                        console.log(rsp.success);
                         let paytype = "";
                         if (rsp.card_name === null) {
                             paytype = "페이";
@@ -389,7 +390,17 @@ export default {
                             method: "post",
                             data: priceData,
                         }).then((res) => {
-                            console.log("success");
+                            if (this.$route.query.usecart) {
+                                axios({
+                                    url: "/cart/allDelete",
+                                    method: "POST",
+                                    data: { email: localStorage.getItem("userID") },
+                                }).then(() => {
+                                    this.$router.push({ name: "resultpage", query: { payid: this.payID } });
+                                });
+                            } else {
+                                this.$router.push({ name: "resultpage", query: { payid: this.payID } });
+                            }
                             alert("결제가 완료되었습니다.");
                         });
                     } else {

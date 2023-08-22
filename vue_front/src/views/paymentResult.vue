@@ -11,7 +11,7 @@
         <div class="result_title"><span class="text_color">주문이 완료</span>되었습니다.</div>
         <div class="payment_info">
             <span>주문번호</span><span class="payment_no">{{ payment_no }}</span> <br /><br />
-            <span>구매내역</span><span class="payment_title">{{ bookTitle_data[0]?.BOOK_TITLE }}</span
+            <span>구매내역</span><span class="pay_result_title">{{ bookTitle_data[0]?.BOOK_TITLE }}</span
             ><span v-if="bookTitle_data.length > 1"> 외 {{ bookTitle_data.length - 1 }} 개</span><br />
             <br /><br /><br />
             <div class="payresult_user_info">
@@ -31,34 +31,34 @@
             <div class="bill_top">
                 <div class="cost">
                     <div class="payment_cost_text">주문금액</div>
-                    <div class="payment_cost1">23000 원</div>
+                    <div class="payment_cost1">{{ payInfo[0]?.ORDER_PAY }} 원</div>
                 </div>
                 <div class="cost_book">
                     <div class="payment_cost_text">상품금액</div>
-                    <div class="payment_cost2">9900 원</div>
+                    <div class="payment_cost2">{{ payInfo[0]?.price }} 원</div>
                 </div>
                 <div class="cost_fee">
                     <div class="payment_cost_text">배송비</div>
-                    <div class="payment_cost3">2500 원</div>
+                    <div class="payment_cost3">{{ payInfo[0]?.ORDER_COST }} 원</div>
                 </div>
                 <div class="cost_coupon">
                     <div class="payment_cost_text">쿠폰할인</div>
-                    <div class="payment_cost4">-1000 원</div>
+                    <div class="payment_cost4">-{{ payInfo[0]?.ORDER_COUPON }} 원</div>
                 </div>
                 <div class="cost_point">
                     <div class="payment_cost_text">사용한 포인트</div>
-                    <div class="payment_cost5">0 포인트</div>
+                    <div class="payment_cost5">{{ payInfo[0]?.ORDER_USEPOINT }} P</div>
                 </div>
             </div>
 
             <div class="bill_bottom">
                 <div class="pay_result">결제 상세</div>
                 <div class="pay_info">
-                    <div class="card_info">신한 카드</div>
-                    <div class="pay_cost">23000 원</div>
+                    <div class="card_info">{{ payInfo[0]?.ORDER_PAYMETHOD }}</div>
+                    <div class="pay_cost">{{ payInfo[0]?.ORDER_PAY }} 원</div>
                     <br />
                 </div>
-                <div class="pay_date">2023-08-02 11:25</div>
+                <div class="pay_date">{{ payInfo[0]?.date }}</div>
             </div>
         </div>
     </div>
@@ -72,18 +72,19 @@ export default {
     components: { gnbbar },
     data() {
         return {
-            payment_no: this.$route.params.orderNum,
+            payment_no: this.$route.query.payid,
             bookTitle_data: [],
+            payInfo: [],
         };
     },
     computed: {},
     mounted() {
-        // this.getBookTitle();
-        // this.cutTitle();
+        this.getBookTitle();
+        this.getPayInfo();
     },
     methods: {
         getBookTitle() {
-            const cartNum = this.$route.params.orderNum;
+            const cartNum = this.payment_no;
 
             axios({
                 url: "/payresult",
@@ -107,6 +108,20 @@ export default {
                 return this.bookTitle_data[0].BOOK_TITLE;
             }
         },
+        getPayInfo() {
+            axios({
+                url: "/payresult/info",
+                method: "POST",
+                data: { payid: this.payment_no },
+            })
+                .then((res) => {
+                    this.payInfo = res.data;
+                    console.log(this.payInfo[0].ORDER_PAY);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
     },
 };
 </script>
@@ -125,7 +140,7 @@ export default {
     margin-left: 12%;
     text-align: left;
 }
-.payment_title {
+.pay_result_title {
     margin-left: 80px;
 }
 .payment_no {
@@ -156,7 +171,7 @@ export default {
     border: 1px solid #000000;
     width: 30%;
     height: 100%;
-    top: -430px;
+    top: -420px;
     right: -830px;
     background-image: url("../assets/img/bill.png");
     background-size: 100%;

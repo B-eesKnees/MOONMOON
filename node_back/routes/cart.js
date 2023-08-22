@@ -100,4 +100,16 @@ router.post("/delete", async (req, res) => {
     });
 });
 
+router.post("/allDelete", async (req, res) => {
+    const userEmail = req.body.email;
+
+    db.query(`delete from cart where CART_USER_EMAIL = ?`, userEmail, (err, result) => {
+        if (err) {
+            res.send(err);
+        } else {
+            res.send("결제완료");
+        }
+    });
+});
+
 module.exports = router;
