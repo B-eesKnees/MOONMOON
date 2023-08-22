@@ -505,6 +505,47 @@ router.get("/orderHistory", async (req, res) => {
   });
 });
 
+//배송준비일ㄸㅐ만 주문취소가능
+router.post("/ordercancel", (req, res) => {
+  const { orderId, userEmail } = req.body;
+
+  const query = `SELECT * FROM moonmoon.order WHERE order_id = ? AND order_user_email = ?`;
+
+  db.query(query, [orderId, userEmail], (err, results) => {
+    if (err) {
+      console.error("주문 조회 오류:", err);
+      return res
+        .status(500)
+        .json({ message: "주문 조회 과정에서 오류가 발생했습니다." });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "주문을 찾을 수 없습니다." });
+    }
+
+    const orderResult = results[0];
+    console.log(orderResult.order_state);
+    if (orderResult.order_state !== "배송준비") {
+      return res
+        .status(200)
+        .json({ message: "주문 취소가 불가능한 상태입니다." });
+    }
+
+    const query = `UPDATE moonmoon.order SET order_state = '주문취소' WHERE order_id = ?`;
+
+    db.query(query, [orderId], (updateErr) => {
+      if (updateErr) {
+        console.error("주문 취소 처리 오류:", updateErr);
+        return res
+          .status(500)
+          .json({ message: "주문 취소 과정에서 오류가 발생했습니다." });
+      }
+
+      return res.status(200).json({ message: "주문이 취소되었습니다." });
+    });
+  });
+});
+
 //배송 상태별 조회  + 배송 상세 표시
 const ORDER_STATE = {
   ready: "배송준비",
