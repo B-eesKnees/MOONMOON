@@ -33,7 +33,9 @@ const queries = {
                  set QNA_TITLE = ?, QNA_CON = ?
                  where QNA_ID = ?`,
 
-  qnaDoneCountQuery: ``,
+  qnaDoneCountQuery: `select count(*) as doneCount
+                      from qna
+                      where QNA_USER_EMAIL = ? and QNA_REP = 1;`,
 }
 
 // 데이터베이스 작업 함수
@@ -192,7 +194,19 @@ router.post('/qnaDel', async (request, res) => {
 });
 
 
-//
+// 답변 완료 갯수
+router.get("/qnaDoneCount", async (request, res) => {
+  try {
+    const userEmail = request.body.email;
+
+    res.send(await req(queries.qnaDoneCountQuery, userEmail));
+    console.log(userEmail);
+  } catch (err) {
+    res.status(500).send({
+      error:err
+    });
+  }
+});
 
 
 // 문의 답변 작성(admin 계정만) - update로 써야할 듯
