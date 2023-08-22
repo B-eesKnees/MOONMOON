@@ -25,6 +25,14 @@ const queries = {
   bookCountQuery: `select sum(ORDERITEM_CNT) as ORDERITEM_CNT
                    from orderitem
                    where ORDERITEM_ORDER_ID = ?`,
+
+  originalPriceQuery: `select sum(ORDERITEM_PRICE*ORDERITEM_CNT) as oP
+                       from orderitem
+                       where ORDERITEM_ORDER_ID = ?`,
+
+  updatePriceDataQuery: `update \`order\`
+                         set ORDER_PAY = ?, ORDER_COST = ?, ORDER_COUPON = ?, ORDER_USEPOINT = ?, ORDER_ADDPOINT = ?
+                         where ORDER_ID = ?;`,
 }
 
 // 데이터베이스 작업 함수
@@ -126,11 +134,12 @@ router.get("/couponList", async (request, res) => {
 });
 
 // 사용자가 선택한 쿠폰 가격에 적용
-router.post("/applyCoupon", (request, res) => {
-    const selectedCoupon = request.body.selectedCoupon; // req.body.selectedCoupon
-    const selectedCouponRatio = request.body.selectedCouponRatio;
+router.post("/applyCoupon", (request, res) => { // req.body.selectedCoupon
+    const selectedCouponRatio = request.body.selectedCoupon;
     // 선택한 쿠폰의 CouponRatio 받아올 수 있나??? 받아올 수 있으면 위에 selectedCoupon 변수는 빼도 됨
-    const originalPrice = 10000; // 쿠폰 적용 전 금액 -- 변수 수정해야함!!!!!!!!!!!!!
+    const originalPrice = request.body.originalPrice; // 쿠폰 적용 전 금액 -- 변수 수정해야함!!!!!!!!!!!!!
+    console.log(selectedCouponRatio);
+    console.log(originalPrice);
 
     const applyCouponPrice = calAfterCouponPrice(selectedCouponRatio, originalPrice);
     res.send({ applyCouponPrice });
@@ -151,7 +160,7 @@ router.get("/userPoint", async (request, res) => {
       error:err
     });
   }
-})
+});
 
 // 사용자가 선택한 포인트 가격에 적용
 
@@ -178,13 +187,33 @@ router.get("/payInfo", (req, res) => {
 
 // 가격 관련 ------------------------------------------------------------
 // 상품 금액 (정가 합)
-/* router.get("originalPrice", async (request, res) => {
+router.get("/originalPrice", async (request, res) => {
 
   try {
-    const ORDERITEM_ORDER_ID = request.body.payID
-  }
-}) */
+    const ORDERITEM_ORDER_ID = request.query.payID;
 
+    res.send(await req(queries.originalPriceQuery, ORDERITEM_ORDER_ID));
+    console.log(ORDERITEM_ORDER_ID);
+  } catch (err) {
+    res.status(500).send({
+      error:err
+    });
+  }
+});
+// 가격 디비에 저장
+router.post("/updatePriceData", async (request, res) => {
+    
+  try {
+    const userEmail = request.body.userEmail; 
+
+    res.send(await req(queries.payUserInfoQuery, userEmail));
+    console.log(userEmail); 
+  } catch (err) {
+    res.status(500).send({
+      error:err
+    });
+  }
+});
 
 
 

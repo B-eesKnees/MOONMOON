@@ -2,7 +2,7 @@
 <template>
     <div>
         <GnbBar />
-
+        <myPage_top />
         <div class="mypage_menu">
             <myPageSide />
         </div>
@@ -112,7 +112,54 @@
                             <div class="benefit_text2">출석 할 때 마다 100포인트씩 드려요</div>
                         </div>
                     </TabItem>
-                    <TabItem title="종료된 이벤트"> </TabItem>
+                    <TabItem title="종료된 이벤트">
+                        <div class="closed_event_wrap">
+                            <div class="closed_event_num1">
+                                <div class="event_img_1">
+                                    <img src="../assets/img/event_img_1.png" />
+                                </div>
+                                <div class="event_title_1">
+                                    <p>&lt;보호자 메이킹북&gt; 출간 기념 기대평 이벤트</p>
+                                </div>
+                                <div class="event_date_1">
+                                    <p>2023/08/16 ~ 2023/08/18</p>
+                                </div>
+                            </div>
+                            <div class="closed_event_num2">
+                                <div class="event_img_2">
+                                    <img src="../assets/img/event_img_2.png" />
+                                </div>
+                                <div class="event_title_2">
+                                    <p>&lt;내 인생에 무임술차 좀 할게요&gt; 북토크 이벤트</p>
+                                </div>
+                                <div class="event_date_2">
+                                    <p>2023/07/23 ~ 2023/07/30</p>
+                                </div>
+                            </div>
+                            <div class="closed_event_num3">
+                                <div class="event_img_3">
+                                    <img src="../assets/img/event_img_3.png" />
+                                </div>
+                                <div class="event_title_3">
+                                    <p>&lt;지금 당신이 글을 써야 하는 이유&gt; 출간 기념 강연회</p>
+                                </div>
+                                <div class="event_date_3">
+                                    <p>2023/07/20 ~ 2023/07/27</p>
+                                </div>
+                            </div>
+                            <div class="closed_event_num4">
+                                <div class="event_img_4">
+                                    <img src="../assets/img/event_img_4.png" />
+                                </div>
+                                <div class="event_title_4">
+                                    <p>&lt;좋은 일이 오려고 그러나 보다&gt; 출간 기념 이벤트</p>
+                                </div>
+                                <div class="event_date_4">
+                                    <p>2023/07/19 ~ 2023/08/05</p>
+                                </div>
+                            </div>
+                        </div>
+                    </TabItem>
                 </TabsWrapper>
             </section>
         </div>
@@ -126,6 +173,7 @@ import GnbBar from "../components/gnbBar.vue";
 import TabsWrapper from "../components/TabsWrapper.vue";
 import TabItem from "../components/TabItem.vue";
 import myPageSide from "../components/myPageSide.vue";
+import myPage_top from "@/components/myPage_top.vue";
 axios.defaults.baseURL = "http://localhost:3000";
 axios.defaults.headers.post["Content-Type"] = "application/json;charset=utf-8";
 axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
@@ -136,6 +184,7 @@ export default {
         TabsWrapper,
         TabItem,
         myPageSide,
+        myPage_top,
     },
     data() {
         return {
@@ -164,6 +213,7 @@ export default {
             realMonth: new Date().getMonth() + 1,
             startDay: "",
             calendar: [],
+            selectedTap: "",
         };
     },
     mounted() {

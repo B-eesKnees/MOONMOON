@@ -65,7 +65,7 @@
                 <div class="coupon_text">할인 쿠폰</div>
                 <select v-model="selectedCoupon" class="choice_coupon">
                     <option disabled value="">쿠폰을 선택하세요</option>
-                    <option v-for="coupon in coupons" :key="coupon.name" :value="coupon.value">
+                    <option v-for="coupon in coupons" :key="coupon.name" :value="coupon.name">
                         {{ coupon.name }}
                     </option>
                 </select>
@@ -73,7 +73,7 @@
             </div>
             <div class="use_point">
                 <div class="point_text">포인트</div>
-                <input type="text" />
+                <input type="number" v-model="usePoint" />
                 <button @click="applyPoint">사용</button>
                 <div class="user_havePoint">보유 포인트 : &nbsp;</div>
                 <div class="user_point">{{ point }} P</div>
@@ -86,20 +86,20 @@
                     </div>
                     <div class="pay_fee">
                         <span class="pay_text">배송비</span>
-                        <span class="won_ex">{{ deliveryFee }} 원</span>
+                        <span class="won_ex" v-bind="calDeliveryFee">{{ this.deliveryFee }} 원</span>
                     </div>
                     <div class="pay_usePoint">
                         <span class="pay_text">할인 금액</span>
-                        <span class="point">- {{ discountAmount }} 원</span>
+                        <span class="point" v-bind="calDiscountAmount">- {{ this.discountAmount }} 원</span>
                     </div>
                     <hr />
                     <div class="pay_after">
                         <span class="pay_text">결제 금액</span>
-                        <span class="won_ex">{{ finalPrice }} 원</span>
+                        <span class="won_ex" v-bind="calFinalPrice">{{ this.finalPrice }} 원</span>
                     </div>
                     <div class="pay_getPoint">
                         <span class="pay_text">총 적립 포인트</span>
-                        <span class="won_ex">{{ earnPoint }} P</span>
+                        <span class="won_ex" v-bind="calEarnPoint">{{ this.earnPoint }} P</span>
                     </div>
                     <div class="pay_button_wrap">
                         <button class="pay_button_ex" type="button" @click="startPay">결제하러 가기</button>
@@ -131,15 +131,18 @@ export default {
             nextDay: "",
             month: "",
             selectedCoupon: "",
+            usePoint: 0,
             isModalOpen: true,
             payID: this.$route.query.payid,
             userEmail: localStorage.getItem("userID"),
-            originalPrice: "12345",
-            deliveryFee: "1234",
-            discountAmount: "1234",
-            finalPrice: "1234",
-            earnPoint: "23",
+            originalPrice: "",
+            deliveryFee: "",
+            discountAmount: 0,
+            dfCalPrice: 0,
+            finalPrice: "",
+            earnPoint: "",
             applyCouponPrice: "",
+            applyPointPrice: "",
         };
     },
     mounted() {
@@ -149,8 +152,32 @@ export default {
         this.getBookInfo();
         this.getCouponList();
         this.getUserPoint();
+        this.getOriginalPrice();
         console.log(this.$route.query.payid);
         console.log(this.payID);
+    },
+    computed: {
+        calDiscountAmount() {
+            this.discountAmount = this.applyCouponPrice + this.applyPointPrice;
+            console.log("discountAmount:", this.discountAmount);
+        },
+        calDeliveryFee() {
+            this.dfCalPrice = this.originalPrice - this.discountAmount;
+            console.log("dfCalPrice:", this.dfCalPrice);
+
+            if (this.dfCalPrice < 50000) {
+                this.deliveryFee = 2500;
+            }
+            else {
+                this.deliveryFee = 0;
+            }
+        },
+        calEarnPoint() {
+            this.earnPoint = this.dfCalPrice * 0.05;
+        },
+        calFinalPrice() {
+            this.finalPrice = this.originalPrice - this.discountAmount + this.deliveryFee;
+        },
     },
     methods: {
         getUserInfo() {
@@ -207,6 +234,39 @@ export default {
                 this.coupons = res.data;
             });
         },
+        applyCoupon() {
+            console.log("selectedCoupon:", this.selectedCoupon);
+            console.log("coupons:", this.coupons);
+
+            if (this.selectedCoupon.indexOf("5%") !== -1) {
+                const selectedCouponRatio = 0.05;
+                this.applyCouponPrice = this.originalPrice * selectedCouponRatio;
+            }
+            else if (this.selectedCoupon.indexOf("10%") !== -1) {
+                const selectedCouponRatio = 0.1;
+                this.applyCouponPrice = this.originalPrice * selectedCouponRatio;
+            }
+            else if (this.selectedCoupon.indexOf("15%") !== -1) {
+                const selectedCouponRatio = 0.15;
+                this.applyCouponPrice = this.originalPrice * selectedCouponRatio;
+            }
+            else if (this.selectedCoupon.indexOf("20%") !== -1) {
+                const selectedCouponRatio = 0.2;
+                this.applyCouponPrice = this.originalPrice * selectedCouponRatio;
+            }
+            else if (this.selectedCoupon.indexOf("무료배송") !== -1) {
+                const selectedCouponRatio = 0;
+                this.deliveryFee = 0;
+                this.applyCouponPrice = this.originalPrice * selectedCouponRatio;
+                
+            }
+            else {
+                this.applyCouponPrice = this.originalPrice;
+            }
+            console.log(this.applyCouponPrice);
+            console.log(this.deliveryFee);
+            
+        },
         getUserPoint() {
             const email = this.userEmail;
 
@@ -218,6 +278,45 @@ export default {
                 this.point = res.data[0].USER_POINT;
             });
         },
+        applyPoint() {
+            console.log("usePoint = " + this.usePoint);
+
+            if (this.usePoint > this.point) {
+                alert('보유 포인트보다 많은 포인트를 사용할 수 없습니다.')
+            }
+            else {
+                this.applyPointPrice = this.usePoint;
+            }
+            console.log(this.applyPointPrice);
+        },
+        getOriginalPrice() {
+            const payid = this.payID;
+
+            axios({
+                url: "/pay/originalPrice",
+                method: "get",
+                params: { payID: [ payid ] },
+            }).then((res) => {
+                this.originalPrice = res.data[0].oP;
+            });
+        },       
+        goPriceData() {
+            const priceData = {
+                finalPrice: this.finalPrice,
+                deliveryFee: this.deliveryFee,
+                applyCouponPrice: this.applyCouponPrice,
+                applyPointPrice: this.applyCouponPrice,
+                earnPoint: this.earnPoint,
+            };
+
+            axios({
+                url: "/pay/updatePriceData",
+                method: "post",
+                data: priceData,
+            }).then((res) => {
+                this.coupons = res.data;
+            });
+        }, 
         openAdd() {
             const confmKey = "devU01TX0FVVEgyMDIzMDgwMzE2NTY0NDExMzk4ODQ=";
             const returnUrl = "http://localhost:8080/pay";
@@ -230,22 +329,7 @@ export default {
             // 팝업창을 엽니다.
             window.open(apiUrl, "주소검색팝업", "width=570, height=420, toolbar=no, menubar=no, scrollbars=yes, resizable=no");
         },
-        applyCoupon() {
-            const payload = {
-                selectedCoupon: this.selectedCoupon,
-                selectedCouponRatio: this.coupons.ratio,
-                originalPrice: 10000,
-            };
-
-            axios
-                .post("/pay/applyCoupon", payload)
-                .then((response) => {
-                    const applyCouponPrice = response.data.applyCouponPrice;
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-        },
+        
         startPay() {
             const IMP = window.IMP;
             IMP.init("imp18828153");

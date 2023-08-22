@@ -1,12 +1,14 @@
 .mypage_top {
     margin: 0 auto;
-    border: #000 solid 1px;
+    /* border: #000 solid 1px; */
     display: flex;
     justify-content: space-between;
     /* align-items: center; */
-    width: 70%;
-    height: 40vh;
+    width: 75%;
+    height: 45vh;
     margin-top: 80px;
+    /* padding-bottom: 150px; */
+    border-bottom: #000 1px solid;
 
 }
 
@@ -140,35 +142,25 @@
 
 
 .mypage_top_right {
-  width: 70%;
+  width: 80%;
   /* border: #000 1px solid; */
-  padding: 50px;
+  padding: 50px 0 0 100px  ;
 }
 
 
 .mypage_slide_title {
   /* border: #FFB800 1px solid; */
-  width: 120px;
-  height: 40px;
-  padding: 10px 20px;
+  width: 110px;
+  height: 37px;
+  padding: 10px;
   border-radius: 20px;
   background: #4E4EFF;
   margin-top: -7px;
   text-align: center;
-  font-size: 1.2em;
+  justify-content: center;
+  font-size: 1.1em;
   font-weight: 400;
   color: #fff;
-}
-
-.mypage_slide_set {
-  /* border: #000 solid 1px; */
-  margin-top: 20px;
-}
-
-.mypage_slide {
-  border: #000 1px solid;
-  height: 250px;
-  margin-right: 10px;
 }
 
 
@@ -277,6 +269,11 @@
 }
 
 .carousel__viewport {
+  width: 90%;
+  margin: 0 auto;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
   overflow: hidden;
 }
 
@@ -300,7 +297,7 @@
   justify-content: center;
   list-style: none;
   line-height: 0;
-  margin: 10px 0 0;
+  /* margin: 5px 0 0; */
 }
 
 .carousel__pagination-button {
@@ -328,7 +325,7 @@
 .carousel__slide {
   scroll-snap-stop: auto;
   flex-shrink: 0;
-  margin: 0 20px;
+  margin: 0 10px;
   position: relative;
 
   display: flex;
@@ -337,4 +334,105 @@
 
   /* Fix iOS scrolling #22 */
   transform: translateZ(0);
+}
+
+
+
+.mypage_slide_set {
+  /* border: #000 solid 1px; */
+  margin-top: 30px;
+  width: 90%;
+  margin-left: -20px;
+}
+
+.mypage_slide {
+  /* border: #000 1px solid; */
+  height: 250px;
+  /* margin-right: 5px; */
+}
+
+.my_rec_slide_img {
+  width: 100%;
+}
+
+.my_rec_slide_img > img {
+  width: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+.mypage_menu {
+  position: relative;
+  display: inline-block;
+  margin-top: 20px;
+  margin-left: 13%;
+  width: 13%;
+  height: 1100px;
+  /* border: 1px solid #000; */
+}
+
+
+
+.topMyPage {
+  font-size: 1.8em;
+  margin-top: 50px;
+  /* margin-left: 40px; */
+  margin-bottom: 80px;
+}
+.sideName {
+  font-size: 1.3em;
+  font-weight: 600;
+  margin-bottom: 20px;
+  /* margin-left: 10psx; */
+}
+
+.sideList {
+  font-size: 0.9em;
+  font-weight: 300;
+  margin-left: 10px;
+  margin-bottom: 15px; /* 원하는 간격 값으로 변경 */
+  color: rgb(155, 152, 152);
+}
+.textBlack {
+  color: black;
+}
+.activeText {
+  color: black; /* 활성화된 요소의 텍스트 색상 변경 */
+}
+.borderSideList {
+  background-color: rgba(230, 230, 230, 0.3);
+  padding: 20px 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.right_box {
+  position: absolute;
+  display: inline-block;
+  /* top: 0; */
+  margin-top: 50px;
+  margin-left: 60px;
+  width: 55%;
+  height: 1010px;
+  /* border: 1px solid #000; */
+  /* background-color: aquamarine; */
 }

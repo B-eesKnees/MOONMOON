@@ -16,10 +16,10 @@
         </div>
         <div class="img_right">
             <div class="det_top_star">
-                <star :rating="rating" />
+                <star :rating="convertRatingToHalfStars(averageRating)" />
                 <div class="top_star_score">
-                    9.3
-                    <div class="top_star_count">(43)</div>
+                    {{ averageRating }}
+                    <div class="top_star_count">({{ reviewCount }})</div>
                 </div>
             </div>
             <div class="price_point_set_1">
@@ -58,12 +58,12 @@
                 <div class="won_4">원</div>
             </div>
             <div id="likeButton" class="pay_cart_like">
-                <button class="pay_btn">결제하러 가기</button>
+                <button class="pay_btn" @click="gotoPay">결제하러 가기</button>
                 <button class="go_to_cart">
                     <img @click="addToCart(bookDetailData.BOOK_ID)" src="@/assets/img/detail_cart.png" alt="detail_cart" />
                 </button>
-                <button class="detail_like_btn" @click="isLiked = !isLiked">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" viewBox="0 0 22 20">
+                <button class="detail_like_btn" @click="toggleLike">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" vie wBox="0 0 22 20">
                         <path
                             d="M21.6071 6.60738C21.6071 13.5969 11.7775 19.2544 11.3589 19.488C11.2486 19.5506 11.1252 19.5834 11 19.5834C10.8747 19.5834 10.7514 19.5506 10.641 19.488C10.2224 19.2544 0.392822 13.5969 0.392822 6.60738C0.394577 4.96608 1.01378 3.39252 2.11457 2.23194C3.21537 1.07136 4.70787 0.418537 6.26463 0.416687C8.22033 0.416687 9.93262 1.30335 11 2.8021C12.0673 1.30335 13.7796 0.416687 15.7353 0.416687C17.2921 0.418537 18.7846 1.07136 19.8854 2.23194C20.9862 3.39252 21.6054 4.96608 21.6071 6.60738Z"
                             :fill="isLiked ? '#4E4EFF' : '#7d7d7d'"
@@ -84,7 +84,7 @@
         <div class="rev_top">
             <div class="review_con_title">
                 책 리뷰 (
-                <!-- {{ reviewAverageData.averageRating }} -->
+                {{ reviewCount }}
                 )
             </div>
             <button class="go_to_review" @click="toggleBtn">리뷰 작성</button>
@@ -107,8 +107,8 @@
                 </fieldset>
             </div>
             <div class="write_rev_under_set">
-                <textarea class="write_text" placeholder="댓글을 입력하세요" />
-                <button type="button" class="rev_send">
+                <textarea class="write_text" placeholder="댓글을 입력하세요" ref="reviewComment" />
+                <button type="button" class="rev_send" @click="sendReview">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="23" viewBox="0 0 22 23" fill="none">
                         <path d="M1 1.74097V9.74097L13.5 11.241L1 12.741V21.241L20.5 11.241L1 1.74097Z" fill="#6969FF" stroke="#6969FF" />
                     </svg>
@@ -122,10 +122,10 @@
         <div class="total_rec">
             <div class="total_rec_title">구매자 총점</div>
             <div class="total_star_rec">
-                <star :rating="rating" />
+                <star :rating="convertRatingToHalfStars(averageRating)" />
                 <div class="total_rec_num">
                     <!-- {{ formattedAverageRating }} -->
-                    <span class="total_rec_num_10">/10</span>
+                    <span class="total_rec_num_10">{{ averageRating }}/10</span>
                 </div>
             </div>
         </div>
@@ -158,7 +158,7 @@
     <div class="exc_return_set">
         <div class="exc_return_top">
             <div class="review_con_title">교환/반품/품절 안내</div>
-            <RouterLink to="/" class="go_to_review">1:1 문의</RouterLink>
+            <RouterLink to="/qnaWrite" class="go_to_review">1:1 문의</RouterLink>
         </div>
         <hr class="review_title_next_hr" />
         <div class="exc_return_con_title">반품/교환 방법</div>
@@ -189,7 +189,7 @@
 import axios, { Axios } from "axios";
 import "../assets/css/bookDetail.css";
 import GnbBar from "../components/gnbBar.vue";
-import star from "@/components/review_star.vue";
+import star from "@/components/star.vue";
 
 export default {
     components: {
@@ -200,12 +200,13 @@ export default {
         return {
             bookDetailData: [],
             reviewData: [],
-            // reviewAverageData: {},
+            reviewCount: 0,
             isLiked: false,
             sortvalue: "최신순",
             showBtn: true,
             countNum: 1,
             bookId: this.$route.params.id,
+            averageRating: 0,
 
             // 댓글 데이터를 페이지별로 나눈 배열
         };
@@ -216,6 +217,9 @@ export default {
     mounted() {
         this.bookDetail();
         this.fetchReviewData();
+        this.fetchReviewCount();
+        this.fetchAverageRating();
+        this.setRecentview(); //최근 본 책 db에 삽입
         // this.averageRating();
         // this.reviewAverageData();
     },
@@ -276,7 +280,96 @@ export default {
                 conResult ? (window.location.href = "/login") : null;
             }
         },
+
+        //좋아요 추가/취소
+        toggleLike() {
+            if (localStorage.getItem("userID")) {
+                const data = {
+                    bookId: this.bookId,
+                };
+
+                axios
+                    .post(`http://localhost:3000/floating/cancellikebooks?userEmail=${localStorage.getItem("userID")}`, data)
+                    .then(() => {
+                        this.isLiked = !this.isLiked;
+                        // 좋아요 토글 이후에 리뷰 개수 및 평균 평점 업데이트
+                        this.fetchReviewData();
+                        this.fetchReviewCount();
+                        this.fetchAverageRating();
+                    })
+                    .catch((error) => {
+                        console.error("좋아요 에러", error);
+                    });
+            } else {
+                const result = confirm("로그인이 필요합니다. \n 로그인하시겠습니까?");
+                if (result) {
+                    window.location.href = "/login";
+                }
+            }
+        },
+
+        // ... (
         // 리뷰 시작-------------------------------------------------------------------------------------------------------
+        async sendReview() {
+            const ratingInput = document.querySelector("input[name='rating']:checked");
+            const rating = ratingInput ? parseFloat(ratingInput.value) : 0; // Get selected rating value
+
+            const comment = this.$refs.reviewComment.value; // Get the review comment from the textarea
+
+            if (!rating || !comment) {
+                alert("리뷰 내용과 별점 추가해주세요");
+                return;
+            }
+
+            const reviewData = {
+                REV_WRITER: localStorage.getItem("userID"), // Assuming you store the user's ID in localStorage
+                REV_ORDERITEM_BOOK: this.bookId,
+                REV_COMMENT: comment,
+                REV_RATING: rating,
+            };
+
+            try {
+                const response = await axios.post("http://localhost:3000/review/postreview", reviewData);
+
+                // Reset the review form
+                this.$refs.reviewComment.value = "";
+                ratingInput.checked = false;
+
+                // Fetch updated review data and average rating
+                this.fetchReviewData();
+                this.fetchReviewCount();
+                this.fetchAverageRating();
+
+                alert(response.data.message); // Display success message
+            } catch (error) {
+                console.error("리뷰 전송 실패:", error);
+                alert("리뷰 전송 실패.");
+            }
+        },
+        //리뷰 개수 가져오기
+        fetchReviewCount() {
+            axios({
+                url: `http://localhost:3000/review/reviewcount/${this.bookId}`,
+                method: "get",
+            })
+                .then((response) => {
+                    this.reviewCount = response.data.reviewCount;
+                })
+                .catch((error) => {
+                    console.error("Counting Err", Error);
+                });
+        },
+
+        //리뷰 평균 별점
+        async fetchAverageRating() {
+            try {
+                const res = await axios.get(`http://localhost:3000/review/averagerating/${this.bookId}`);
+                this.averageRating = res.data.averageRating;
+                console.log(this.averageRating);
+            } catch (err) {
+                console.error("average Err", err);
+            }
+        },
 
         // 리뷰 데이터 최신순 리스트 불러오기-------------------------------------------------------------------------------------------------------
         // ---------------------------------------------------------------------------------------------------------------------
@@ -361,8 +454,9 @@ export default {
         //         });
         // },
         convertRatingToHalfStars(number) {
+            number = number / 2;
             if (Number.isInteger(number)) {
-                if (number >= 1 && number <= 10) {
+                if (number >= 1 && number <= 5) {
                     return number;
                 } else {
                     return 0; // 범위를 벗어나는 경우
@@ -371,14 +465,10 @@ export default {
                 const integerPart = Math.floor(number);
                 const decimalPart = number - integerPart;
 
-                if (decimalPart === 0) {
+                if (decimalPart < 0.5) {
                     return integerPart;
-                } else if (decimalPart < 0.25) {
-                    return integerPart + 0.25;
-                } else if (decimalPart >= 0.25 && decimalPart < 0.75) {
-                    return integerPart + 0.5;
                 } else {
-                    return integerPart + 0.75;
+                    return integerPart + 0.5;
                 }
             }
         },
@@ -406,6 +496,60 @@ export default {
             } else {
                 return number.toString(); // 소수인 경우 그대로 문자열로 변환
             }
+        },
+        //최근본 책 데이터 삽입
+        //------------------------
+        setRecentview() {
+            const useremail = localStorage.getItem("userID");
+            const bookid = this.bookId;
+
+            axios({
+                url: "http://localhost:3000/detail/setRec",
+                method: "POST",
+                data: {
+                    email: useremail,
+                    bookid: bookid,
+                },
+            })
+                .then((res) => {
+                    console.log(res.data);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+        //결제
+        //----------------------
+        gotoPay() {
+            const bookPrice = this.bookDetailData.BOOK_PRICE;
+            const bookfee = bookPrice >= 50000 ? 0 : 2500;
+            const totalPoint = bookPrice * 0.05;
+            console.log(this.$route.params.id);
+            console.log(this.bookDetailData.BOOK_PRICE);
+            console.log(bookfee);
+            console.log(totalPoint);
+            console.log(this.bookDetailData.BOOK_TITLE);
+            console.log(localStorage.getItem("userID"));
+
+            axios({
+                url: "http://localhost:3000/detail/gotoPay",
+                method: "POST",
+                data: {
+                    bookId: this.$route.params.id,
+                    bookNum: 1,
+                    email: localStorage.getItem("userID"),
+                    total_pay: bookPrice,
+                    total_point: totalPoint,
+                    fee: bookfee,
+                },
+            })
+                .then((res) => {
+                    console.log(res.data.payID);
+                    this.$router.push({ name: "paymentPage", query: { payid: res.data.payID } });
+                })
+                .catch((error) => {
+                    console.error("Error goToPay :", error);
+                });
         },
     },
 };

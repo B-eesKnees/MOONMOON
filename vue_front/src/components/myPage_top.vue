@@ -17,13 +17,13 @@
                 <a href="#" class="mypage_like">
                     <div class="like_recent_point_cou_text">
                         <div class="like_recent_point_cou_title">찜</div>
-                        <div class="like_recent_point_cou_num">1</div>
+                        <div class="like_recent_point_cou_num">{{ likeCountData }}</div>
                     </div></a
                 >
                 <a href="#" class="mypage_like">
                     <div class="like_recent_point_cou_text">
                         <div class="like_recent_point_cou_title">최근 본</div>
-                        <div class="like_recent_point_cou_num">2</div>
+                        <div class="like_recent_point_cou_num">{{ recentCountData }}</div>
                     </div></a
                 >
                 <a href="#" class="mypage_like">
@@ -35,7 +35,7 @@
                 <a href="#" class="mypage_like">
                     <div class="like_recent_point_cou_text">
                         <div class="like_recent_point_cou_title">쿠폰</div>
-                        <div class="like_recent_point_cou_num">4</div>
+                        <div class="like_recent_point_cou_num">{{ getCouCountData }}</div>
                     </div></a
                 >
             </div>
@@ -43,20 +43,16 @@
         <div class="mypage_top_right">
             <div class="mypage_slide_title">신간 추천</div>
             <carousel :items-to-show="4" class="mypage_slide_set">
-                <slide v-for="slide in 10" :key="slide" class="mypage_slide">
-                    {{ slide }}
-                </slide>
-
-                <!-- <slide> 양소원 바보{{ getUserData.USER_NAME }} </slide>
-                <slide> 양소원 바보 </slide>
-                <slide> 양소원 바보 </slide>
-                <slide> 양소원 바보 </slide>
-                <slide> 양소원 바보 </slide> -->
-
                 <template #addons>
                     <navigation />
                     <pagination />
                 </template>
+                <slide v-for="(item, index) in recListData.slice(0, 9)" :key="index" class="mypage_slide">
+                    <div class="slide_content">
+                        <!-- <div class="my_rec_slide_title">{{ item.BOOK_TITLE }}</div> -->
+                        <div class="my_rec_slide_img"><img :src="item.BOOK_COVER" :alt="item.BOOK_TITLE" /></div>
+                    </div>
+                </slide>
             </carousel>
         </div>
     </div>
@@ -81,11 +77,19 @@ export default {
                 USER_EMAIL: "",
                 USER_POINT: "",
             },
+            likeCountData: 0,
+            recentCountData: 0,
+            getCouCountData: 0,
+            recListData: [],
         };
     },
     created() {
         this.email = localStorage.getItem("userID");
         this.getUser();
+        this.getLikeCount();
+        this.getRecentCount();
+        this.getRecList();
+        this.getCouCount();
     },
     methods: {
         getUser() {
@@ -102,6 +106,63 @@ export default {
                 .catch((error) => {
                     console.error("user데이터 받아오기 오류:", error);
                 });
+        },
+        async getLikeCount() {
+            try {
+                const response = await axios.get("http://localhost:3000/mypage/getlikecount", {
+                    params: {
+                        userEmail: this.email,
+                    },
+                });
+
+                // console.log("서버 응답 데이터:", response.data.likecount);
+                this.likeCountData = response.data.likecount; // 할당
+            } catch (error) {
+                console.error("userlikecount 데이터 받아오기 오류:", error);
+            }
+        },
+        async getRecentCount() {
+            try {
+                const response = await axios.get("http://localhost:3000/mypage/recentcount", {
+                    params: {
+                        userEmail: this.email,
+                    },
+                });
+
+                // console.log("서버 응답 데이터:", response.data.recentCount);
+                this.recentCountData = response.data.recentCount; // 할당
+            } catch (error) {
+                console.error("userlikecount 데이터 받아오기 오류:", error);
+            }
+        },
+        async getCouCount() {
+            try {
+                const response = await axios.get("http://localhost:3000/mypage/couponcount", {
+                    params: {
+                        userEmail: this.email,
+                    },
+                });
+                this.getCouCountData = response.data.couponCount;
+                // console.log(response.data.couponCount);
+            } catch (error) {
+                console.error("쿠폰카운트 데이터 받아오기 오류:", error);
+            }
+        },
+        async getRecList() {
+            if (localStorage.getItem("userID")) {
+                try {
+                    const response = await axios.post("http://localhost:3000/booklist/getRecList", {
+                        email: this.email,
+                    });
+
+                    this.recListData = response.data;
+                    // console.log(response.data);
+                    // displayedPosts에 categoryData 데이터 복사
+                } catch (error) {
+                    alert(error);
+                    console.error(error);
+                }
+            }
         },
     },
 };

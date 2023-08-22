@@ -373,3 +373,137 @@ p {
 .mypage_menu {
     border: none;
 }
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* 종료된 이벤트 */
+.closed_event_wrap {
+    height: 1000px;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 6%;
+    flex-wrap: wrap;
+}
+
+.closed_event_num1 {
+    position: relative;
+    width: 32%;
+    border: 1px solid #ccc;
+    border-radius: 13px;
+    height: 35%;
+    padding-top: 2%;
+    box-shadow: 0px 0px 5px 3px #ccc;
+}
+.closed_event_num2 {
+    position: relative;
+    width: 32%;
+    border: 1px solid #ccc;
+    border-radius: 13px;
+    height: 35%;
+    padding-top: 2%;
+    box-shadow: 0px 0px 5px 3px #ccc;
+}
+.closed_event_num3 {
+    position: relative;
+    width: 32%;
+    border: 1px solid #ccc;
+    border-radius: 13px;
+    height: 35%;
+    padding-top: 2%;
+    box-shadow: 0px 0px 5px 3px #ccc;
+}
+.closed_event_num4 {
+    position: relative;
+    width: 32%;
+    border: 1px solid #ccc;
+    border-radius: 13px;
+    height: 35%;
+    padding-top: 2%;
+    margin-top: -16%;
+    box-shadow: 0px 0px 5px 3px #ccc;
+}
+.event_img_1 {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.event_img_2 {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.event_img_3 {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.event_img_4 {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.event_img_1 img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* 이미지 비율을 유지하면서 부모에 맞게 크기 조절 */
+}
+.event_img_2 img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* 이미지 비율을 유지하면서 부모에 맞게 크기 조절 */
+}
+.event_img_3 img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* 이미지 비율을 유지하면서 부모에 맞게 크기 조절 */
+}
+.event_img_4 img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* 이미지 비율을 유지하면서 부모에 맞게 크기 조절 */
+}
+.event_title_1 {
+    margin-top: 15%;
+    margin-left: 7%;
+    margin-left: 7%;
+    text-align: left;
+    font-weight: bold;
+}
+.event_title_2 {
+    margin-top: 15%;
+    margin-left: 7%;
+    margin-left: 7%;
+    text-align: left;
+    font-weight: bold;
+}
+.event_title_3 {
+    margin-top: 15%;
+    margin-left: 7%;
+    margin-left: 7%;
+    text-align: left;
+    font-weight: bold;
+}
+.event_title_4 {
+    margin-top: 15%;
+    margin-left: 7%;
+    margin-left: 7%;
+    text-align: left;
+    font-weight: bold;
+}
+.event_date_1 {
+    margin-top: 10%;
+    margin-left: 7%;
+}
+.event_date_2 {
+    margin-left: 7%;
+    margin-bottom: 10%;
+}
+.event_date_3 {
+    margin-bottom: 10%;
+    margin-left: 7%;
+}
+.event_date_4 {
+    margin-bottom: 10%;
+    margin-left: 7%;
+}

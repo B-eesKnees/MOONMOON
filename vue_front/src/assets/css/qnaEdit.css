@@ -10,28 +10,9 @@
 
 
 
-.mypage_menu {
-  position: relative;
-  display: inline-block;
-  margin-top: 110px;
-  margin-left: 10%;
-  width: 20%;
-  height: 1100px;
-  border: 1px solid #000;
-}
 
-.right_box {
-  position: absolute;
-  display: inline-block;
-  /* top: 0; */
-  margin-top: 110px;
-  margin-left: 60px;
-  width: 55%;
-  height: 1010px;
-  border: none;
-  /* border: 1px solid #000; */
-  /* background-color: aquamarine; */
-}
+
+
 
 .qna_title_big {  
   font-size: 23pt;

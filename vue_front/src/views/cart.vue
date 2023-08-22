@@ -5,7 +5,9 @@
     <div class="cart_container">
         <div class="cart_wrap">
             <div class="cart_header" style="background-color: white">
-                <input type="checkbox" v-model="selectAll" @change="selectAllItems" id="book_checkbox" /><label for="book_checkbox"></label>
+                <input class="allselect_cart" type="checkbox" v-model="selectAll" @change="selectAllItems" id="book_checkbox" /><label
+                    for="book_checkbox"
+                ></label>
                 <h3>&nbsp;장바구니</h3>
                 <button type="button" class="delete_button" @click="deleteCartBook">삭제</button>
             </div>
@@ -21,7 +23,13 @@
                             <li v-for="(book, index) in cart" :key="index">
                                 <div class="cart_book_info_set">
                                     <div class="cart_book_info_img_set">
-                                        <input type="checkbox" v-model="book.checked" @change="insertOrRemove(book)" :id="'book_checkbox_' + index" />
+                                        <input
+                                            class="select_cart"
+                                            type="checkbox"
+                                            v-model="book.checked"
+                                            @change="insertOrRemove(book)"
+                                            :id="'book_checkbox_' + index"
+                                        />
                                         <label :for="'book_checkbox_' + index"></label>
                                         <img class="cart_img" :src="book.img" />
 
