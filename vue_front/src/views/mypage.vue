@@ -60,6 +60,7 @@
     </div>
 </template>
 <script>
+import axios from "axios";
 import "@/assets/css/myPage.css";
 import GnbBar from "../components/gnbBar.vue";
 import myPage_top from "../components/myPage_top.vue";
@@ -77,6 +78,12 @@ export default {
             orderList: [], // 주문 목록을 저장할 배열
         };
     },
+    created() {
+        this.email = localStorage.getItem("userID");
+    },
+    mounted() {
+        this.orderHistory();
+    },
     methods: {
         fetchFilteredOrders() {
             // 선택한 날짜 범위로 주문 목록을 가져오는 로직
@@ -91,6 +98,22 @@ export default {
             // axios.get(...)를 사용하여 API 호출
         },
         // 주문 목록을 표시하는 코드 및 API 호출 메서드 추가
+        orderHistory() {
+            axios({
+                url: "http://localhost:3000/mypage/orderHistory",
+                method: "get",
+                params: {
+                    userEmail: this.email,
+                },
+            })
+                .then((response) => {
+                    console.log(response.data); // 가져온 데이터 확인
+                    this.order = response.data[0];
+                })
+                .catch((error) => {
+                    console.error("주문내역 가져오기 오류:", error);
+                });
+        },
     },
 };
 </script>
