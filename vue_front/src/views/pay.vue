@@ -240,6 +240,21 @@ export default {
                 params: { userEmail: email },
             }).then((res) => {
                 this.coupons = res.data;
+                console.log("coupons:", res.data);
+            });
+        },
+        goUsedCoupon() {
+            useCoupon = {
+                selectedCoupon: this.selectedCoupon,
+                email: this.userEmail,
+            }
+
+            axios({
+                url: "/pay/usedCouponStatusChange",
+                method: "get",
+                params: useCoupon,
+            }).then((res) => {
+                console.log(success);
             });
         },
         applyCoupon() {
@@ -341,7 +356,7 @@ export default {
                     pg: "inicis",
                     pay_method: "card",
                     name: this.getBookNames(),
-                    amount: `1`, //결제 금액
+                    amount: `${this.finalPrice}`, //결제 금액
                     buyer_email: `${this.user_email}`,
                     buyer_name: `${this.user_name}`,
                     buyer_tel: `${this.user_phone}`,
@@ -378,6 +393,7 @@ export default {
                             alert("결제가 완료되었습니다.");
                         });
                     } else {
+                        console.log(rsp);
                         alert("결제에 실패하였습니다.");
                     }
                 }

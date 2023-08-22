@@ -20,11 +20,18 @@ const queries = {
     couponListQuery: `SELECT c.COUPON_NAME as name, c.COUPON_RATIO as ratio
                     FROM coupon c
                     JOIN cpuser cu ON c.COUPON_ID = cu.CPUSER_COUPON_ID
-                    WHERE cu.CPUSER_USER_EMAIL = ?`,
+                    WHERE cu.CPUSER_USER_EMAIL = ? and cu.CPUSER_STATUS = 0`,
+
+    usedCouponStatusChangeQuery: `UPDATE cpuser cu
+                                  JOIN coupon c ON cu.CPUSER_COUPON_ID = c.COUPON_ID
+                                  SET cu.CPUSER_STATUS = 1
+                                  WHERE c.COUPON_NAME = ? AND cu.CPUSER_USER_EMAIL = ?;`,
 
     userPointQuery: `select USER_POINT
                    from user
                    where USER_EMAIL = ?`,
+
+    delUsedPointQuery: ``,
 
     bookCountQuery: `select sum(ORDERITEM_CNT) as ORDERITEM_CNT
                    from orderitem
@@ -148,18 +155,19 @@ router.get("/couponList", async (request, res) => {
         });
     }
 });
+// 사용한 쿠폰 사용상태 변경
+router.get("/usedCouponStatusChange", async (request, res) => {
+  try {
+    const selectedCoupon = request.query.selectedCoupon;
+    const userEmail = request.query.userEmail;
 
-// 사용자가 선택한 쿠폰 가격에 적용
-router.post("/applyCoupon", (request, res) => {
-    // req.body.selectedCoupon
-    const selectedCouponRatio = request.body.selectedCoupon;
-    // 선택한 쿠폰의 CouponRatio 받아올 수 있나??? 받아올 수 있으면 위에 selectedCoupon 변수는 빼도 됨
-    const originalPrice = request.body.originalPrice; // 쿠폰 적용 전 금액 -- 변수 수정해야함!!!!!!!!!!!!!
-    console.log(selectedCouponRatio);
-    console.log(originalPrice);
-
-    const applyCouponPrice = calAfterCouponPrice(selectedCouponRatio, originalPrice);
-    res.send({ applyCouponPrice });
+    res.send(await req(queries.usedCouponStatusChangeQuery, [selectedCoupon, userEmail]));
+    console.log(userEmail);
+  } catch (err) {
+      res.status(500).send({
+          error: err,
+      });
+  }
 });
 
 //-----포인트 적용
@@ -176,8 +184,20 @@ router.get("/userPoint", async (request, res) => {
         });
     }
 });
+// 사용한 포인트 디비에서 차감
+router.get("/delUsedPoint", async (request, res) => {
+  try {
+      const userEmail = request.query.userEmail;
 
-// 사용자가 선택한 포인트 가격에 적용
+      res.send(await req(queries.couponListQuery, userEmail));
+      console.log(userEmail);
+  } catch (err) {
+      res.status(500).send({
+          error: err,
+      });
+  }
+});
+
 
 // 상품 금액(총), 배송비, 사용 포인트, 총금액(할인 후), 적립포인트 입력 후 출력
 //----입력
