@@ -167,16 +167,14 @@ export default {
 
             if (this.dfCalPrice < 50000) {
                 this.deliveryFee = 2500;
-            }
-            else {
+            } else {
                 this.deliveryFee = 0;
             }
         },
         calEarnPoint() {
             if (this.usePoint > this.dfCalPrice) {
                 this.earnPoint = 0;
-            }
-            else {
+            } else {
                 this.earnPoint = this.dfCalPrice * 0.05;
             }
         },
@@ -246,26 +244,20 @@ export default {
             if (this.selectedCoupon.indexOf("5%") !== -1) {
                 const selectedCouponRatio = 0.05;
                 this.applyCouponPrice = this.originalPrice * selectedCouponRatio;
-            }
-            else if (this.selectedCoupon.indexOf("10%") !== -1) {
+            } else if (this.selectedCoupon.indexOf("10%") !== -1) {
                 const selectedCouponRatio = 0.1;
                 this.applyCouponPrice = this.originalPrice * selectedCouponRatio;
-            }
-            else if (this.selectedCoupon.indexOf("15%") !== -1) {
+            } else if (this.selectedCoupon.indexOf("15%") !== -1) {
                 const selectedCouponRatio = 0.15;
                 this.applyCouponPrice = this.originalPrice * selectedCouponRatio;
-            }
-            else if (this.selectedCoupon.indexOf("20%") !== -1) {
+            } else if (this.selectedCoupon.indexOf("20%") !== -1) {
                 const selectedCouponRatio = 0.2;
                 this.applyCouponPrice = this.originalPrice * selectedCouponRatio;
-            }
-            else if (this.selectedCoupon.indexOf("무료배송") !== -1) {
+            } else if (this.selectedCoupon.indexOf("무료배송") !== -1) {
                 const selectedCouponRatio = 0;
                 this.deliveryFee = 0;
                 this.applyCouponPrice = this.originalPrice * selectedCouponRatio;
-                
-            }
-            else {
+            } else {
                 this.applyCouponPrice = this.originalPrice;
             }
             console.log("applyCouponPrice:", this.applyCouponPrice);
@@ -285,9 +277,8 @@ export default {
             console.log("usePoint = " + this.usePoint);
 
             if (this.usePoint > this.point) {
-                alert('보유 포인트보다 많은 포인트를 사용할 수 없습니다.')
-            }
-            else {
+                alert("보유 포인트보다 많은 포인트를 사용할 수 없습니다.");
+            } else {
                 this.applyPointPrice = this.usePoint;
             }
             console.log("applyPointPrice:", this.applyPointPrice);
@@ -298,11 +289,11 @@ export default {
             axios({
                 url: "/pay/originalPrice",
                 method: "get",
-                params: { payID: [ payid ] },
+                params: { payID: [payid] },
             }).then((res) => {
                 this.originalPrice = res.data[0].oP;
             });
-        },       
+        },
         /* goPriceData() {
             const priceData = {
                 finalPrice: this.finalPrice,
@@ -322,7 +313,7 @@ export default {
             });
         },  */
         openAdd() {
-            const confmKey = "devU01TX0FVVEgyMDIzMDgwMzE2NTY0NDExMzk4ODQ=";
+            const confmKey = "devU01TX0FVVEgyMDIzMDgyMjExMTQyODExNDAzODg=";
             const returnUrl = "http://localhost:8080/pay";
             const resultType = "4";
             const useDetailAddr = "N";
@@ -333,7 +324,7 @@ export default {
             // 팝업창을 엽니다.
             window.open(apiUrl, "주소검색팝업", "width=570, height=420, toolbar=no, menubar=no, scrollbars=yes, resizable=no");
         },
-        
+
         startPay() {
             const IMP = window.IMP;
             IMP.init("imp18828153");
@@ -343,7 +334,7 @@ export default {
                     pg: "inicis",
                     pay_method: "card",
                     name: `${this.user_name}`,
-                    amount: `${this.finalPrice}`, //결제 금액
+                    amount: `1`, //결제 금액
                     buyer_email: `${this.user_email}`,
                     buyer_name: `${this.user_name}`,
                     buyer_tel: `${this.user_phone}`,
@@ -353,16 +344,22 @@ export default {
                 (rsp) => {
                     // callback
                     if (rsp.success) {
-                        alert("결제가 완료되었습니다.");
-                        console.log(rsp.success);
-                        console.log(rsp);
+                        let paytype = "";
+                        if (rsp.card_name === null) {
+                            paytype = "페이";
+                        } else {
+                            paytype = rsp.card_name;
+                        }
                         const priceData = {
                             finalPrice: this.finalPrice,
                             deliveryFee: this.deliveryFee,
                             applyCouponPrice: this.applyCouponPrice,
                             applyPointPrice: this.applyPointPrice,
                             earnPoint: this.earnPoint,
-                            payID: this.payID
+                            payID: this.payID,
+                            payMethod: paytype,
+                            payDate: new Date(),
+                            payState: "배송준비",
                         };
 
                         axios({
@@ -370,7 +367,8 @@ export default {
                             method: "post",
                             data: priceData,
                         }).then((res) => {
-                            console.log('success');
+                            console.log("success");
+                            alert("결제가 완료되었습니다.");
                         });
                     } else {
                         alert("결제에 실패하였습니다.");
