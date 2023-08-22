@@ -43,14 +43,14 @@
 
                 <!-- 왼쪽에 책 표지 -->
                 <div class="book-cover">
-                    <img :src="order.BOOK_COVER" alt="Book Cover" />
+                    <img :src="order.items[0].BOOK_COVER" alt="Book Cover" />
                 </div>
 
                 <!-- 오른쪽에 책 정보 -->
                 <div class="book-info">
-                    <p>책 제목: {{ order.BOOK_TITLE }}</p>
+                    <p>{{ order.items[0].BOOK_TITLE }}</p>
                     <p>가격: {{ order.ORDER_PAY }}</p>
-                    <p>주문 상세: {{ order.ORDER_DETAIL }}</p>
+                    <p>주문 상세</p>
                 </div>
 
                 <!-- 구매확정 버튼 -->
