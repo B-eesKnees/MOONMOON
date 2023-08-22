@@ -38,7 +38,7 @@
                 <!-- 왼쪽에 배송 상태 및 결제일 -->
                 <div class="order-status">
                     <p>배송상태: {{ order.ORDER_STATE }}</p>
-                    <p>결제일: {{ order.ORDER_DATE }}</p>
+                    <p>결제일: {{ order.BOOK_AUTHOR }}</p>
                 </div>
 
                 <!-- 왼쪽에 책 표지 -->
@@ -49,7 +49,7 @@
                 <!-- 오른쪽에 책 정보 -->
                 <div class="book-info">
                     <p>책 제목: {{ order.BOOK_TITLE }}</p>
-                    <p>가격: {{ order.BOOK_PRICE }}</p>
+                    <p>가격: {{ order.ORDER_PAY }}</p>
                     <p>주문 상세: {{ order.ORDER_DETAIL }}</p>
                 </div>
 
@@ -75,7 +75,7 @@ export default {
             endDate: null,
             orderKeyword: "",
             selectedStatus: "전체",
-            orderList: [], // 주문 목록을 저장할 배열
+            orderList: [],
         };
     },
     created() {
@@ -108,7 +108,7 @@ export default {
             })
                 .then((response) => {
                     console.log(response.data); // 가져온 데이터 확인
-                    this.order = response.data[0];
+                    this.orderList = response.data; // 수정된 부분
                 })
                 .catch((error) => {
                     console.error("주문내역 가져오기 오류:", error);

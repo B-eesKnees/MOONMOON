@@ -341,7 +341,7 @@ export default {
                     pg: "inicis",
                     pay_method: "card",
                     name: this.getBookNames(),
-                    amount: `1`, //결제 금액
+                    amount: `100`, //결제 금액
                     buyer_email: `${this.user_email}`,
                     buyer_name: `${this.user_name}`,
                     buyer_tel: `${this.user_phone}`,
@@ -351,6 +351,7 @@ export default {
                 (rsp) => {
                     // callback
                     if (rsp.success) {
+                        console.log(rsp.success);
                         let paytype = "";
                         if (rsp.card_name === null) {
                             paytype = "페이";
