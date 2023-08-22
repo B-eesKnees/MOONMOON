@@ -91,22 +91,6 @@ router.post("/payAddUpdate", async (request, res) => {
         });
     }
 });
-/* router.post('/payAddEdit', (req, res) => {
-
-  const {  } = req.body;
-
-  const query = ``;
-
-  db.query(query, [], (error, result) => {
-    if (error) {
-      return console.log(error);
-    }
-    if (result) {
-      res.send(alertMove('글이 수정되었습니다', '/qna'));  // 없애고 redirect 사용
-    }
-  });
-});
- */
 
 //
 
