@@ -7,13 +7,13 @@
                 <input type="date" v-model="startDate" />
                 ~
                 <input type="date" v-model="endDate" />
-                <button @click="fetchFilteredOrders">검색</button>
+                <button class="orderinfo_btn" @click="fetchFilteredOrders">검색</button>
             </div>
 
             <div class="order-search">
                 <label>주문 검색:</label>
                 <input type="text" v-model="orderKeyword" />
-                <button @click="searchOrders">검색</button>
+                <button class="orderinfo_btn" @click="searchOrders">검색</button>
             </div>
 
             <div class="status-filter">
@@ -24,7 +24,7 @@
                     <option value="delivered">배송완료</option>
                     <option value="cancelled">주문취소</option>
                 </select>
-                <button @click="fetchOrdersByStatus">조회</button>
+                <button class="orderinfo_btn" @click="fetchOrdersByStatus">조회</button>
             </div>
         </div>
     </div>
@@ -84,53 +84,4 @@ export default {
     },
 };
 </script>
-<style>
-.filter-container {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.date-filter,
-.order-search,
-.status-filter {
-    margin-right: 20px;
-}
-
-.order-list {
-    /* 주문 목록 스타일 지정 */
-}
-.order-list {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.order-box {
-    display: flex;
-    border: 1px solid #ccc;
-    margin: 10px;
-    padding: 10px;
-}
-
-.order-status {
-    flex: 1;
-}
-
-.book-cover {
-    flex: 1;
-    margin-right: 20px;
-}
-
-.book-cover img {
-    max-width: 100px;
-}
-
-.book-info {
-    flex: 2;
-}
-
-.confirm-button {
-    margin-top: auto;
-    align-self: flex-end;
-}
-</style>
+<style></style>
