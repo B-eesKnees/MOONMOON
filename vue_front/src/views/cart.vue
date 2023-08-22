@@ -82,8 +82,8 @@
                     </div>
                     <div class="pay_wrap_second">
                         <div class="payment_text">총 적립 포인트</div>
-                        <div class="payment_point">{{ comma(totalPoint) }}</div>
-                        <span class="unit">원</span>
+                        <div class="payment_point">{{ totalPoint }}</div>
+                        <span class="unit">P</span>
                     </div>
                     <button @click="choosePay" class="pay_button">주문하기</button>
                     <!-- <button @click="allPay">전체 결제</button> -->
@@ -228,7 +228,7 @@ export default {
                         const orderId = res.data.orderID;
                         alert("결제페이지로 이동합니다");
                         console.log(orderId);
-                        this.$router.push({ name: "paymentPage", query: { payid: orderId } });
+                        this.$router.push({ name: "paymentPage", query: { payid: orderId, usecart: "use" } });
                     }
                 })
                 .catch((error) => {

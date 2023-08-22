@@ -154,7 +154,7 @@ const routes = [
         component: pay,
     },
     {
-        path: "/result/:orderNum",
+        path: "/result",
         name: "resultpage",
         component: resultpage,
     },
