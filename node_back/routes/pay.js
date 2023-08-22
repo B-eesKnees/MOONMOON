@@ -62,20 +62,17 @@ router.post("/payUserInfo", async (request, res) => {
         console.log(userEmail);
     } catch (err) {
         res.status(500).send({
-            error: err
+            error: err,
         });
     }
 });
 
-
 // 배송지 주소 변경 - 변경한 주소 받아오기
 router.post("/payAddUpdate", async (request, res) => {
-
     try {
         const ORDER_ADD = request.body.order_add;
         const ORDER_ZIPCODE = request.body.order_zip;
         const ORDER_ID = request.body.payID;
-
 
         res.send(await req(queries.payAddUpdateQuery, [ORDER_ADD, ORDER_ZIPCODE, ORDER_ID]));
         console.log("ORDER_ADD:", ORDER_ADD);
@@ -83,7 +80,7 @@ router.post("/payAddUpdate", async (request, res) => {
         console.log("ORDER_ID:", ORDER_ID);
     } catch (err) {
         res.status(500).send({
-            error: err
+            error: err,
         });
     }
 });
@@ -261,7 +258,6 @@ router.post("/checkS", async (req, res) => {
         if (err) {
             res.status(200).send(err);
         } else {
-            console.log(result.ORDER_STATE == null);
             if (result.ORDER_STATE == null) {
                 res.status(200).send("정상접근");
             } else {
