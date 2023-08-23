@@ -520,17 +520,54 @@ router.get("/orderdelivery", (req, res) => {
     const userEmail = req.query.userEmail;
     const orderState = req.query.orderState;
 
-    const query = "SELECT * from `order` WHERE ORDER_USER_EMAIL = ? AND ORDER_STATE = ?";
+    let query = `
+        SELECT o.*, oi.*, b.BOOK_TITLE, b.BOOK_COVER
+        FROM \`order\` AS o
+        JOIN ORDERITEM AS oi ON o.ORDER_ID = oi.ORDERITEM_ORDER_ID
+        JOIN BOOK AS b ON oi.ORDERITEM_BOOK_ID = b.BOOK_ID
+        WHERE o.ORDER_USER_EMAIL = ? AND o.ORDER_STATE = ?
+    `;
 
-    db.query(query, [userEmail, ORDER_STATE[orderState]], (err, results) => {
+    db.query(query, [userEmail, orderState], (err, results) => {
         if (err) {
             console.error("에러발생:", err);
             res.status(500).json({ error: "에러발생" });
             return;
         }
-        res.json(results);
+
+        const orders = {};
+        results.forEach((result) => {
+            const orderDate = new Date(result.ORDER_PAYDATE);
+
+            const order = {
+                ORDER_ID: result.ORDER_ID,
+                ORDER_PAYDATE: `${orderDate.getFullYear()}-${(orderDate.getMonth() + 1).toString().padStart(2, "0")}-${orderDate
+                    .getDate()
+                    .toString()
+                    .padStart(2, "0")}`,
+                ORDER_STATE: result.ORDER_STATE,
+                ORDER_PAY: result.ORDER_PAY,
+                ORDER_USER_EMAIL: result.ORDER_USER_EMAIL,
+                items: [],
+            };
+
+            if (!orders[order.ORDER_ID]) {
+                orders[order.ORDER_ID] = order;
+            }
+
+            const item = {
+                ORDERITEM_CNT: result.ORDERITEM_CNT,
+                BOOK_TITLE: result.BOOK_TITLE,
+                BOOK_COVER: result.BOOK_COVER,
+            };
+            orders[order.ORDER_ID].items.push(item);
+        });
+
+        const modifiedResults = Object.values(orders);
+        res.json(modifiedResults);
     });
 });
+
 
 //주문검색(주문상품)
 router.get("/ordersearchbook", (req, res) => {
