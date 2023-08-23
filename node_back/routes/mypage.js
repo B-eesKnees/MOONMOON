@@ -587,8 +587,8 @@ router.get("/ordersearchbook", (req, res) => {
   let query = `
     SELECT o.*, oi.*, b.BOOK_TITLE
     FROM \`order\` AS o
-    JOIN ORDERITEM AS oi ON o.ORDER_ID = oi.ORDERITEM_ORDERID
-    JOIN BOOK AS b ON oi.ORDERITEM_BOOKID = b.BOOK_ID
+    JOIN ORDERITEM AS oi ON o.ORDER_ID = oi.ORDERITEM_ORDER_ID
+    JOIN BOOK AS b ON oi.ORDERITEM_BOOK_ID = b.BOOK_ID
     WHERE 1
   `;
 

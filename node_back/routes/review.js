@@ -131,6 +131,25 @@ router.get("/reviewdata", (req, res) => {
   });
 });
 
+//마이페이지 리뷰 데이터
+router.get("/myreviewdata/:userEmail", (req, res) => {
+  const { userEmail } = req.params;
+  const query =
+    "SELECT r.REVIEW_ID, r.REV_COMMENT, DATE_FORMAT(r.REV_CREATED_AT, '%Y-%m-%d') AS REV_CREATED_AT, r.REV_RATING, b.BOOK_ID, b.BOOK_COVER, b.BOOK_TITLE, b.BOOK_AUTHOR " +
+    "FROM review r " +
+    "INNER JOIN book b ON r.REV_ORDERITEM_BOOK = b.BOOK_ID " +
+    "WHERE r.REV_WRITER = ? " +
+    "ORDER BY r.REV_CREATED_AT DESC";
+  db.query(query, [userEmail], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: "서버 에러" });
+    } else {
+      res.json({ myReviews: results });
+    }
+  });
+});
+
 //리뷰 데이터 받아오기 (평점 높은 순)ok
 router.get("/reviewrating", (req, res) => {
   const { bookId } = req.query;
