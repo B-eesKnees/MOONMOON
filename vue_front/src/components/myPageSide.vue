@@ -6,8 +6,12 @@
             <hr />
             <div class="borderSideList">
                 <a href="#">
-                    <div @click="activeElement = 'orderList'" :class="{ sideList: true, activeText: isActiveText('orderList') }">주문/배송목록</div>
+                    <div @click="activeElement = 'orderList'" :class="{ sideList: true, activeText: isActiveText('orderList') }">
+                        주문/배송목록
+                    </div></a
+                >
 
+                <a href="/mypagereview">
                     <div @click="activeElement = 'myReview'" :class="{ sideList: true, activeText: isActiveText('myReview') }">마이리뷰</div>
                 </a>
             </div>

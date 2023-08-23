@@ -659,7 +659,7 @@ router.get("/orderpaydate", (req, res) => {
     }
 
     // 변환된 날짜 형식을 다시 전체 결과 배열로 매핑
-    const formattedResults = results.map(result => ({
+    const formattedResults = results.map((result) => ({
       ...result,
       ORDER_PAYDATE: result.ORDER_PAYDATE, // 날짜 형식은 이미 원하는 형식인 "yy-mm-dd"로 되어 있음
     }));
@@ -696,75 +696,52 @@ router.get("/paybookinfo/:orderId", (req, res) => {
   });
 });
 
-//구매확정처리
-router.get("/notYetReview/:userEmail", (req, res) => {
+// 구매확정 처리 (userEmail과 orderId 기반)
+router.put("/updatebuycheck/:userEmail/:orderId", (req, res) => {
   const userEmail = req.params.userEmail;
+  const orderId = req.params.orderId;
 
-  const notReviewQuery = `
-    SELECT oi.*, b.book_author, b.book_cover, b.book_title
-    FROM orderitem oi
-    JOIN book b ON oi.ORDERITEM_BOOKID = b.BOOK_ID
-    WHERE oi.ORDERITEM_ORDERID IN (
-      SELECT o.ORDER_ID
-      FROM \`order\` o
-      WHERE o.ORDER_USER_EMAIL = ? AND o.ORDER_STATE = '배송완료'
-    )
-    AND oi.ORDERITEM_BUYCHECK = 1 AND oi.ORDERITEM_REVCHECK = 0
+  const selectQuery = `
+    SELECT o.ORDER_STATE
+    FROM \`order\` o
+    WHERE o.ORDER_ID = ? AND o.ORDER_USER_EMAIL = ?
   `;
 
-  db.query(notReviewQuery, [userEmail], (err, results) => {
-    if (err) {
-      console.error(err);
+  db.query(selectQuery, [orderId, userEmail], (selectErr, selectResults) => {
+    if (selectErr) {
+      console.error(selectErr);
       res.status(500).json({ error: "서버 에러" });
-    } else {
-      res.status(200).json(results);
-    }
-  });
-});
-//주문취소
-router.post("ordercancel", (req, res) => {});
-
-//구매확정업데이트
-router.put("/updatebuycheck/:orderItemId", (req, res) => {
-  const orderItemId = req.params.orderItemId;
-
-  const selectQuery =
-    "SELECT o.ORDER_STATE, oi.ORDERITEM_BUYCHECK, o.ORDER_USER_EMAIL FROM `order` o JOIN orderitem oi ON o.ORDER_ID = oi.ORDERITEM_ORDERID WHERE oi.ORDERITEM_ID = ? ";
-  db.query(selectQuery, [orderItemId], (err, results) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: "서버에러" });
       return;
     }
-    if (results.length === 0) {
-      res.status(400).json({ error: "주문 상품을 찾을 수 없습니다." });
+
+    if (selectResults.length === 0) {
+      res.status(400).json({ error: "주문을 찾을 수 없습니다." });
       return;
     }
-    const orderState = results[0].ORDER_STATE;
-    const buyCheck = results[0].ORDERITEM_BUYCHECK;
-    const userEmail = results[0].ORDER_USER_EMAIL;
+
+    const orderState = selectResults[0].ORDER_STATE;
 
     if (orderState !== "배송완료") {
-      res
-        .status(400)
-        .json({ error: "배송완료 상태가 아닙니다. 구매확정 할 수 없습니다." });
+      res.status(400).json({
+        error: "배송완료 상태가 아닙니다. 구매확정 할 수 없습니다.",
+      });
       return;
     }
 
-    if (buyCheck === 1) {
-      res.status(400).json({ error: "이미 구매확정 처리된 상품입니다." });
-      return;
-    }
+    const updateQuery = `
+      UPDATE orderitem 
+      SET ORDERITEM_BUYCHECK = 1, ORDERITEM_CONFIRMED_AT = NOW() 
+      WHERE ORDERITEM_ORDER_ID = ?
+    `;
 
-    const updateQuery =
-      "UPDATE orderitem SET ORDERITEM_BUYCHECK = 1, ORDERITEM_CONFIRMED_AT = NOW() WHERE ORDERITEM_ID = ?";
-    db.query(updateQuery, [orderItemId], (updateErr, results) => {
+    db.query(updateQuery, [orderId], (updateErr, updateResults) => {
       if (updateErr) {
         console.error(updateErr);
-        res.status(500).json({ error: "서버에러" });
-      } else {
-        res.json({ message: "구매확정 처리 되었습니다." });
+        res.status(500).json({ error: "서버 에러" });
+        return;
       }
+
+      res.json({ message: "구매확정 처리 되었습니다." });
     });
   });
 });
@@ -834,7 +811,6 @@ router.get("/notYetReview/:userEmail", (req, res) => {
     }
   });
 });
-//회원정보 업데이트 라우터
 router.post("/updateUserInfo", async (req, res) => {
   const email = req.body.email;
   const updatedFields = req.body.updatedFields;
