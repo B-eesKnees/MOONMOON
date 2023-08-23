@@ -8,6 +8,7 @@ router.post("/getRecBook", async (req, res) => {
     const email = req.body.email;
 
     db.query(`select * from moonmoon.order where ORDER_USER_EMAIL = ?`, email, (err, results) => {
+        console.log(1);
         if (err) {
             res.status(200).send(err);
         } else {
@@ -37,13 +38,16 @@ router.post("/getRecBook", async (req, res) => {
                         db.query(query, [search1, search2, search3, search4, search5], (err, results) => {
                             if (err) {
                                 res.status(200).send("error" + err);
+                                console.log("전송 40");
                             } else {
+                                console.log("전송 42");
                                 res.status(200).send(results);
                             }
                         });
                     }
                 });
             } else {
+                console.log(2);
                 db.query(
                     `select BOOK_ID, BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, '%Y.%m.%d') as PUBDATE, BOOK_PRICE, BOOK_DESCRIPTION, BOOK_COVER, BOOK_PUBLISHER 
                     from book where BOOK_CATEGORYNAME = (SELECT BOOK_CATEGORYNAME
@@ -62,8 +66,10 @@ router.post("/getRecBook", async (req, res) => {
                     email,
                     (err, results2) => {
                         if (err) {
+                            console.log("전송 67");
                             res.status(200).send(err);
                         } else {
+                            console.log(2);
                             if (results2.length === 0) {
                                 db.query(`select * from survey where SUR_USER_EMAIL = ?`, email, (err, result) => {
                                     if (err) {
@@ -96,6 +102,8 @@ router.post("/getRecBook", async (req, res) => {
                                         });
                                     }
                                 });
+                            } else {
+                                res.send(results2);
                             }
                         }
                     }

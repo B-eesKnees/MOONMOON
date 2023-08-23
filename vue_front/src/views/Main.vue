@@ -236,7 +236,6 @@ export default {
         this.getRecBook();
         this.getBestBook();
         this.getNewestBook();
-        this.setViewer();
         // 이미지 슬라이드가 렌더링되고 준비가 완료되면 slidesReady를 true로 설정
         this.slidesReady = true;
     },
@@ -268,6 +267,7 @@ export default {
             this.transitionDuration = "0.3s";
         },
         async getRecBook() {
+            console.log("함수 실행");
             await axios({
                 url: "http://localhost:3000/main/getRecBook",
                 method: "POST",
@@ -276,12 +276,14 @@ export default {
                 },
             })
                 .then((res) => {
+                    console.log("함수 중간");
                     for (var i in res.data) {
                         this.recBook.push(res.data[i]);
                     }
                     console.log(this.recBook);
                 })
                 .catch((err) => {
+                    console.log("함수 에러");
                     alert(err);
                 });
         },
@@ -346,27 +348,6 @@ export default {
                 })
                 .catch((err) => {
                     alert(err);
-                });
-        },
-        setViewer() {
-            const today = new Date().toLocaleDateString();
-
-            if (sessionStorage.getItem("visit") === localStorage.getItem("userID")) {
-                console.log("이미 방문한 유저");
-                return;
-            }
-
-            axios({
-                url: "/visit",
-                method: "POST",
-                data: { today: today },
-            })
-                .then((res) => {
-                    console.log(res.data);
-                    sessionStorage.setItem("visit", localStorage.getItem("userID"));
-                })
-                .catch((err) => {
-                    console.log(err);
                 });
         },
     },

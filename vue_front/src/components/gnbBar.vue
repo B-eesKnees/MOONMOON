@@ -41,6 +41,7 @@
                 <img @click="sendSearchKeyword" class="gnb_bar_header_search_icon" src="../assets/img/search.png" alt="" />
             </div>
             <div class="gnb_bar_header_user">
+                <a href="/admin" v-show="email === 'admin@admin.com'"><img class="gnb_bar_header_admin" src="../assets/img/admin.png" /></a>
                 <a href="/cart"
                     ><img class="gnb_bar_header_cart" src="../assets/img/cart1.png" alt="" />
                     <span class="gnb_bar_header_cart_num">{{ cartNum }}</span>
@@ -66,7 +67,7 @@
                 <a class="nav_category_link" href="/new">
                     <li>신상품</li>
                 </a>
-                <a class="nav_category_link" href="/event1">
+                <a class="nav_category_link" href="/event">
                     <li>이벤트</li>
                 </a>
                 <a class="nav_category_link" href="/goods">
