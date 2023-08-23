@@ -22,9 +22,9 @@
                             <div id="app">
                                 <div class="roulette_set">
                                     <div class="rouletter">
-                                        <div class="rouletter-bg">
+                                        <div class="rouletter-bg" ref="panel">
                                             <img src="../assets/img/roul_back.png" alt="" />
-                                            <div class="rouletter-wacu" ref="panel"></div>
+                                            <div class="rouletter-wacu"></div>
                                         </div>
                                         <div class="rouletter-arrow"></div>
                                         <button class="rouletter-btn" @click="startRoulette()" ref="btn">GO!</button>
@@ -269,7 +269,7 @@ export default {
                             // setTimeout(() => {
                             //   window.location.reload();
                             // }, 1000);
-                        }, 8000);
+                        }, 3500);
                     })
                     .catch((error) => {
                         console.error(error);
@@ -321,7 +321,7 @@ export default {
                 btn.style.pointerEvents = "none";
                 //룰렛버튼 비활성화 2
 
-                if (num === 50) {
+                if (num === 30) {
                     //존나 돌리다보면
                     clearInterval(ani);
                     //룰렛 애니메이션 중지
@@ -335,10 +335,10 @@ export default {
 
                     setTimeout(() => {
                         this.rLayerPopup(this.setNum);
-                        //룰렛 실행시킨지 5.5초후 자동으로 버튼 활성화
+                        //룰렛 실행시킨지 3.5초후 자동으로 버튼 활성화
                         btn.disabled = false;
                         btn.style.pointerEvents = "auto";
-                    }, 5500);
+                    }, 3500);
                 }
             }, 50);
             //0.05초마다 실행

@@ -485,23 +485,28 @@
     width: 100%;
 }
 
-.order_status {
-    /* flex: 1; */
-    display: flex;
-    border: #000 1px solid;
+
+.mypage_order_state {
+  border: #000 1px solid;
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 25px;
+  margin-bottom: 20px;
 }
 
 .book-cover {
     flex: 1;
     margin-right: 20px;
-}
+    width: 150px;
+    border: #000 1px solid;
+  }
 
 .book-cover img {
-    max-width: 100px;
+    width: 100%;
 }
 
 .book-info {
-    flex: 2;
+
 }
 
 .confirm-button {
@@ -522,4 +527,8 @@
 .order_cnt_out {
   font-size: 0.8em;
   /* color: #FFB800; */
+}
+
+.right_box > img {
+  width: 100%;
 }

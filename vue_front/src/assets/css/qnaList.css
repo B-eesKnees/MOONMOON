@@ -20,6 +20,14 @@
   /* height: 60px; */
   /* border: 1px solid #000; */
 }
+.qna_con_btn {
+  display: flex;
+}
+
+.qna-con {
+  width: 90%;
+  border: #000 1px solid;
+}
 
 .qna-btn {
   width: 170px;
@@ -227,4 +235,21 @@
 .reply_s {
   margin-left: 20px;
   margin-right: 20px;
+}
+
+.qna_btn_set {
+  display: flex;
+  
+  /* border: #000 1px solid; */
+
+}
+
+.qna_editbtn, .qna_delbtn {
+  border: none;
+  background: none;
+  padding: 0 10px;
+  width: 50px;
+  border-bottom: #000 1px solid;
+  margin-left: 10px;
+  display: inline-block;
 }

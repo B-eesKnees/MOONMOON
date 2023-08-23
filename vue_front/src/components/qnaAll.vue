@@ -56,17 +56,27 @@ export default {
                 <div class="qna_title_rep">
                     <div class="qna-title">{{ all.QNA_TITLE }}</div>
                     <div class="younju" v-if="showQnaAllContent[i]">
-                        <div class="qna-con">{{ all.QNA_CON }}</div>
-                        <div v-if="all.QNA_REP === 0">
-                            <a href="http://localhost:8080/qnaEdit">
-                                <button @click="getEditId(all.QNA_ID)">수정</button>
-                            </a>
-                            <button @click="handleQnaDel(all.QNA_ID)">삭제</button>
+                        <div class="qna_con_btn">
+                            <div class="qna-con">{{ all.QNA_CON }}</div>
+                            <div class="qna_btn_set" v-if="all.QNA_REP === 0">
+                                <a href="http://localhost:8080/qnaEdit">
+                                    <button class="qna_editbtn" @click="getEditId(all.QNA_ID)">수정</button>
+                                </a>
+                                <button class="qna_delbtn" @click="handleQnaDel(all.QNA_ID)">삭제</button>
+                            </div>
                         </div>
 
                         <div class="qna-reply">
                             <hr class="on_reply" v-if="all.QNA_REPLY" />
-                            <svg class="reply_s" xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
+                            <svg
+                                v-if="all.QNA_REPLY"
+                                class="reply_s"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="17"
+                                viewBox="0 0 16 17"
+                                fill="none"
+                            >
                                 <line x1="0.5" x2="0.5" y2="16" stroke="black" />
                                 <line x1="16" y1="16.5" x2="-4.37114e-08" y2="16.5" stroke="black" />
                             </svg>

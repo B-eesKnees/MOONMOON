@@ -37,17 +37,15 @@
             <div v-for="order in orderList" :key="order.ORDER_ID" class="order-box">
                 <!-- 왼쪽에 배송 상태 및 결제일 -->
                 <div class="order_status">
-                    <div>{{ order.ORDER_STATE }}</div>
-                    <div>{{ order.ORDER_PAYDATE }}</div>
-                </div>
-
-                <!-- 왼쪽에 책 표지 -->
-                <div class="book-cover">
-                    <img :src="order.items[0].BOOK_COVER" alt="Book Cover" />
+                    <div class="mypage_order_state">{{ order.ORDER_STATE }}</div>
+                    <div class="book-cover">
+                        <img :src="order.items[0].BOOK_COVER" alt="Book Cover" />
+                    </div>
                 </div>
 
                 <!-- 오른쪽에 책 정보 -->
                 <div class="book-info">
+                    <div>{{ order.ORDER_PAYDATE }}</div>
                     <p>
                         {{ order.items[0].BOOK_TITLE }}
                         <span v-if="order.ORDER_CNT > 1"><span class="order_cnt_out">외</span> {{ order.ORDER_CNT - 1 }} 건</span>

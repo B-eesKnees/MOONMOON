@@ -2,14 +2,16 @@
     <div class="topMyPage"><a href="/mypage">마이페이지</a></div>
     <div>
         <h2 class="sideName">
-            쇼핑내역
+            <a href="/mypage" style="color: black">쇼핑내역</a>
+
             <hr />
             <div class="borderSideList">
-                <a href="#">
+                <a href="/mypage">
                     <div @click="activeElement = 'orderList'" :class="{ sideList: true, activeText: isActiveText('orderList') }">주문/배송목록</div>
-
-                    <div @click="activeElement = 'myReview'" :class="{ sideList: true, activeText: isActiveText('myReview') }">마이리뷰</div>
                 </a>
+                <a href=""
+                    ><div @click="activeElement = 'myReview'" :class="{ sideList: true, activeText: isActiveText('myReview') }">마이리뷰</div></a
+                >
             </div>
         </h2>
     </div>
@@ -24,7 +26,7 @@
                         회원정보관리
                     </div></a
                 >
-                <a href="#"
+                <a href="/mygrade"
                     ><div @click="activeElement = 'userGrade'" :class="{ sideList: true, activeText: isActiveText('userGrade') }">회원등급</div>
                 </a>
             </div>
@@ -51,9 +53,11 @@
             <hr />
             <div class="borderSideList">
                 <a href="/qna">
-                    <div @click="activeElement = 'userInquiry'" :class="{ sideList: true, activeText: isActiveText('userInquiry') }">1:1문의</div>
-                    <div @click="activeElement = 'userFaq'" :class="{ sideList: true, activeText: isActiveText('userFaq') }">자주묻는질문 FAQ</div>
-                </a>
+                    <div @click="activeElement = 'userInquiry'" :class="{ sideList: true, activeText: isActiveText('userInquiry') }">1:1문의</div></a
+                >
+                <a href="#">
+                    <div @click="activeElement = 'userFaq'" :class="{ sideList: true, activeText: isActiveText('userFaq') }">자주묻는질문 FAQ</div></a
+                >
             </div>
         </h2>
     </div>
