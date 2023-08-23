@@ -7,7 +7,7 @@
                 </div>
                 <div class="mypage_profile_right">
                     <div class="name_grade">
-                        <div class="mypage_grade">프렌즈</div>
+                        <div class="mypage_grade">{{ couponGrade }}</div>
                         <div class="mypage_name">{{ getUserData.USER_NAME }}<span>님</span></div>
                     </div>
                     <div class="mypage_email">{{ getUserData.USER_EMAIL }}</div>
@@ -50,6 +50,10 @@
                     <div class="next_grade_s">db용</div>
                     <div class="next_grade_t">등급 혜택을 받으려면?</div>
                 </div>
+                <div class="grade_info_under">
+                    <div class="next_grade_u">추가 구매금액 :</div>
+                    <div class="ext_grade_u2">db용 원</div>
+                </div>
             </div>
         </div>
     </div>
@@ -76,6 +80,7 @@ export default {
             recentCountData: 0,
             getCouCountData: 0,
             recListData: [],
+            couponGrade: "",
         };
     },
     created() {
@@ -85,6 +90,8 @@ export default {
         this.getRecentCount();
         this.getRecList();
         this.getCouCount();
+        this.getGraInfo();
+        this.getGraUp();
     },
     methods: {
         getUser() {
@@ -159,6 +166,27 @@ export default {
                 }
             }
         },
+        getGraInfo() {
+            const userEmail = localStorage.getItem("userID");
+
+            axios({
+                url: `/mypage/coupongrade/${userEmail}`,
+                method: "GET",
+            }).then((res) => {
+                console.log(res.data);
+                this.couponGrade = res.data.userGrade;
+            });
+        },
+        getGraUp() {
+            const userEmail = localStorage.getItem("userID");
+
+            axios({
+                url: `/mypage/couponupgrade/${userEmail}`,
+                method: "GET",
+            }).then((res) => {
+                console.log(res.data);
+            });
+        },
     },
 };
 </script>
@@ -175,6 +203,15 @@ export default {
     width: 100%;
     height: 75%;
     margin: 4% 4% 6% 4%;
+    background-color: white;
+}
+.grade_info_top {
     display: flex;
+    float: right;
+    margin: 5% 5% 0 0;
+}
+.next_grade {
+    font-size: large;
+    color: #a0a0a0;
 }
 </style>
