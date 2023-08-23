@@ -22,7 +22,7 @@
                     </div>
                     <div class="user_add_detail">
                         {{ user_zipcode }} {{ user_add1 }} {{ user_add2 }}
-                        <button type="button" @click="openAdd">변경</button>
+                        <!-- 임시 삭제 <button type="button" @click="openAdd">변경</button> -->
                     </div>
                 </div>
             </div>
@@ -247,7 +247,7 @@ export default {
             useCoupon = {
                 selectedCoupon: this.selectedCoupon,
                 email: this.userEmail,
-            }
+            };
 
             axios({
                 url: "/pay/usedCouponStatusChange",

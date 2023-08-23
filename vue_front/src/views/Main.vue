@@ -236,6 +236,7 @@ export default {
         this.getRecBook();
         this.getBestBook();
         this.getNewestBook();
+        this.setViewer();
         // 이미지 슬라이드가 렌더링되고 준비가 완료되면 slidesReady를 true로 설정
         this.slidesReady = true;
     },
@@ -345,6 +346,27 @@ export default {
                 })
                 .catch((err) => {
                     alert(err);
+                });
+        },
+        setViewer() {
+            const today = new Date().toLocaleDateString();
+
+            if (sessionStorage.getItem("visit") === localStorage.getItem("userID")) {
+                console.log("이미 방문한 유저");
+                return;
+            }
+
+            axios({
+                url: "/visit",
+                method: "POST",
+                data: { today: today },
+            })
+                .then((res) => {
+                    console.log(res.data);
+                    sessionStorage.setItem("visit", localStorage.getItem("userID"));
+                })
+                .catch((err) => {
+                    console.log(err);
                 });
         },
     },

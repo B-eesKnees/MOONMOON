@@ -7,7 +7,7 @@
                 </div>
                 <div class="mypage_profile_right">
                     <div class="name_grade">
-                        <div class="mypage_grade">프렌즈</div>
+                        <div class="mypage_grade">{{ couponGrade }}</div>
                         <div class="mypage_name">{{ getUserData.USER_NAME }}<span>님</span></div>
                     </div>
                     <div class="mypage_email">{{ getUserData.USER_EMAIL }}</div>
@@ -44,11 +44,16 @@
             <div class="grade_info_wrap">
                 <div class="grade_info_top">
                     <div class="next_grade">다음달 예정 등급 :</div>
-                    <div class="next_grade_db">db용</div>
+                    <div v-if="check == true" class="next_grade_db">{{ nextGrade }}</div>
+                    <div v-if="check == false" class="next_grade_db">{{ couponGrade }}</div>
                 </div>
                 <div class="grade_info_second">
-                    <div class="next_grade_s">db용</div>
+                    <div class="next_grade_s">{{ nextGrade }}</div>
                     <div class="next_grade_t">등급 혜택을 받으려면?</div>
+                </div>
+                <div class="grade_info_under">
+                    <div class="next_grade_u">추가 구매금액 :</div>
+                    <div class="ext_grade_u2">{{ nextPayCost }} 원</div>
                 </div>
             </div>
         </div>
@@ -76,6 +81,11 @@ export default {
             recentCountData: 0,
             getCouCountData: 0,
             recListData: [],
+            couponGrade: "",
+            nextGrade: "",
+            nextPay: "",
+            check: true,
+            reqP: 0,
         };
     },
     created() {
@@ -85,6 +95,9 @@ export default {
         this.getRecentCount();
         this.getRecList();
         this.getCouCount();
+        this.getGraInfo();
+        this.getGraUp();
+        this.getNextGra();
     },
     methods: {
         getUser() {
@@ -159,6 +172,75 @@ export default {
                 }
             }
         },
+        getGraInfo() {
+            const userEmail = localStorage.getItem("userID");
+
+            axios({
+                url: `/mypage/coupongrade/${userEmail}`,
+                method: "GET",
+            }).then((res) => {
+                console.log(res.data);
+                this.couponGrade = res.data.userGrade;
+
+                this.setNextGra();
+            });
+        },
+        getGraUp() {
+            const userEmail = localStorage.getItem("userID");
+
+            axios({
+                url: `/mypage/couponupgrade/${userEmail}`,
+                method: "GET",
+            }).then((res) => {
+                console.log(res.data);
+                this.nextPay = res.data.additionalPayment;
+                return;
+            });
+        },
+        setNextGra() {
+            if (this.couponGrade === "프렌즈") {
+                this.nextGrade = "실버";
+                return;
+            } else if (this.couponGrade === "실버") {
+                this.nextGrade = "골드";
+                return;
+            } else if (this.couponGrade === "골드") {
+                this.nextGrade = "플레티넘";
+                return;
+            } else {
+                this.nextGrade = this.couponGrade;
+                return;
+            }
+        },
+        getNextGra() {
+            const email = localStorage.getItem("userID");
+
+            axios({
+                url: "/mypage/getNextGra",
+                method: "POST",
+                data: { email: email },
+            }).then((res) => {
+                this.reqP = res.data[0].totalPayment;
+                console.log(this.reqP);
+
+                if (this.nextPay > this.reqP) {
+                    this.check = false;
+                } else {
+                    this.check = true;
+                }
+            });
+        },
+    },
+    computed: {
+        nextPayCost() {
+            let result;
+            if (this.nextPay - this.reqP < 0) {
+                result = 0;
+            } else {
+                result = this.nextPay - this.reqP;
+                return result;
+            }
+        },
     },
 };
 </script>
@@ -171,10 +253,36 @@ export default {
     align-items: center;
 }
 .grade_info_wrap {
-    border: 2px solid red;
+    border: 1px solid red;
     width: 100%;
     height: 75%;
-    margin: 4% 4% 6% 4%;
+    margin: 4% 4% 4.6% 4%;
+    border-radius: 13px;
+    background-color: white;
+}
+.grade_info_top {
     display: flex;
+    float: right;
+    margin: 5% 5% 0 0;
+}
+.next_grade {
+    font-size: large;
+    color: #a0a0a0;
+}
+.next_grade_db {
+    font-size: large;
+}
+.grade_info_second {
+    display: flex;
+    margin: 30% 4% 4% 4%;
+}
+.grade_info_under {
+    display: flex;
+}
+.next_grade_s {
+    font-size: larger;
+}
+.grade_info_under {
+    margin: 0% 4% 4% 4%;
 }
 </style>

@@ -3,7 +3,7 @@ const db = require("../db");
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-    const today = req.body.errtoday;
+    const today = req.body.today;
     // const today = console.log(today);
 
     db.query(`select * from viewcount where vc_date = ?`, today, (err, result) => {

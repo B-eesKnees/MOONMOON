@@ -6,71 +6,77 @@
         <h2 class="userUpdateTitle">회원정보 관리</h2>
         <hr class="section-divider" />
 
-        <form @submit.prevent="updateUserInfo">
-            <div class="input-group">
+        <div class="input-group">
+            <div class="input-item">
+                <label for="email">아이디</label>
+                <input type="text" id="email" v-model="originalData.email" :readonly="true" />
+            </div>
+            <div class="input-item">
+                <label for="name">이름</label>
+                <input type="text" id="name" v-model="originalData.name" :readonly="true" />
+            </div>
+
+            <div>
                 <div class="input-item">
-                    <label for="email">아이디</label>
-                    <input type="text" id="email" v-model="originalData.email" :readonly="true" />
-                </div>
-                <div class="input-item">
-                    <label for="name">이름</label>
-                    <input type="text" id="name" v-model="originalData.name" :readonly="true" />
+                    <label for="password">비밀번호</label>
+                    <input type="password" id="password" v-model="originalData.password" @click="openPasswordModal" />
                 </div>
 
-                <div>
-                    <div class="input-item">
-                        <label for="password">비밀번호</label>
-                        <input type="password" id="password" v-model="originalData.password" @click="openPasswordModal" />
-                    </div>
-
-                    <!-- 모달 요소 -->
-                    <div v-if="passwordModal" class="modal">
-                        <div class="modal-content">
-                            <h3>비밀번호 변경</h3>
-                            <label for="newPassword">새 비밀번호</label>
-                            <input type="password" id="newPassword" v-model="newPassword" @input="checkNewPassword" />
-                            <span v-if="passwordValidationMessage">{{ passwordValidationMessage }}</span>
-                            <label for="confirmPassword">비밀번호 확인</label>
-                            <input type="password" id="confirmPassword" v-model="confirmPassword" />
-                            <span v-if="passwordMatchMessage">{{ passwordMatchMessage }}</span>
-                            <div class="button-group-center">
-                                <button @click="changePassword">비밀번호 변경</button>
-                                <button @click="closePasswordModal">취소</button>
-                            </div>
+                <!-- 모달 요소 -->
+                <div v-if="passwordModal" class="modal">
+                    <div class="modal-content">
+                        <h3>비밀번호 변경</h3>
+                        <label for="newPassword">새 비밀번호</label>
+                        <input type="password" id="newPassword" v-model="newPassword" @input="checkNewPassword" />
+                        <span v-if="passwordValidationMessage">{{ passwordValidationMessage }}</span>
+                        <label for="confirmPassword">비밀번호 확인</label>
+                        <input type="password" id="confirmPassword" v-model="confirmPassword" />
+                        <span v-if="passwordMatchMessage">{{ passwordMatchMessage }}</span>
+                        <div class="button-group-center">
+                            <button @click="changePassword">비밀번호 변경</button>
+                            <button @click="closePasswordModal">취소</button>
                         </div>
                     </div>
                 </div>
-                <div class="input-item">
-                    <label for="sex">성별</label>
-                    <input type="text" id="sex" :value="convertGender(originalData.sex)" :readonly="true" />
-                </div>
-                <div class="input-item">
-                    <label for="age">나이대</label>
-                    <input type="number" id="age" :value="convertAgeRange(originalData.age)" :readonly="true" />
-                </div>
-                <div class="input-item">
-                    <label for="add1">주소</label>
-                    <input type="text" id="add1" v-model="originalData.add1" @click="openAddressSearch" />
-                </div>
-                <div class="input-item">
-                    <label for="add2">상세주소</label>
-                    <input type="text" id="add2" v-model="originalData.add2" />
-                </div>
-                <div class="input-item">
-                    <label for="zipcode">우편번호</label>
-                    <input type="text" id="zipcode" v-model="originalData.zipcode" />
-                </div>
-                <div class="input-item">
-                    <label for="phone_num">전화번호</label>
-                    <input type="text" id="phone_num" v-model="originalData.phone_num" />
-                </div>
+            </div>
+            <div class="input-item">
+                <label for="sex">성별</label>
+                <input type="text" id="sex" :value="convertGender(originalData.sex)" :readonly="true" />
+            </div>
+            <div class="input-item">
+                <label for="age">나이대</label>
+                <input type="number" id="age" :value="convertAgeRange(originalData.age)" :readonly="true" />
+            </div>
+            <div class="input-item">
+                <label for="zipcode">우편번호</label>
+                <input type="text" id="zipcode" v-model="updatedFields.zipcode" :readonly="true" />
+            </div>
+            <div class="input-item">
+                <label for="add1">주소</label>
+                <input type="text" id="add1" v-model="updatedFields.add1" @click="openAddressSearch" />
+            </div>
+            <div class="input-item">
+                <label for="add2">상세주소</label>
+                <input type="text" id="add2" v-model="updatedFields.add2" />
             </div>
 
-            <div class="button-group">
-                <button type="button" @click="cancelUpdate">취소</button>
-                <button type="submit">수정</button>
+            <div class="input-item">
+                <label for="phone_num">전화번호</label>
+                <input
+                    type="text"
+                    id="phone_num"
+                    v-model="updatedFields.phone_num"
+                    @input="formatPhoneNumber(updatedFields.phone_num)"
+                    maxlength="13"
+                />
             </div>
-        </form>
+        </div>
+
+        <div class="button-group">
+            <button type="button" @click="cancelUpdate">취소</button>
+            <button type="button" @click="updateUserInfo">수정</button>
+        </div>
+
         <div v-if="message" class="status-message">{{ message }}</div>
     </div>
 </template>
@@ -83,7 +89,7 @@ export default {
     data() {
         return {
             originalData: {}, // 기존 데이터를 저장할 객체
-            updateData: {}, // 수정한 데이터를 저장할 객체
+            updatedFields: {}, // 수정한 데이터를 저장할 객체
             message: "",
             passwordModal: false,
             newPassword: "",
@@ -125,11 +131,13 @@ export default {
                 };
 
                 this.updatedFields = { ...this.originalData }; // 수정할 정보를 updatedFields에 복사
+                console.log(this.updatedFields);
             } catch (error) {
                 console.error("기존 회원정보 불러오기 오류:", error);
             }
         },
         async updateUserInfo() {
+            console.log("!");
             const email = localStorage.getItem("userID");
 
             // POST 요청을 보내기 위한 데이터 구성
@@ -152,6 +160,7 @@ export default {
             try {
                 const response = await axios.post("mypage/updateUserInfo", requestData);
                 this.message = response.data.message;
+                this.fetchUserInfo(localStorage.getItem("userID"));
             } catch (error) {
                 console.error("회원정보 수정 오류:", error);
                 this.message = "회원정보 수정에 실패했습니다.";
@@ -172,6 +181,7 @@ export default {
                         this.updatedFields.zipcode = data.zonecode;
                         this.updatedFields.add1 = data.roadAddress || data.jibunAddress;
                         this.updatedFields.add2 = ""; // 상세주소 초기화
+                        console.log(this.updatedFields);
 
                         // 상세주소 필드로 포커스 이동
                         document.getElementById("add2").focus();
@@ -206,6 +216,7 @@ export default {
         },
 
         async changePassword() {
+            console.log("?");
             if (this.newPassword === this.confirmPassword) {
                 try {
                     const email = localStorage.getItem("userID");
@@ -217,8 +228,8 @@ export default {
                         },
                     };
 
-                    const response = await axios.post("/updateUserInfo", requestData);
-                    this.message = response.data.message;
+                    const response = await axios.post("/mypage/updateUserPw", requestData);
+                    this.message = response.data;
 
                     this.closePasswordModal();
                 } catch (error) {
@@ -226,6 +237,14 @@ export default {
                 }
             } else {
                 console.error("비밀번호가 일치하지 않습니다.");
+            }
+        },
+        formatPhoneNumber() {
+            // 숫자 이외의 문자 제거
+            this.updatedFields.phone_num = this.updatedFields.phone_num.replace(/[^\d-]/g, "");
+            // 하이픈(-) 삽입
+            if (this.updatedFields.phone_num.length > 2) {
+                this.updatedFields.phone_num = this.updatedFields.phone_num.replace(/^01([0|1|6|7|8|9])-?(\d{4})-?(\d{4})$/, "01$1-$2-$3");
             }
         },
     },
