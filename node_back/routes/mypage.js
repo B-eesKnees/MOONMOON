@@ -813,17 +813,10 @@ router.post("/updateUserInfo", async (req, res) => {
     const email = req.body.email;
     const updatedFields = req.body.updatedFields;
 
-    const add1 = updatedFields.add1;
-    const add2 = updatedFields.add2;
-    const zipcode = updatedFields.zipcode;
-    const phone_num = updatedFields.phone_num;
-    const pw = updatedFields.password;
-
-    let encryptedpw = null;
-
-    if (pw !== "") {
-        encryptedpw = await bcrypt.hash(pw, 12);
-    }
+    const add1 = updatedFields.updatedFields.add1;
+    const add2 = updatedFields.updatedFields.add2;
+    const zipcode = updatedFields.updatedFields.zipcode;
+    const phone_num = updatedFields.updatedFields.phone_num;
 
     let query = `UPDATE moonmoon.user SET`;
     let queryParams = [];
@@ -848,11 +841,6 @@ router.post("/updateUserInfo", async (req, res) => {
         queryParams.push(phone_num);
     }
 
-    if (encryptedpw !== null) {
-        query += ` USER_PW = ?,`;
-        queryParams.push(encryptedpw);
-    }
-
     query = query.slice(0, -1);
     query += ` WHERE USER_EMAIL = ?`;
     queryParams.push(email);
@@ -861,11 +849,29 @@ router.post("/updateUserInfo", async (req, res) => {
         if (err) {
             res.status(400).json({ error: "수정실패" });
         } else {
-            console.log(query);
-            console.log(queryParams);
             res.status(200).json({ message: "회원정보 수정 완료" });
         }
     });
+});
+router.post("/updateUserPw", async (req, res) => {
+    // console.log(req.body);
+    const email = req.body.email;
+    const password = req.body.updatedFields.password;
+
+    let encryptedpw = null;
+
+    if (password !== "") {
+        encryptedpw = await bcrypt.hash(password, 12);
+    }
+    db.query(`update user set USER_PW = ? where USER_EMAIL = ?`, [encryptedpw, email], (err, result) => {
+        if (err) {
+            res.send(err);
+        } else {
+            res.send("비밀번호 변경 성공");
+        }
+    });
+
+    // console.log(password);
 });
 
 // 회원정보 가져오는 라우터
