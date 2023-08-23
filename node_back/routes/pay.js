@@ -216,7 +216,7 @@ router.get("/originalPrice", async (request, res) => {
 // 가격 디비에 저장
 router.post("/updatePriceData", async (request, res) => {
     try {
-        const ORDER_PAY = request.body.finalPrice;
+        const ORDER_PAY = request.body.originalPrice;
         const ORDER_COST = request.body.deliveryFee;
         const ORDER_COUPON = request.body.applyCouponPrice;
         const ORDER_USEPOINT = request.body.applyPointPrice;

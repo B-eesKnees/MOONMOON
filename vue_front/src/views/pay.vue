@@ -374,7 +374,7 @@ export default {
                             paytype = rsp.card_name;
                         }
                         const priceData = {
-                            finalPrice: this.finalPrice,
+                            originalPrice: this.originalPrice,
                             deliveryFee: this.deliveryFee,
                             applyCouponPrice: this.applyCouponPrice,
                             applyPointPrice: this.applyPointPrice,
