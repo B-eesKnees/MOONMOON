@@ -64,6 +64,13 @@ const queries = {
                         ROUND((SUM(CASE WHEN USER_SEX = 'f' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) AS female_percentage,
                         ROUND((SUM(CASE WHEN USER_SEX = 'm' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) AS male_percentage
                       FROM user;`,
+
+  bestCategoryQuery: `SELECT b.BOOK_CATEGORYNAME, SUM(oi.ORDERITEM_CNT) AS TOTAL_SALES
+                      FROM orderitem oi
+                      JOIN book b ON oi.ORDERITEM_BOOK_ID = b.BOOK_ID
+                      GROUP BY b.BOOK_CATEGORYNAME
+                      ORDER BY TOTAL_SALES DESC
+                      LIMIT 5;`,
 }
 
 
@@ -292,7 +299,17 @@ router.post('/userSexRatio', async (request, res) => {
     const femalePercentage = data.female_percentage;
     const malePercentage = data.male_percentage; */
 
+// 많이 팔린 장르 top5
+router.post('/bestCategory', async (request, res) => {
 
+  try {
+    res.send(await req(queries.bestCategoryQuery));
+  } catch (err) {
+    res.status(500).send({
+      error:err
+    });
+  }
+});
 
 
 

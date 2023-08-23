@@ -31,7 +31,9 @@ const queries = {
                    from user
                    where USER_EMAIL = ?`,
 
-    delUsedPointQuery: ``,
+    delUsedPointQuery: `update user
+                        set USER_POINT = (USER_POINT - ?)
+                        where USER_EMAIL = ?`,
 
     bookCountQuery: `select sum(ORDERITEM_CNT) as ORDERITEM_CNT
                    from orderitem
@@ -168,9 +170,11 @@ router.get("/userPoint", async (request, res) => {
 // 사용한 포인트 디비에서 차감
 router.get("/delUsedPoint", async (request, res) => {
   try {
+      const usedPoint = request.query.applyPointPrice;
       const userEmail = request.query.userEmail;
 
-      res.send(await req(queries.couponListQuery, userEmail));
+      res.send(await req(queries.delUsedPointQuery, [usedPoint, userEmail]));
+      console.log(usedPoint);
       console.log(userEmail);
   } catch (err) {
       res.status(500).send({
