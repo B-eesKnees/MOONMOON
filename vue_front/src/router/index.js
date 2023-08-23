@@ -34,7 +34,6 @@ import AdminUserManage from "../components/adminUserManage.vue";
 import AdminQnaManage from "../components/adminQnaManage.vue";
 import AdminOrderManage from "../components/adminOrderManage.vue";
 import AdminUserAnalyze from "../components/adminUserAnalyze.vue";
-import AdminBuyAnalyze from "../components/adminBuyAnalyze.vue";
 
 import mypageOrderInfo from "../views/mypageOrderInfo.vue";
 import mypageUserInfo from "../views/mypageUserInfo.vue";
@@ -175,9 +174,10 @@ const routes = [
         component: qnaWrite,
     },
     {
-        path: "/qnaEdit",
+        path: "/qnaEdit/:id",
         name: "qnaEdit",
         component: qnaEdit,
+        props: true,
     },
     //-------------------------------------------------------------
     //룰렛, 쿠폰주는 화면
@@ -232,11 +232,6 @@ const routes = [
         path: "/admin/useranalyze",
         name: "AdminUserAnalyze",
         component: AdminUserAnalyze,
-    },
-    {
-        path: "/admin/buyanalyze",
-        name: "AdminBuyAnalyze",
-        component: AdminBuyAnalyze,
     },
     //-------------------------------------------------------------
     //출석체크페이지
