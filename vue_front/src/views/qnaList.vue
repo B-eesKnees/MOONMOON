@@ -27,7 +27,7 @@
                             :conCloseBotton="conCloseBotton"
                             :editMode="editMode"
                             :qnaDelFunction="qnaDel"
-                            :getEditQnaId="EditId"
+                            :getEditQnaId="getEditId"
                         ></qnaAll>
                     </TabItem>
                     <TabItem title="답변 대기">
@@ -219,13 +219,8 @@ export default {
                     console.error("Error deleting Q&A", error);
                 });
         },
-        EditId(qna_id) {
-            axios
-                .post("/qna/qnaEditId", { QNA_ID: qna_id })
-                .then((response) => {})
-                .catch((error) => {
-                    console.error(error);
-                });
+        getEditId(qna_id) {
+            this.$router.push({ name: 'qnaEdit', params: { id: qna_id } });
         },
     },
 };

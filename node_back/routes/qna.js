@@ -25,9 +25,9 @@ const queries = {
   qnaDelQuery: `delete from qna
                 where QNA_ID = ?`,
 
-  qnaOriginalQuery: `select QNA_TITLE, QNA_CON
-                     from qna
-                     where QNA_ID = ?`,
+  qnaOriginalDataQuery: `select QNA_TITLE, QNA_CON
+                         from qna
+                         where QNA_ID = ?`,
 
   qnaEditQuery: `update qna
                  set QNA_TITLE = ?, QNA_CON = ?
@@ -139,8 +139,8 @@ router.post('/qnaWrite', async (request, res) => {
   });
 
 
-// 수정할 문의 아이디 받아오기
-router.post('/qnaEditId', async (request, res) => {
+// 수정할 문의 원래 내용 받아오기
+router.post('/qnaOriginalData', async (request, res) => {
   
   try {
     let { QNA_ID } = request.body;
