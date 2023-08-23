@@ -11,7 +11,7 @@
                 <input type="date" v-model="startDate" />
                 ~
                 <input type="date" v-model="endDate" />
-                <button class="orderinfo_btn" @click="fetchFilteredOrders">검색</button>
+                <!-- <button class="orderinfo_btn" @click="fetchFilteredOrders">검색</button> -->
             </div>
 
             <div class="order-search">
@@ -34,7 +34,7 @@
         </div>
 
         <div class="order-list">
-            <div v-for="order in orderList" :key="order.ORDER_ID" class="order-box">
+            <div v-for="order in filteredOrders" :key="order.ORDER_ID" class="order-box">
                 <!-- 왼쪽에 배송 상태 및 결제일 -->
                 <div class="order_status">
                     <div
@@ -44,6 +44,10 @@
                             mypage_delivery_cancle: order.ORDER_STATE === '주문취소',
                         }"
                         class="mypage_order_state"
+                        @click="
+                            setSelectedStatus(order.ORDER_STATE);
+                            fetchOrdersByStatus();
+                        "
                     >
                         {{ order.ORDER_STATE }}
                     </div>
@@ -89,6 +93,7 @@ export default {
             orderKeyword: "",
             selectedStatus: "전체",
             orderList: [],
+            orderState: "",
         };
     },
     created() {
@@ -97,18 +102,64 @@ export default {
     mounted() {
         this.orderHistory();
     },
-    methods: {
-        fetchFilteredOrders() {
-            // 선택한 날짜 범위로 주문 목록을 가져오는 로직
-            // axios.get(...)를 사용하여 API 호출
+    computed: {
+        filteredOrders() {
+            if (!this.startDate || !this.endDate) {
+                return this.orderList; // 날짜가 선택되지 않은 경우 원래 주문 목록을 반환합니다
+            }
+
+            const startTimestamp = new Date(this.startDate).getTime();
+            const endTimestamp = new Date(this.endDate).getTime();
+
+            return this.orderList.filter((order) => {
+                const orderDate = new Date(order.ORDER_PAYDATE).getTime();
+                return orderDate >= startTimestamp && orderDate <= endTimestamp;
+            });
         },
+    },
+    methods: {
         searchOrders() {
-            // 주문 검색 로직
-            // axios.get(...)를 사용하여 API 호출
+            axios({
+                url: "http://localhost:3000/mypage/ordersearchbook",
+                method: "get",
+                params: {
+                    userEmail: this.email,
+                    bookKeyword: this.orderKeyword,
+                },
+            })
+                .then((response) => {
+                    console.log(response.data);
+                    this.orderList = response.data;
+                })
+                .catch((error) => {
+                    console.error("주문 검색 오류:", error);
+                });
+        },
+        setSelectedStatus(status) {
+            this.selectedStatus = status;
         },
         fetchOrdersByStatus() {
-            // 선택한 배송 상태별로 주문 목록을 가져오는 로직
-            // axios.get(...)를 사용하여 API 호출
+            if (this.selectedStatus === "전체") {
+                // "전체" 옵션을 선택하였을 때, 이미 가져온 전체 주문 목록을 그대로 사용
+                this.orderHistory();
+            } else {
+                // 다른 상태를 선택한 경우, 해당 상태의 주문을 가져와서 표시
+                axios({
+                    url: "http://localhost:3000/mypage/orderdelivery",
+                    method: "get",
+                    params: {
+                        userEmail: this.email,
+                        orderState: this.selectedStatus,
+                    },
+                })
+                    .then((response) => {
+                        console.log(response.data);
+                        this.orderList = response.data;
+                    })
+                    .catch((error) => {
+                        console.error("배송 상태별 조회 오류:", error);
+                    });
+            }
         },
         // 주문 목록을 표시하는 코드 및 API 호출 메서드 추가
         orderHistory() {

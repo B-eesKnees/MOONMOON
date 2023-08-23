@@ -470,9 +470,6 @@
 }
 
 .order-list {
-    /* 주문 목록 스타일 지정 */
-}
-.order-list {
     display: flex;
     flex-wrap: wrap;
 }
