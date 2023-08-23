@@ -20,7 +20,7 @@
                     <!-- Topbar -->
                     <nav
                         class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow d-flex align-items-center justify-content-center">
-                        <h1 class="">MOONMOON</h1>
+                        <h1><a class="text-gray-800" href="/" style="text-decoration: none;">MOONMOON</a></h1>
                     </nav>
                     <!-- End of Topbar -->
 
