@@ -40,10 +40,12 @@
                                 <h6 class="m-0 font-weight-bold text-primary">주문 목록</h6>
 
                                 <div class="btn-group">
-                                    <select class="btn btn-secondary dropdown-toggle" @change="getQnaData"
+                                    <select class="btn btn-secondary dropdown-toggle" @change="getOrderData"
                                         v-model="filterValue">
-                                        <option class="dropdown-item btn cursor-pointer" value="답변 대기">답변 대기</option>
-                                        <option class="dropdown-item btn cursor-pointer" value="답변 완료">답변 완료</option>
+                                        <option class="dropdown-item btn cursor-pointer" value="배송준비">배송준비</option>
+                                        <option class="dropdown-item btn cursor-pointer" value="배송중">배송중</option>
+                                        <option class="dropdown-item btn cursor-pointer" value="배송완료">배송완료</option>
+                                        <option class="dropdown-item btn cursor-pointer" value="배송취소">배송취소</option>
                                     </select>
                                 </div>
                             </div>
@@ -57,9 +59,11 @@
                                                 <th>주문 날짜</th>
                                                 <th>주문 상태</th>
                                                 <th>주문 정보</th>
+                                                <th class="border-0"></th>
                                                 <!-- 전체선택 체크박스 -->
                                                 <th class=" border-0 d-flex align-items-center justify-content-center">
-                                                    <button @click="changeOrderState" type="button" class="btn btn-primary">
+                                                    <button @click="allChangeOrderState" type="button"
+                                                        class="btn btn-danger">
                                                         전체 변경
                                                     </button>
                                                 </th>
@@ -72,6 +76,13 @@
                                                 <th>주문 날짜</th>
                                                 <th>주문 상태</th>
                                                 <th>주문 정보</th>
+                                                <th class="border-0"></th>
+                                                <th class="col-1 border-0 align-middle text-center">
+                                                    <button @click="changeOrderState()" type="button"
+                                                        class="btn btn-danger border-0 align-middle text-center">
+                                                        선택 변경
+                                                    </button>
+                                                </th>
                                             </tr>
                                         </tfoot>
                                         <tbody>
@@ -96,10 +107,10 @@
                                                     </button>
                                                 </td>
                                                 <!-- 체크박스 -->
-                                                <td class="col-1 border-0 align-middle text-center"
-                                                    style="font-size: small;">
+                                                <td class="border-0"
+                                                    style="font-size: small; width: 1%;">
                                                     <div
-                                                        class="form-check d-flex flex-column align-items-center justify-content-center mx-2">
+                                                        class="form-check">
                                                         <input @change="checkedState(item.ORDER_ID, item.isChcked)"
                                                             class="form-check-input" type="checkbox" v-model="item.isChcked"
                                                             id="flexCheckDefault" style="width: 20px; height: 20px;">
@@ -131,11 +142,11 @@
                                                                 <h4>배송지 주소 : <span>{{ orderDetailData.add }}
                                                                         {{ orderDetailData.addDetail }}</span></h4>
                                                                 <h4>우편번호 : <span>{{ orderDetailData.zipCode }}</span></h4>
-                                                                <h4>결제금액 : <span>{{ orderDetailData.orderPay }}</span></h4>
+                                                                <h4>결제금액 : <span>{{ formatNumber(orderDetailData.orderPay) }}원</span></h4>
                                                                 <h4>배송상태 : <span>{{ orderDetailData.state }}</span></h4>
                                                                 <hr>
                                                                 <h4>책 번호 : <span>{{ orderDetailData.bookId }}</span></h4>
-                                                                <h4>가격 : <span>{{ orderDetailData.bookPrice }}</span></h4>
+                                                                <h4>가격 : <span>{{ formatNumber(orderDetailData.bookPrice) }}원</span></h4>
 
                                                             </div>
                                                             <div class="modal-footer">
@@ -269,7 +280,7 @@ export default {
             answerDetail: "",
 
             //정렬
-            filterValue: "답변 대기",
+            filterValue: "배송준비",
 
             // 페이징
             perPage: 10, // 한 페이지에 보여줄 게시물 수
@@ -308,19 +319,64 @@ export default {
     },
     methods: {
         async getOrderData() {
-            await axios({
-                url: "http://localhost:3000/admin/adminOrderList",
-                method: "POST",
-                data: {
-                },
-            })
-                .then((res) => {
-                    this.orderData = res.data;
-                    console.log(this.orderData)
+            if (this.filterValue === "배송준비") {
+                await axios({
+                    url: "http://localhost:3000/admin/adminOrderList",
+                    method: "POST",
+                    data: {
+                    },
                 })
-                .catch((err) => {
-                    alert(err);
-                });
+                    .then((res) => {
+                        this.orderData = res.data.filter(item => item.ORDER_STATE === "배송준비");
+                        console.log(this.orderData,"배송준비 데이터")
+                    })
+                    .catch((err) => {
+                        alert(err);
+                    });
+            } else if (this.filterValue === "배송중") {
+                await axios({
+                    url: "http://localhost:3000/admin/adminOrderList",
+                    method: "POST",
+                    data: {
+                    },
+                })
+                    .then((res) => {
+                        this.orderData = res.data.filter(item => item.ORDER_STATE === "배송중");
+                        console.log(this.orderData,"배송준비 데이터")
+                    })
+                    .catch((err) => {
+                        alert(err);
+                    });
+            } else if (this.filterValue === "배송완료") {
+                await axios({
+                    url: "http://localhost:3000/admin/adminOrderList",
+                    method: "POST",
+                    data: {
+                    },
+                })
+                    .then((res) => {
+                        this.orderData = res.data.filter(item => item.ORDER_STATE === "배송완료");
+                        console.log(this.orderData,"배송준비 데이터")
+                    })
+                    .catch((err) => {
+                        alert(err);
+                    });
+            } else if (this.filterValue === "배송취소") {
+                await axios({
+                    url: "http://localhost:3000/admin/adminOrderList",
+                    method: "POST",
+                    data: {
+                    },
+                })
+                    .then((res) => {
+                        this.orderData = res.data.filter(item => item.ORDER_STATE === "배송취소");
+                        console.log(this.orderData,"배송준비 데이터")
+                    })
+                    .catch((err) => {
+                        alert(err);
+                    });
+            }
+
         },
         async getOrderDetailData(orderId) {
             await axios({
@@ -364,16 +420,19 @@ export default {
                     alert(err);
                 });
         },
-        allChecked() {
-            console.log(item.isChcked, "전체선택 보려고 만든 콘솔")
+        allChangeOrderState() { // 주문상태 전체변경
+            this.orderData.map(item => this.orderChecked.push(item.ORDER_ID));
+            console.log(this.orderChecked, "전체선택 보려고 만든 콘솔")
+            this.changeOrderState();
+            alert("전체 주문이 배송중으로 변경되었습니다.");
         },
-        checkedState(orderId, isChcked) {
+        checkedState(orderId, isChcked) { //선택한 주문정보 선택
             this.orderChecked.push(orderId);
             console.log(orderId, "오더ID");
             console.log(isChcked, "체크여부");
             console.log(this.orderChecked, "서버로 보낼 오더ID")
         },
-        async changeOrderState(orderId) {
+        async changeOrderState(orderId) { //주문상태 변경
             this.orderChecked.push(orderId);
             await axios({
                 url: "http://localhost:3000/admin/adminStatusChange",
