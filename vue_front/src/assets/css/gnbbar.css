@@ -122,6 +122,11 @@
     padding: 9% 18% 12% 18%;
     border-radius: 100px;
 }
+.gnb_bar_header_admin {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
 
 .gnb_bar_header_userimg {
     width: 40px;
