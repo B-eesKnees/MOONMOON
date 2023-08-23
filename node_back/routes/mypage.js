@@ -521,11 +521,30 @@ router.get("/orderdelivery", (req, res) => {
     const orderState = req.query.orderState;
 
     let query = `
-        SELECT o.*, oi.*, b.BOOK_TITLE, b.BOOK_COVER
-        FROM \`order\` AS o
-        JOIN ORDERITEM AS oi ON o.ORDER_ID = oi.ORDERITEM_ORDER_ID
-        JOIN BOOK AS b ON oi.ORDERITEM_BOOK_ID = b.BOOK_ID
-        WHERE o.ORDER_USER_EMAIL = ? AND o.ORDER_STATE = ?
+    SELECT
+    o.ORDER_ID,
+    o.ORDER_PAYDATE,
+    o.ORDER_STATE,
+    o.ORDER_PAY,
+    o.ORDER_USER_EMAIL,
+    SUM(oi.ORDERITEM_CNT) AS order_cnt,
+    MAX(b.BOOK_TITLE) AS BOOK_TITLE,
+    MAX(b.BOOK_COVER) AS BOOK_COVER
+FROM
+    \`order\` AS o
+JOIN
+    ORDERITEM AS oi ON o.ORDER_ID = oi.ORDERITEM_ORDER_ID
+JOIN
+    BOOK AS b ON oi.ORDERITEM_BOOK_ID = b.BOOK_ID
+WHERE
+    o.ORDER_USER_EMAIL = ?
+    AND o.ORDER_STATE = ?
+GROUP BY
+    o.ORDER_ID,
+    o.ORDER_PAYDATE,
+    o.ORDER_STATE,
+    o.ORDER_PAY,
+    o.ORDER_USER_EMAIL
     `;
 
     db.query(query, [userEmail, orderState], (err, results) => {
@@ -548,6 +567,7 @@ router.get("/orderdelivery", (req, res) => {
                 ORDER_STATE: result.ORDER_STATE,
                 ORDER_PAY: result.ORDER_PAY,
                 ORDER_USER_EMAIL: result.ORDER_USER_EMAIL,
+                order_cnt: result.order_cnt, // 주문 수량 정보 추가
                 items: [],
             };
 
@@ -567,8 +587,6 @@ router.get("/orderdelivery", (req, res) => {
         res.json(modifiedResults);
     });
 });
-
-
 //주문검색(주문상품)
 router.get("/ordersearchbook", (req, res) => {
     const userEmail = req.query.userEmail;
@@ -630,9 +648,6 @@ router.get("/ordersearchbook", (req, res) => {
         res.json(modifiedResults);
     });
 });
-
-
-
 
 //날짜별로 (기간 검색)
 router.get("/orderdate", (req, res) => {
