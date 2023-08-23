@@ -1,4 +1,5 @@
 <template>
+    <gnbBar />
     <div class="mypage_menu">
         <myPageSide />
     </div>
@@ -83,9 +84,10 @@
 <script>
 import axios from "axios";
 import myPageSide from "../components/myPageSide.vue";
+import gnbBar from "@/components/gnbBar.vue";
 
 export default {
-    components: { myPageSide },
+    components: { myPageSide, gnbBar },
     data() {
         return {
             originalData: {}, // 기존 데이터를 저장할 객체
