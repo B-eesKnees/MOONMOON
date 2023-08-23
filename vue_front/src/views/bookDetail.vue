@@ -325,7 +325,7 @@ export default {
                 REV_WRITER: localStorage.getItem("userID"), // Assuming you store the user's ID in localStorage
                 REV_ORDERITEM_BOOK: this.bookId,
                 REV_COMMENT: comment,
-                REV_RATING: rating,
+                REV_RATING: rating * 2,
             };
 
             try {
