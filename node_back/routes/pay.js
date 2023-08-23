@@ -140,17 +140,17 @@ router.get("/couponList", async (request, res) => {
 });
 // 사용한 쿠폰 사용상태 변경
 router.get("/usedCouponStatusChange", async (request, res) => {
-  try {
-    const selectedCoupon = request.query.selectedCoupon;
-    const userEmail = request.query.userEmail;
+    try {
+        const selectedCoupon = request.query.selectedCoupon;
+        const userEmail = request.query.userEmail;
 
-    res.send(await req(queries.usedCouponStatusChangeQuery, [selectedCoupon, userEmail]));
-    console.log(userEmail);
-  } catch (err) {
-      res.status(500).send({
-          error: err,
-      });
-  }
+        res.send(await req(queries.usedCouponStatusChangeQuery, [selectedCoupon, userEmail]));
+        console.log(userEmail);
+    } catch (err) {
+        res.status(500).send({
+            error: err,
+        });
+    }
 });
 
 //-----포인트 적용
@@ -169,20 +169,19 @@ router.get("/userPoint", async (request, res) => {
 });
 // 사용한 포인트 디비에서 차감
 router.get("/delUsedPoint", async (request, res) => {
-  try {
-      const usedPoint = request.query.applyPointPrice;
-      const userEmail = request.query.userEmail;
+    try {
+        const usedPoint = request.query.applyPointPrice;
+        const userEmail = request.query.userEmail;
 
-      res.send(await req(queries.delUsedPointQuery, [usedPoint, userEmail]));
-      console.log(usedPoint);
-      console.log(userEmail);
-  } catch (err) {
-      res.status(500).send({
-          error: err,
-      });
-  }
+        res.send(await req(queries.delUsedPointQuery, [usedPoint, userEmail]));
+        console.log(usedPoint);
+        console.log(userEmail);
+    } catch (err) {
+        res.status(500).send({
+            error: err,
+        });
+    }
 });
-
 
 // 상품 금액(총), 배송비, 사용 포인트, 총금액(할인 후), 적립포인트 입력 후 출력
 //----입력
@@ -229,7 +228,19 @@ router.post("/updatePriceData", async (request, res) => {
         const ORDER_PAYMETHOD = request.body.payMethod;
         const ORDER_STATE = request.body.payState;
         const ORDER_CNT = request.body.payCount;
-        res.send(await req(queries.updatePriceDataQuery, [ORDER_PAY, ORDER_COST, ORDER_COUPON, ORDER_USEPOINT, ORDER_ADDPOINT, ORDER_PAYMETHOD, ORDER_STATE, ORDER_CNT, ORDER_ID]));
+        res.send(
+            await req(queries.updatePriceDataQuery, [
+                ORDER_PAY,
+                ORDER_COST,
+                ORDER_COUPON,
+                ORDER_USEPOINT,
+                ORDER_ADDPOINT,
+                ORDER_PAYMETHOD,
+                ORDER_STATE,
+                ORDER_CNT,
+                ORDER_ID,
+            ])
+        );
         console.log("ORDER_PAY:", ORDER_PAY);
         console.log("ORDER_COST:", ORDER_COST);
         console.log("ORDER_COUPON:", ORDER_COUPON);
@@ -263,10 +274,11 @@ router.post("/checkS", async (req, res) => {
     const bookid = req.body.bookid;
 
     db.query(`select * from moonmoon.order where ORDER_ID = ?`, bookid, (err, result) => {
+        console.log(result[0].ORDER_STATE);
         if (err) {
             res.status(200).send(err);
         } else {
-            if (result.ORDER_STATE == null) {
+            if (result[0].ORDER_STATE == null) {
                 res.status(200).send("정상접근");
             } else {
                 res.status(200).send("비정상접근");

@@ -50,6 +50,7 @@ const surveyRouter = require("./routes/survey");
 const mypageRouter = require("./routes/mypage");
 const visitRouter = require("./routes/visit");
 const adminRouter = require("./routes/admin");
+const goodsRouter = require("./routes/goods");
 
 app.use("/cart", cartRouter);
 app.use("/floating", floatingRouter);
@@ -68,6 +69,7 @@ app.use("/sur", surveyRouter);
 app.use("/mypage", mypageRouter);
 app.use("/visit", visitRouter);
 app.use("/admin", adminRouter);
+app.use("/goods", goodsRouter);
 
 app.listen(app.get("port"), () => {
     //서버 연결

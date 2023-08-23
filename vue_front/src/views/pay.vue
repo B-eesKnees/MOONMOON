@@ -105,9 +105,6 @@
                     <div class="pay_button_wrap">
                         <button class="pay_button_ex" type="button" @click="startPay">결제하러 가기</button>
                     </div>
-                    <div>
-                        <button type="button" @click="goUsedPoint">테스트</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -410,20 +407,28 @@ export default {
                             url: "/pay/updatePriceData",
                             method: "post",
                             data: priceData,
-                        }).then((res) => {
-                            if (this.$route.query.usecart) {
-                                axios({
-                                    url: "/cart/allDelete",
-                                    method: "POST",
-                                    data: { email: localStorage.getItem("userID") },
-                                }).then(() => {
+                        })
+                            .then((res) => {
+                                this.goUsedCoupon();
+                            })
+                            .then((res) => {
+                                this.goUsedPoint();
+                            })
+
+                            .then((res) => {
+                                if (this.$route.query.usecart) {
+                                    axios({
+                                        url: "/cart/allDelete",
+                                        method: "POST",
+                                        data: { email: localStorage.getItem("userID") },
+                                    }).then(() => {
+                                        this.$router.push({ name: "resultpage", query: { payid: this.payID } });
+                                    });
+                                } else {
                                     this.$router.push({ name: "resultpage", query: { payid: this.payID } });
-                                });
-                            } else {
-                                this.$router.push({ name: "resultpage", query: { payid: this.payID } });
-                            }
-                            alert("결제가 완료되었습니다.");
-                        });
+                                }
+                                alert("결제가 완료되었습니다.");
+                            });
                     } else {
                         console.log(rsp);
                         alert("결제에 실패하였습니다.");

@@ -43,9 +43,12 @@
             <a href="/event">이벤트</a>
             <hr />
             <div class="borderSideList">
-                <a href="/event"> <div @click="activeElement = 'myRoul'" :class="{ sideList: true, activeText: isActiveText('myRoul') }">룰렛</div></a
+                <a href="/event">
+                    <div @click="[(activeElement = 'myRoul'), setTapRou()]" :class="{ sideList: true, activeText: isActiveText('myRoul') }">
+                        룰렛
+                    </div></a
                 ><a href="/event">
-                    <div @click="[(activeElement = 'myAtt'), setTapName()]" :class="{ sideList: true, activeText: isActiveText('myAtt') }">
+                    <div @click="[(activeElement = 'myAtt'), setTapAtt()]" :class="{ sideList: true, activeText: isActiveText('myAtt') }">
                         출석체크
                     </div></a
                 >
@@ -80,7 +83,10 @@ export default {
         this.email = localStorage.getItem("userID");
     },
     methods: {
-        setTapName() {
+        setTapRou() {
+            sessionStorage.setItem("eventTap", "룰렛");
+        },
+        setTapAtt() {
             sessionStorage.setItem("eventTap", "출석체크");
         },
         isActiveText(element) {

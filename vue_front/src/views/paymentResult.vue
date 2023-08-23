@@ -17,12 +17,12 @@
             <div class="payresult_user_info">
                 <div class="payresult_user_info2">
                     <div>배송지 정보</div>
-                    <div class="user_name">임승리</div>
+                    <div class="user_name">{{ name }}</div>
                 </div>
                 <br />
-                <div class="user_phone">010-2222-2222</div>
+                <div class="user_phone">{{ phone }}</div>
                 <br />
-                <div class="user_add">경기도 고양시 화신로 170 2111-1111</div>
+                <div class="user_add">{{ add }}</div>
             </div>
         </div>
 
@@ -72,6 +72,9 @@ export default {
     components: { gnbbar },
     data() {
         return {
+            name: "",
+            phone: "",
+            add: "",
             payment_no: this.$route.query.payid,
             bookTitle_data: [],
             payInfo: [],
@@ -81,6 +84,7 @@ export default {
     mounted() {
         this.getBookTitle();
         this.getPayInfo();
+        this.getUserInfo();
     },
     methods: {
         getBookTitle() {
@@ -121,6 +125,23 @@ export default {
                 .catch((err) => {
                     console.log(err);
                 });
+        },
+        getUserInfo() {
+            const email = localStorage.getItem("userID");
+            const payid = this.payment_no;
+
+            axios({
+                url: "/payresult/getUser",
+                method: "POST",
+                data: {
+                    email: email,
+                    payid: payid,
+                },
+            }).then((res) => {
+                this.name = res.data[0].USER_NAME;
+                this.phone = res.data[0].USER_PHONE;
+                this.add = res.data[0].USER_ADD1 + " " + res.data[0].USER_ADD2;
+            });
         },
     },
 };
