@@ -117,7 +117,6 @@ export default {
             qnaAllList: [],
             qnaWaitList: [],
             qnaDoneList: [],
-            doneCount: 0,
         };
     },
     created() {
@@ -126,7 +125,6 @@ export default {
         this.getQnaAllList();
         this.getQnaWaitList();
         this.getQnaDoneList();
-        this.getQnaDoneCount();
     },
     methods: {
         async getQnaAllList() {
@@ -197,17 +195,6 @@ export default {
             } catch (error) {
                 console.log(error);
             }
-        },
-        getQnaDoneCount() {
-            const email = this.userEmail;
-
-            axios({
-                url: "/qna/qnaDoneCount",
-                method: "get",
-                params: { userEmail: email },
-            }).then((res) => {
-                this.doneCount = res.data.doneCount;
-            });
         },
         qnaDel(qna_id) {
             axios

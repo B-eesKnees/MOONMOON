@@ -9,16 +9,16 @@
       <div class="write_box">
         <div class="title_write">
           <h2 class="title_text">제목</h2>
-          <input class="title_input" type="text" v-model="qna.qna_title">
+          <input class="title_input" type="text" v-model="this.qna.qna_title">
         </div>
         <div class="con_write">
           <h2 class="con_text">내용</h2>
-          <input class="con_input" type="text" v-model="qna.qna_con">
+          <input class="con_input" type="text" v-model="this.qna.qna_con">
         </div>
       </div>
       <div class="btn_box">
         <button class="btn_cancel">취소</button>
-        <button class="btn_accept" @click="qnaEdit">문의 수정</button>
+        <button class="btn_accept" @click="qnaEditData">문의 수정</button>
       </div>
     </div>
   </div>
@@ -47,43 +47,58 @@ export default {
   },
   created() {
     this.qna.email = localStorage.getItem("userID");
+    this.qna.qna_id = this.$route.params.id; // 파라미터에서 아이디 받아오기
+    this.getOriginalData();
   },
   methods: {
-    /* async getOriginalQnaCon() {
-      try {
-        const url = "/qna/qnaOriginal";
-        const data = { QNA_ID: this.qna_id };
-
-        const getOriginalQnaCon = (await axios({
-          method: 'post',
-          url,
-          data
-        }).catch(error => {
-          console.log(error);
-        })).data;
-
-        if (getOriginalQnaCon.length > 0) {
-        this.getOriginalQnaCon = getOriginalQnaCon;
-
-      }
-      console.log(this.getOriginalQnaCon);
-      } catch (error) {
-        console.log(error);
-      }
-    }, */
-    async qnaEdit() {
+    getOriginalData() {
+      axios({
+          url: "/qna/qnaOriginalData",
+          method: "post",
+          data: { QNA_ID: this.qna.qna_id },
+      }).then((res) => {
+        this.qna.qna_title = res.data[0].QNA_TITLE;
+        this.qna.qna_con = res.data[0].QNA_CON;
+      });
+    },
+    async qnaEditData() {
       if(!this.qna.qna_title || !this.qna.qna_con) {
         alert("제목과 내용을 모두 입력해주세요.");
         return;
       }
 
-      this.editData = {
+      const editData = {
+        qna_title: this.qna.qna_title,
+        qna_con: this.qna.qna_con,
+        qna_id: this.qna.qna_id,
+      }
+      axios({
+          url: "/qna/qnaEdit",
+          method: "post",
+          data: editData,
+      }).then((res) => {
+        console.log(editData);
+        if (res.data) {
+          alert('문의 내용이 수정되었습니다.');
+          console.log(editData);
+          this.$router.push({ path: '/qna' });          
+          console.log('yeah');
+        } else {
+          alert('문의 수정에 실패했습니다.\n다시 시도해주세요.');
+        }
+      });
+      /* if(!this.qna.qna_title || !this.qna.qna_con) {
+        alert("제목과 내용을 모두 입력해주세요.");
+        return;
+      }
+
+      const editData = {
         qna_id: this.qna.qna_id,
         qna_title: this.qna.qna_title,
         qna_con: this.qna.qna_con
       }
 
-      axios.post('/qna/qnaEdit', this.editData)
+      axios.post('/qna/qnaEdit', editData)
       .then((response) => {
         if (response.data.success) {
           alert('문의 내용이 수정되었습니다.');
@@ -95,7 +110,7 @@ export default {
       })
       .catch((err) => {
         console.log(err);
-      });
+      }); */
     },
     /* async qnaEdit() {
       const editData = {
