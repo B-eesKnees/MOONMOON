@@ -403,6 +403,31 @@ router.get("/couponupgrade/:userEmail", (req, res) => {
         });
     });
 });
+//다음달 예정 등급 계산
+router.post("/getNextGra", async (req, res) => {
+    const now = new Date();
+    //7월 31일
+    const seven = new Date(Date.UTC(now.getUTCFullYear(), 6, 31, 23, 59, 59, 999));
+    //8월 31일
+    const eight = new Date(Date.UTC(now.getUTCFullYear(), 7, 31, 23, 59, 59, 999));
+
+    const userEmail = req.body.email;
+
+    const userPaymentQuery = `
+      SELECT SUM(o.ORDER_PAY) AS totalPayment
+      FROM user u
+      JOIN \`order\` o ON u.user_email = o.order_user_email
+      WHERE u.user_email = ? AND o.order_paydate >= ? AND o.order_paydate <= ?
+    `;
+
+    db.query(userPaymentQuery, [userEmail, seven, eight], (err, result) => {
+        if (err) {
+            res.send(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
 //전체 주문내역
 router.get("/orderHistory", async (req, res) => {
     const userEmail = req.query.userEmail; // 사용자 이메일 파라미터 받아오기
