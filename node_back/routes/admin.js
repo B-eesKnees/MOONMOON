@@ -68,9 +68,11 @@ const queries = {
   bestCategoryQuery: `SELECT b.BOOK_CATEGORYNAME, SUM(oi.ORDERITEM_CNT) AS TOTAL_SALES
                       FROM orderitem oi
                       JOIN book b ON oi.ORDERITEM_BOOK_ID = b.BOOK_ID
+                      JOIN \`order\` o ON oi.ORDERITEM_ORDER_ID = o.ORDER_ID
+                      WHERE (o.ORDER_STATE = '배송준비' OR o.ORDER_STATE = '배송중' OR o.ORDER_STATE = '배송완료')
                       GROUP BY b.BOOK_CATEGORYNAME
                       ORDER BY TOTAL_SALES DESC
-                      LIMIT 5;`,
+                      LIMIT 5`,
 }
 
 
