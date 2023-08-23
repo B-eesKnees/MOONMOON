@@ -42,11 +42,11 @@
                         <!-- 작성한 리뷰 데이터를 순회하며 표시 -->
                         <div v-for="(review, index) in writtenReview" :key="index" class="review-info">
                             <div class="info-item book-cover" style="justify-content: flex-start">
-                                <img :src="book_cover" alt="북커버 이미지" class="info-content" />
+                                <img :src="review.book_cover" alt="북커버 이미지" class="info-content" />
                             </div>
                             <div class="info-item1">
                                 <div class="info-title book-title">{{ review.book_title }}</div>
-                                <div class="info-title book-author">{{ book_author }}</div>
+                                <div class="info-title book-author">{{ review.book_author }}</div>
                                 <div class="info-title review-rating">별점: {{ review.rev_rating }} 점</div>
                                 <div class="info-title review-comment">리뷰: {{ review.rev_comment }}</div>
                             </div>
@@ -131,9 +131,9 @@ export default {
                 this.writtenReview = this.writtenReview.map((review) => {
                     const rev_created_at = new Date(review.REV_CREATED_AT);
                     return {
-                        book_cover: review.book_cover,
-                        book_title: review.book_title,
-                        book_author: review.book_author,
+                        book_cover: review.BOOK_COVER,
+                        book_title: review.BOOK_TITLE,
+                        book_author: review.BOOK_AUTHOR,
                         rev_rating: review.REV_RATING,
                         rev_comment: review.REV_COMMENT,
                         rev_created_at: formattedDate(rev_created_at),
@@ -229,5 +229,8 @@ export default {
 
 .pagination button:hover {
     background-color: #ddd;
+}
+.info-content {
+    width: 10%;
 }
 </style>
