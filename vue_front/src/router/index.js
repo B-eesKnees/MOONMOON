@@ -34,6 +34,7 @@ import AdminUserManage from "../components/adminUserManage.vue";
 import AdminQnaManage from "../components/adminQnaManage.vue";
 import AdminOrderManage from "../components/adminOrderManage.vue";
 import AdminUserAnalyze from "../components/adminUserAnalyze.vue";
+import AdminBuyAnalyze from "../components/adminBuyAnalyze.vue";
 
 import mypageOrderInfo from "../views/mypageOrderInfo.vue";
 import mypageUserInfo from "../views/mypageUserInfo.vue";
@@ -231,6 +232,11 @@ const routes = [
         path: "/admin/useranalyze",
         name: "AdminUserAnalyze",
         component: AdminUserAnalyze,
+    },
+    {
+        path: "/admin/buyanalyze",
+        name: "AdminBuyAnalyze",
+        component: AdminBuyAnalyze,
     },
     //-------------------------------------------------------------
     //출석체크페이지

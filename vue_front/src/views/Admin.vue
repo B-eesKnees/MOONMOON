@@ -211,7 +211,8 @@
                                         <h6 class="m-0 font-weight-bold text-primary">미완료 주문</h6>
                                     </div>
                                     <div class="card-body d-flex flex-column">
-                                        <a href="/admin/ordermanage" v-for="(item, i) in orderData" class="small font-weight-bold mb-2">주문번호 : {{item.ORDER_ID}} - <span
+                                        <a href="/admin/ordermanage" v-for="(item, i) in orderData"
+                                            class="small font-weight-bold mb-2">주문번호 : {{ item.ORDER_ID }} - <span
                                                 class="badge bg-danger">미완료</span></a>
 
                                     </div>
@@ -352,6 +353,7 @@ export default {
             threeDayAgo: "",
             fourDayAgo: "",
             fiveDayAgo: "",
+            sixDayAgo: "",
         });
         // 데이터를 reactive로 정의
         const dateRange = reactive([]);
@@ -470,6 +472,22 @@ export default {
             } catch (error) {
                 alert(error);
             }
+
+            try {
+                const response = await axios.post('http://localhost:3000/admin/adminDaySales', {
+                    date_start: dateRange[6] + " 00:00:00",
+                    date_end: dateRange[6] + " 23:59:59",
+                });
+                const res = response.data;
+
+                weekSales.sixDayAgo = res[0].daySales;
+                console.log(res, "이거이거")
+
+                // 차트를 다시 그리는 함수 호출
+                drawSalesChart();
+            } catch (error) {
+                alert(error);
+            }
         };
 
         // 차트를 그리는 함수 정의
@@ -515,7 +533,7 @@ export default {
                 });
             }
         };
-
+        //주간 매출 차트
         const drawSalesChart = () => {
             // 이전 차트 인스턴스 제거
             if (dailySalesChart.value && dailySalesChart.value.chart) {
@@ -528,6 +546,7 @@ export default {
                     type: 'line',
                     data: {
                         labels: [
+                            dateRange[6],
                             dateRange[5],
                             dateRange[4],
                             dateRange[3],
@@ -538,7 +557,7 @@ export default {
                         datasets: [
                             {
                                 label: '금액', // Add dataset label
-                                data: [weekSales.fiveDayAgo, weekSales.fourDayAgo, weekSales.threeDayAgo, weekSales.twoDayAgo, weekSales.yesday, weekSales.today],
+                                data: [weekSales.sixDayAgo, weekSales.fiveDayAgo, weekSales.fourDayAgo, weekSales.threeDayAgo, weekSales.twoDayAgo, weekSales.yesday, weekSales.today],
                                 backgroundColor: 'rgba(231, 74, 59, 0.1)', // 반투명 배경색 설정
                                 borderColor: '#e74a3b', // 선 색상 설정
                                 borderWidth: 2, // 선 두께 설정
@@ -726,6 +745,7 @@ export default {
                     alert(err);
                 });
         },
+        // 오늘 방문자 수
         async getTodayVisit() {
             // 오늘 날짜
             var today = new Date().toLocaleDateString();
@@ -785,18 +805,18 @@ export default {
         },
         async getOrderData() { //미완료 주문(배송준비 주문들 가져오기)
             await axios({
-                    url: "http://localhost:3000/admin/adminOrderList",
-                    method: "POST",
-                    data: {
-                    },
+                url: "http://localhost:3000/admin/adminOrderList",
+                method: "POST",
+                data: {
+                },
+            })
+                .then((res) => {
+                    this.orderData = res.data.filter(item => item.ORDER_STATE === "배송준비");
+                    console.log(this.orderData, "배송준비 데이터")
                 })
-                    .then((res) => {
-                        this.orderData = res.data.filter(item => item.ORDER_STATE === "배송준비");
-                        console.log(this.orderData,"배송준비 데이터")
-                    })
-                    .catch((err) => {
-                        alert(err);
-                    });
+                .catch((err) => {
+                    alert(err);
+                });
         },
         formatNumber(number) {
             // 숫자를 천 단위마다 쉼표가 있는 형식으로 변환
