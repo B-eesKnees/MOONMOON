@@ -11,12 +11,12 @@ router.post("/postreview", (req, res) => {
   const checkBuyAndRevCheckQuery = `
     SELECT oi.ORDERITEM_BUYCHECK, oi.ORDERITEM_REVCHECK
     FROM orderitem oi
-    WHERE oi.ORDERITEM_ORDERID IN (
+    WHERE oi.ORDERITEM_ORDER_ID IN (
       SELECT o.ORDER_ID
       FROM \`order\` o
       WHERE o.ORDER_USER_EMAIL = ? AND o.ORDER_STATE = '배송완료'
     )
-    AND oi.ORDERITEM_BOOKID = ?
+    AND oi.ORDERITEM_BOOK_ID = ?
   `;
 
   db.query(
@@ -51,12 +51,12 @@ router.post("/postreview", (req, res) => {
               const updateRevCheckQuery = `
               UPDATE orderitem
               SET ORDERITEM_REVCHECK = 1
-              WHERE ORDERITEM_ORDERID IN (
+              WHERE ORDERITEM_ORDER_ID IN (
                 SELECT o.ORDER_ID
                 FROM \`order\` o
                 WHERE o.ORDER_USER_EMAIL = ? AND o.ORDER_STATE = '배송완료'
               )
-              AND ORDERITEM_BOOKID = ?
+              AND ORDERITEM_BOOK_ID = ?
               `;
 
               db.query(
