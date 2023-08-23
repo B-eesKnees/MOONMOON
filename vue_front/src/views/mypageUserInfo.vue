@@ -20,7 +20,12 @@
             <div>
                 <div class="input-item">
                     <label for="password">비밀번호</label>
-                    <input type="password" id="password" v-model="originalData.password" @click="openPasswordModal" />
+                    <input
+                        type="password"
+                        id="password"
+                        :value="isPasswordModalClosed ? '*********' : originalData.password"
+                        @click="openPasswordModal"
+                    />
                 </div>
 
                 <!-- 모달 요소 -->
@@ -48,10 +53,7 @@
                 <label for="age">나이대</label>
                 <input type="number" id="age" :value="convertAgeRange(originalData.age)" :readonly="true" />
             </div>
-            <div class="input-item">
-                <label for="zipcode">우편번호</label>
-                <input type="text" id="zipcode" v-model="updatedFields.zipcode" :readonly="true" />
-            </div>
+
             <div class="input-item">
                 <label for="add1">주소</label>
                 <input type="text" id="add1" v-model="updatedFields.add1" @click="openAddressSearch" />
@@ -59,6 +61,10 @@
             <div class="input-item">
                 <label for="add2">상세주소</label>
                 <input type="text" id="add2" v-model="updatedFields.add2" />
+            </div>
+            <div class="input-item">
+                <label for="zipcode">우편번호</label>
+                <input type="text" id="zipcode" v-model="updatedFields.zipcode" />
             </div>
 
             <div class="input-item">
@@ -77,8 +83,6 @@
             <button type="button" @click="cancelUpdate">취소</button>
             <button type="button" @click="updateUserInfo">수정</button>
         </div>
-
-        <div v-if="message" class="status-message">{{ message }}</div>
     </div>
 </template>
 <script>
@@ -98,6 +102,7 @@ export default {
             confirmPassword: "",
             passwordValidationMessage: "",
             passwordMatchMessage: "",
+            isPasswordModalClosed: false,
         };
     },
     created() {
@@ -204,6 +209,7 @@ export default {
             this.passwordModal = false;
             this.newPassword = "";
             this.confirmPassword = "";
+            this.isPasswordModalClosed = true;
         },
         checkNewPassword() {
             const validatePassword = /^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
@@ -234,6 +240,8 @@ export default {
                     this.message = response.data;
 
                     this.closePasswordModal();
+
+                    alert("비밀번호가 변경되었습니다.");
 
                     //this.originalData.password = this.newPassword;
 
@@ -402,10 +410,5 @@ export default {
     font-size: 12px;
     margin-top: 5px;
     display: block;
-}
-.input-item input[type="password"] {
-    -webkit-text-security: disc;
-    -moz-text-security: disc;
-    text-security: disc;
 }
 </style>

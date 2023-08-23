@@ -10,12 +10,11 @@
                 <TabItem title="작성가능한 리뷰">
                     <div>
                         <div v-for="(review, index) in reviewList" :key="index" class="review-info">
-                            <div class="info-item book-cover" style="justify-content: flex-start">
-                                <div class="info-title"></div>
+                            <div class="info-item book-cover">
                                 <img :src="review.book_cover" alt="북커버 이미지" class="info-content" />
                             </div>
                             <div class="info-item1">
-                                <div class="info-title">구매확정일 : {{ formattedDate(review.ORDERITEM_CONFIRMED_AT) }}</div>
+                                <div class="info-title.confirm">구매확정 {{ formattedDate(review.ORDERITEM_CONFIRMED_AT) }}</div>
 
                                 <div class="info-title.book-title">{{ review.book_title }}</div>
 
@@ -23,7 +22,10 @@
                             </div>
 
                             <div class="info-item2">
-                                <a href="/detail"><button class="review-button">리뷰 쓰기</button></a>
+                                <router-link :to="`/detail/${review.ORDERITEM_BOOK_ID}`"
+                                    ><button class="review-button">리뷰 쓰기</button></router-link
+                                >
+
                                 <div class="info-title.deadline">작성기한</div>
                                 <div class="info-content.deadline">{{ calculateDeadline(review.ORDERITEM_CONFIRMED_AT) }}</div>
                                 <div class="info-title.point">포인트</div>
@@ -47,7 +49,7 @@
                             <div class="info-item1">
                                 <div class="info-title book-title">{{ review.book_title }}</div>
                                 <div class="info-title book-author">{{ review.book_author }}</div>
-                                <div class="info-title review-rating">별점: {{ review.rev_rating }} 점</div>
+
                                 <div class="info-title review-comment">리뷰: {{ review.rev_comment }}</div>
                             </div>
                             <div class="info-item2">
@@ -197,14 +199,6 @@ export default {
     margin-bottom: 20px;
 }
 
-.info-item.book-cover {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start; /* 변경: 북커버 이미지를 왼쪽 정렬 */
-    text-align: left; /* 변경: 텍스트는 왼쪽 정렬 */
-    margin-right: 20px; /* 변경: 오른쪽 간격 추가 */
-}
-
 .review-button {
     background-color: #5552f7;
     color: white;
@@ -230,7 +224,11 @@ export default {
 .pagination button:hover {
     background-color: #ddd;
 }
+
 .info-content {
-    width: 10%;
+    width: 100px; /* 이미지의 가로 너비를 원하는 크기로 조절해보세요 */
+    height: auto; /* 높이를 자동으로 조절하여 비율을 유지하도록 설정 */
+    max-width: 100%; /* 부모 요소 너비에 맞게 이미지 크기 조절 */
+    max-height: 100%; /* 부모 요소 높이에 맞게 이미지 크기 조절 */
 }
 </style>
