@@ -36,11 +36,11 @@ const queries = {
                        set QNA_REPLY = ?, QNA_REP = 1
                        where QNA_ID = ?`,
 
-  adminOrderListQuery: `select ORDER_ID, ORDER_USER_EMAIL, date_format(ORDER_DATE, '%Y-%m-%d') as ORDER_DATE, ORDER_STATE
+  adminOrderListQuery: `select ORDER_ID, ORDER_USER_EMAIL, date_format(ORDER_PAYDATE, '%Y-%m-%d') as ORDER_DATE, ORDER_STATE
                         from \`order\`
                         where ORDER_STATE = '배송준비' or ORDER_STATE = '배송중' or ORDER_STATE = '배송완료' or ORDER_STATE = '주문취소'`,
 
-  adminOrderDetailQuery: `select ORDER_ID, ORDER_USER_EMAIL, date_format(ORDER_DATE, '%Y-%m-%d') as ORDER_DATE, ORDER_NAME, ORDER_TEL, ORDER_ZIPCODE, ORDER_ADD, ORDER_ADDDETAIL, ORDER_REQ, ORDER_CNT, ORDER_PAY, ORDER_COST, ORDER_COUPON, ORDER_USEPOINT, ORDER_ADDPOINT, ORDER_PAYMETHOD, ORDER_PAYDATE, ORDER_STATE
+  adminOrderDetailQuery: `select ORDER_ID, ORDER_USER_EMAIL, date_format(ORDER_PAYDATE, '%Y-%m-%d') as ORDER_DATE, ORDER_NAME, ORDER_TEL, ORDER_ZIPCODE, ORDER_ADD, ORDER_ADDDETAIL, ORDER_REQ, ORDER_CNT, ORDER_PAY, ORDER_COST, ORDER_COUPON, ORDER_USEPOINT, ORDER_ADDPOINT, ORDER_PAYMETHOD, ORDER_STATE
                           from \`order\`
                           where (ORDER_STATE = '배송준비' or ORDER_STATE = '배송중' or ORDER_STATE = '배송완료' or ORDER_STATE = '주문취소') and ORDER_ID = ?`,
 
@@ -55,7 +55,7 @@ const queries = {
 
   adminDaySalesQuery: `select sum(ORDER_PAY) as daySales
                        from \`order\`
-                       where ORDER_DATE BETWEEN ? and ?`,
+                       where ORDER_PAYDATE BETWEEN ? and ?`,
 
   userSexRatioQuery: `SELECT
                         SUM(CASE WHEN USER_SEX = 'f' THEN 1 ELSE 0 END) AS female_count,
