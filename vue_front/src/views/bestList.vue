@@ -31,7 +31,7 @@
                 </div>
                 <div class="best_item_order">
                     <a @click="goToPay(item.BOOK_ID, item.BOOK_PRICE)" href="#">결제하러 가기</a>
-                    <p><span>내일(7/28)</span> 도착예정</p>
+                    <p><span>내일({{month}}/{{nextDay}})</span> 도착예정</p>
                 </div>
                 <div class="best_item_btn">
                     <img v-if="item.isLiked == true" @click="likeToggle(item.BOOK_ID)" src="../assets/img/heartFill.png" alt="Heart Filled" />
@@ -91,6 +91,9 @@ export default {
             currentPage: 1, // 현재 페이지 번호
             totalPages: 1, // 총 페이지 수
             maxDisplayedPages: 9, // 표시할 최대 페이지 수 (현재 페이지를 중심으로 좌우로 표시)
+
+            nextDay: 0,
+            month: 0
         };
     },
 
@@ -99,6 +102,7 @@ export default {
         this.email = localStorage.getItem("userID");
         this.getLikeBook();
         this.getBestList();
+        this.getNextDate();
     },
     mounted() {},
     unmounted() {},
@@ -280,6 +284,12 @@ export default {
                 .catch((error) => {
                     console.error("Error goToPay :", error);
                 });
+        },
+        getNextDate() {
+            //내일 배송일로 나오게 하는 함수
+            const today = new Date();
+            this.nextDay = today.getDate() + 1;
+            this.month = today.getMonth() + 1;
         },
     },
 };

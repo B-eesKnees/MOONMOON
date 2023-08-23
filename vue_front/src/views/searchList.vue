@@ -5,8 +5,7 @@
     <div class="search">
         <div class="search_header">
             <div class="search_header_left">
-                <span>'{{ searchKeyword }}'</span>에 대한 <span>{{ searchListData.length }}</span
-                >개의 검색 결과
+                <span>'{{ searchKeyword }}'</span>에 대한 <span>{{ searchListData.length }}</span>개의 검색 결과
             </div>
             <div class="search_header_right">
                 <select @change="getSearchList" v-model="filterValue">
@@ -40,11 +39,13 @@
                 </div>
                 <div class="search_item_order">
                     <a @click="goToPay(item.BOOK_ID, item.BOOK_PRICE)" href="#">결제하러 가기</a>
-                    <p><span>내일(7/28)</span> 도착예정</p>
+                    <p><span>내일({{ month }}/{{ nextDay }})</span> 도착예정</p>
                 </div>
                 <div class="search_item_btn">
-                    <img v-if="item.isLiked == true" @click="likeToggle(item.BOOK_ID)" src="../assets/img/heartFill.png" alt="Heart Filled" />
-                    <img v-else-if="item.isLiked == false" @click="likeToggle(item.BOOK_ID)" src="../assets/img/heart.png" alt="Heart" />
+                    <img v-if="item.isLiked == true" @click="likeToggle(item.BOOK_ID)" src="../assets/img/heartFill.png"
+                        alt="Heart Filled" />
+                    <img v-else-if="item.isLiked == false" @click="likeToggle(item.BOOK_ID)" src="../assets/img/heart.png"
+                        alt="Heart" />
                     <img @click="addToCart(item.BOOK_ID)" src="../assets/img/cart2.png" alt="" />
                 </div>
             </div>
@@ -52,12 +53,8 @@
         <div class="booklist_paging">
             <button @click="changePage('first')" :disabled="currentPage === 1">맨앞</button>
             <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1">이전</button>
-            <button
-                v-for="pageNumber in pageNumbers"
-                :key="pageNumber"
-                @click="changePage(pageNumber)"
-                :class="{ active: pageNumber === currentPage }"
-            >
+            <button v-for="pageNumber in pageNumbers" :key="pageNumber" @click="changePage(pageNumber)"
+                :class="{ active: pageNumber === currentPage }">
                 {{ pageNumber }}
             </button>
             <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages">다음</button>
@@ -102,17 +99,21 @@ export default {
             currentPage: 1, // 현재 페이지 번호
             totalPages: 1, // 총 페이지 수
             maxDisplayedPages: 9, // 표시할 최대 페이지 수 (현재 페이지를 중심으로 좌우로 표시)
+
+            nextDay: 0,
+            month: 0
         };
     },
 
-    setup() {},
+    setup() { },
     created() {
         this.email = localStorage.getItem("userID");
         this.getLikeBook();
         this.getSearchList();
+        this.getNextDate();
     },
-    mounted() {},
-    unmounted() {},
+    mounted() { },
+    unmounted() { },
     computed: {
         totalPages() {
             // 전체 페이지 수 계산
@@ -325,6 +326,12 @@ export default {
                 .catch((error) => {
                     console.error("Error goToPay :", error);
                 });
+        },
+        getNextDate() {
+            //내일 배송일로 나오게 하는 함수
+            const today = new Date();
+            this.nextDay = today.getDate() + 1;
+            this.month = today.getMonth() + 1;
         },
     },
 };

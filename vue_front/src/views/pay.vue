@@ -106,7 +106,7 @@
                         <button class="pay_button_ex" type="button" @click="startPay">결제하러 가기</button>
                     </div>
                     <div>
-                        <button type="button" @click="goUsedPoint">테스트</button>
+                        <button type="button" @click="startPay">테스트</button>
                     </div>
                 </div>
             </div>

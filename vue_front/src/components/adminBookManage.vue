@@ -61,7 +61,7 @@
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
-                                                <th>책 이름</th>
+                                                <th>책 제목</th>
                                                 <th>지은이</th>
                                                 <th>장르</th>
                                                 <th>가격</th>
@@ -70,7 +70,7 @@
                                         </thead>
                                         <tfoot>
                                             <tr>
-                                                <th>책 이름</th>
+                                                <th>책 제목</th>
                                                 <th>지은이</th>
                                                 <th>장르</th>
                                                 <th>가격</th>
