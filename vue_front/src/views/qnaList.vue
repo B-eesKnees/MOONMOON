@@ -35,7 +35,7 @@
                             <div class="qna-btn" v-if="!nodata">1:1 문의하기</div>
                         </a>
 
-                        <div class="qna-wait">
+                        <div class="qna-all">
                             <div v-if="qnaWaitList.length === 0">
                                 <div id="nodata" class="nodata">답변 대기중인 문의글이 없습니다</div>
                             </div>
@@ -56,7 +56,7 @@
                             <div class="qna-btn" v-if="!nodata">1:1 문의하기</div>
                         </a>
 
-                        <div class="qna-done">
+                        <div class="qna-all">
                             <div v-if="qnaDoneList.length === 0">
                                 <div id="nodata" class="nodata">답변 완료된 문의글이 없습니다</div>
                             </div>
@@ -207,7 +207,7 @@ export default {
                 });
         },
         getEditId(qna_id) {
-            this.$router.push({ name: 'qnaEdit', params: { id: qna_id } });
+            this.$router.push({ name: "qnaEdit", params: { id: qna_id } });
         },
     },
 };
