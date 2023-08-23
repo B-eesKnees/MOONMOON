@@ -41,7 +41,7 @@
                 </div>
                 <div class="search_item_order">
                     <a @click="goToPay(item.BOOK_ID, item.BOOK_PRICE)" href="#">결제하러 가기</a>
-                    <p><span>내일(7/28)</span> 도착예정</p>
+                    <p><span>내일({{ month }}/{{ nextDay }})</span> 도착예정</p>
                 </div>
                 <div class="search_item_btn">
                     <img v-if="item.isLiked == true" @click="likeToggle(item.BOOK_ID)" src="../assets/img/heartFill.png"
@@ -228,6 +228,10 @@ export default {
             //좋아요 여부
             isLiked: false,
             likeBook: [],
+
+            nextDay: 0,
+            month: 0
+
         };
     },
 
@@ -235,6 +239,7 @@ export default {
     created() {
         this.email = localStorage.getItem("userID");
         this.getLikeBook();
+        this.getNextDate();
     },
     mounted() {
         this.$route.params.category == '장르소설' ? this.currentCategory = '소설/시/희곡' : this.currentCategory = this.$route.params.category;
@@ -506,6 +511,12 @@ export default {
                 .catch((error) => {
                     console.error("Error goToPay :", error);
                 });
+        },
+        getNextDate() {
+            //내일 배송일로 나오게 하는 함수
+            const today = new Date();
+            this.nextDay = today.getDate() + 1;
+            this.month = today.getMonth() + 1;
         },
     },
 };

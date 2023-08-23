@@ -35,32 +35,32 @@
 
                         <!-- Content Row -->
                         <div class="row d-flex align-items-center justify-content-center">
-                            <div v-for="i in 5" :key="i" class="mb-4" style="width: 10%;">
+                            <div v-for="(item, i) in bestCategorys" :key="i" class="mb-4" style="width: 12%;">
                                 <div class="card shadow h-100 mb-5" :class="{
-                                    'cardshadow h-100 mb-5 border-bottom-danger': i === 1,
-                                    'cardshadow h-100 mb-5 border-bottom-secondary': i === 2,
-                                    'cardshadow h-100 mb-5 border-bottom-warning': i === 3,
-                                    'cardshadow h-100 mb-5 border-bottom-primary': i === 4,
-                                    'cardshadow h-100 mb-5 border-bottom-info': i === 5,
+                                    'cardshadow h-100 mb-5 border-bottom-danger': i + 1 === 1,
+                                    'cardshadow h-100 mb-5 border-bottom-secondary': i + 1 === 2,
+                                    'cardshadow h-100 mb-5 border-bottom-warning': i + 1 === 3,
+                                    'cardshadow h-100 mb-5 border-bottom-primary': i + 1 === 4,
+                                    'cardshadow h-100 mb-5 border-bottom-info': i + 1 === 5,
                                 }">
                                     <div class="card-body">
                                         <div class="row no-gutters align-items-center">
                                             <div class="col mr-2">
                                                 <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1"
                                                     :class="{
-                                                        'text-danger': i === 1,
-                                                        'text-secondary': i === 2,
-                                                        'text-warning': i === 3,
-                                                        'text-primary': i === 4,
-                                                        'text-info': i === 5,
-                                                        
+                                                        'text-danger': i + 1 === 1,
+                                                        'text-secondary': i + 1 === 2,
+                                                        'text-warning': i + 1 === 3,
+                                                        'text-primary': i + 1 === 4,
+                                                        'text-info': i + 1 === 5,
+
                                                     }">
-                                                    {{ i }}위
+                                                    {{ item.category }}
                                                 </div>
                                                 <div class="row no-gutters align-items-center">
                                                     <div class="col-auto">
                                                         <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                                                            소설</div>
+                                                            {{ item.sales }}개</div>
                                                     </div>
                                                     <div class="col">
                                                         <div class="progress progress-sm mr-2">
@@ -72,7 +72,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-auto">
-                                                <i class="fa-solid fa-user fa-xl text-gray-300"></i>
+                                                <i class="fa-solid fa-book fa-xl text-gray-300"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -94,7 +94,7 @@
                                     <!-- Card Body -->
                                     <div class="card-body">
                                         <div class="chart-area d-flex align-items-center justify-content-center">
-                                            <canvas ref="dailyVisitChart" width="1000" height="300"></canvas>
+                                            <canvas ref="bestCategoryChart" width="1000" height="300"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -144,66 +144,89 @@ export default {
     components: { SideBar },
     data() {
         return {
-
-            //주간 방문자 수
-            weekVisit: 0,
+            //책 장르 데이터
+            bestCategorys: [
+                {
+                    category: "장르",
+                    sales: 0,
+                },
+                {
+                    category: "장르",
+                    sales: 0,
+                },
+                {
+                    category: "장르",
+                    sales: 0,
+                },
+                {
+                    category: "장르",
+                    sales: 0,
+                },
+                {
+                    category: "장르",
+                    sales: 0,
+                },
+            ]
         }
     },
     setup() {
-        const dailyVisitChart = ref(null);
+        const bestCategoryChart = ref(null);
 
         //방문자 수 데이터
-        var weekVisit = reactive([
+        var bestCategorys = reactive([
             {
-                date: "2023-01-01",
-                count: 0,
+                category: "장르",
+                sales: 0,
             },
             {
-                date: "2023-01-01",
-                count: 0,
+                category: "장르",
+                sales: 0,
             },
             {
-                date: "2023-01-01",
-                count: 0,
+                category: "장르",
+                sales: 0,
             },
             {
-                date: "2023-01-01",
-                count: 0,
+                category: "장르",
+                sales: 0,
             },
             {
-                date: "2023-01-01",
-                count: 0,
-            },
-            {
-                date: "2023-01-01",
-                count: 0,
-            },
-            {
-                date: "2023-01-01",
-                count: 0,
+                category: "장르",
+                sales: 0,
             },
         ]);
 
         //----------------------------------여기부터 서버에서 데이터 불러오는 함수-------------------------------------
-       
+
         // 주간 방문자 수 데이터를 업데이트하는 함수 정의
-        const updateWeekVisit = async () => {
+        const updateBestCategory = async () => {
             try {
-                const response = await axios.post('http://localhost:3000/admin/getTotalV', {});
-                const data = response.data.slice(0, 7);
+                const response = await axios.post('http://localhost:3000/admin/bestCategory', {});
+                const data = response.data;
 
                 // 데이터를 주간 방문자 수 배열에 할당
-                weekVisit = data.map(item => {
+                bestCategorys = data.map(item => {
                     return {
-                        date: item.vc_date,
-                        count: item.vc_count
+                        category: item.BOOK_CATEGORYNAME,
+                        sales: item.TOTAL_SALES
+                    };
+                });
+                // 대분류만 가져오기위해 문자열 잘라내기
+                const extractedCategories = bestCategorys.map(item => {
+                    const match = item.category.match(/국내도서>(.*?)>/); // 정규식을 사용해 "국내도서>" 다음에 오는 문자열을 추출
+                    const newCategory = match ? match[1].trim() : ''; // 공백을 제거한 후 새로운 카테고리 값으로 설정
+                    return {
+                        ...item, // 원래 항목의 속성들을 그대로 가져오고
+                        category: newCategory // category 속성을 새로운 값으로 업데이트
                     };
                 });
 
-                console.log(weekVisit, "주간 방문자 수 데이터");
+                // extractedCategories로 bestCategorys 배열을 업데이트
+                bestCategorys = extractedCategories;
+
 
                 // 차트를 다시 그리는 함수 호출
-                drawWeekVisitChart();
+                drawBestCategoryChart();
             } catch (error) {
                 alert(error);
             }
@@ -211,35 +234,43 @@ export default {
 
         //----------------------------------여기부터 차트 함수-------------------------------------
 
-        const drawWeekVisitChart = () => {
-            // 일별 방문자데이터들의 최대값 가져오기
-            const maxCount = Math.max(...weekVisit.map(item => item.count));
+        const drawBestCategoryChart = () => {
 
             // 이전 차트 인스턴스 제거
-            if (dailyVisitChart.value && dailyVisitChart.value.chart) {
-                dailyVisitChart.value.chart.destroy();
+            if (bestCategoryChart.value && bestCategoryChart.value.chart) {
+                bestCategoryChart.value.chart.destroy();
             }
 
-            if (dailyVisitChart) {
-                const ctx = dailyVisitChart.value.getContext('2d');
-                dailyVisitChart.value.chart = new Chart(ctx, {
+            if (bestCategoryChart) {
+                const ctx = bestCategoryChart.value.getContext('2d');
+                bestCategoryChart.value.chart = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: [
-                            weekVisit[6].date,
-                            weekVisit[5].date,
-                            weekVisit[4].date,
-                            weekVisit[3].date,
-                            weekVisit[2].date,
-                            weekVisit[1].date,
-                            weekVisit[0].date,
+                            bestCategorys[0].category,
+                            bestCategorys[1].category,
+                            bestCategorys[2].category,
+                            bestCategorys[3].category,
+                            bestCategorys[4].category,
                         ],
                         datasets: [
                             {
-                                label: '방문자 수', // Add dataset label
-                                data: [weekVisit[0].count, weekVisit[1].count, weekVisit[2].count, weekVisit[3].count, weekVisit[4].count, weekVisit[5].count, weekVisit[6].count],
-                                backgroundColor: '#F6C23E', // 반투명 배경색 설정
-                                borderColor: '#F6C23E', // 선 색상 설정
+                                label: '구매 수', // Add dataset label
+                                data: [bestCategorys[0].sales, bestCategorys[1].sales, bestCategorys[2].sales, bestCategorys[3].sales, bestCategorys[4].sales],
+                                backgroundColor: [
+                                    '#E74A3B', // 첫 번째 막대의 배경색
+                                    '#858796', // 두 번째 막대의 배경색
+                                    '#F6C23E', // 세 번째 막대의 배경색
+                                    '#4E73DF', // 네 번째 막대의 배경색
+                                    '#36B9CC', // 다섯 번째 막대의 배경색
+                                ],
+                                borderColor: [
+                                    '#E74A3B', // 막대 테두리 색상
+                                    '#858796',
+                                    '#F6C23E',
+                                    '#4E73DF',
+                                    '#36B9CC',
+                                ],
                                 hoverOffset: 1,
                                 fill: true,
                             },
@@ -269,36 +300,47 @@ export default {
         };
 
         onMounted(() => {
-            updateWeekVisit();
-
-
-
-
+            updateBestCategory();
         });
 
         return {
-            dailyVisitChart,
+            bestCategoryChart,
         };
     },
     mounted() {
-        this.updateWeekVisit();
+        this.updateBestCategory();
     },
     methods: {
-   
+
         // 주간 방문자수 데이터 받기
-        async updateWeekVisit() {
+        async updateBestCategory() {
             await axios({
-                url: "http://localhost:3000/admin/getTotalV",
+                url: "http://localhost:3000/admin/bestCategory",
                 method: "POST",
-                data: {
-                },
             })
                 .then((res) => {
-                    const data = res.data.slice(0, 7);
+                    const data = res.data;
 
-                    //이전 1주일간 매일 방문자수를 저장
-                    data.map(item => this.weekVisit += item.vc_count);
-                    console.log(this.weekVisit, "주간방문자수 데이터")
+                    // 데이터를 주간 방문자 수 배열에 할당
+                    this.bestCategorys = data.map(item => {
+                        return {
+                            category: item.BOOK_CATEGORYNAME,
+                            sales: item.TOTAL_SALES
+                        };
+                    });
+                    // 대분류만 가져오기위해 문자열 잘라내기
+                    const extractedCategories = this.bestCategorys.map(item => {
+                        const match = item.category.match(/국내도서>(.*?)>/); // 정규식을 사용해 "국내도서>" 다음에 오는 문자열을 추출
+                        const newCategory = match ? match[1].trim() : ''; // 공백을 제거한 후 새로운 카테고리 값으로 설정
+                        return {
+                            ...item, // 원래 항목의 속성들을 그대로 가져오고
+                            category: newCategory // category 속성을 새로운 값으로 업데이트
+                        };
+                    });
+
+                    // extractedCategories로 bestCategorys 배열을 업데이트
+                    this.bestCategorys = extractedCategories;
+                    console.log(this.bestCategorys, "베스틉카테코리쓰")
                 })
                 .catch((err) => {
                     alert(err);
