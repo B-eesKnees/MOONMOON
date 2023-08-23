@@ -208,7 +208,7 @@ export default {
         },
         getEditId(qna_id) {
             this.$router.push({ name: "qnaEdit", params: { id: qna_id } });
-        },
+        },        
     },
 };
 </script>
