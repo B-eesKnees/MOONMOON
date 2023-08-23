@@ -791,10 +791,10 @@ router.get("/notYetReview/:userEmail", (req, res) => {
   const userEmail = req.params.userEmail;
 
   const notReviewQuery = `
-    SELECT oi.ORDERITEM_BOOKID, b.book_author, b.book_cover, b.book_title
+    SELECT oi.ORDERITEM_BOOK_ID, oi.ORDERITEM_CONFIRMED_AT,b.book_author, b.book_cover, b.book_title
     FROM orderitem oi
-    JOIN book b ON oi.ORDERITEM_BOOKID = b.BOOK_ID
-    WHERE oi.ORDERITEM_ORDERID IN (
+    JOIN book b ON oi.ORDERITEM_BOOK_ID = b.BOOK_ID
+    WHERE oi.ORDERITEM_ORDER_ID IN (
       SELECT o.ORDER_ID
       FROM \`order\` o
       WHERE o.ORDER_USER_EMAIL = ? AND o.ORDER_STATE = '배송완료'
@@ -811,6 +811,7 @@ router.get("/notYetReview/:userEmail", (req, res) => {
     }
   });
 });
+
 router.post("/updateUserInfo", async (req, res) => {
   const email = req.body.email;
   const updatedFields = req.body.updatedFields;
