@@ -15,9 +15,6 @@
                 <a href="/mypagereview">
                     <div @click="activeElement = 'myReview'" :class="{ sideList: true, activeText: isActiveText('myReview') }">마이리뷰</div>
                 </a>
-                <a href=""
-                    ><div @click="activeElement = 'myReview'" :class="{ sideList: true, activeText: isActiveText('myReview') }">마이리뷰</div></a
-                >
             </div>
         </h2>
     </div>

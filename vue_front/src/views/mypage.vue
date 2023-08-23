@@ -37,25 +37,37 @@
             <div v-for="order in orderList" :key="order.ORDER_ID" class="order-box">
                 <!-- 왼쪽에 배송 상태 및 결제일 -->
                 <div class="order_status">
-                    <div class="mypage_order_state">{{ order.ORDER_STATE }}</div>
+                    <div
+                        :class="{
+                            mypage_completed_order: order.ORDER_STATE === '배송완료',
+                            mypage_delivery: order.ORDER_STATE === '배송중',
+                            mypage_delivery_cancle: order.ORDER_STATE === '주문취소',
+                        }"
+                        class="mypage_order_state"
+                    >
+                        {{ order.ORDER_STATE }}
+                    </div>
                     <div class="book-cover">
                         <img :src="order.items[0].BOOK_COVER" alt="Book Cover" />
                     </div>
                 </div>
 
                 <!-- 오른쪽에 책 정보 -->
-                <div class="book-info">
+                <div class="book_info">
                     <div>{{ order.ORDER_PAYDATE }}</div>
-                    <p>
+                    <p class="mypage_book_title">
                         {{ order.items[0].BOOK_TITLE }}
-                        <span v-if="order.ORDER_CNT > 1"><span class="order_cnt_out">외</span> {{ order.ORDER_CNT - 1 }} 건</span>
+                        <span class="mypage_ordercnt" v-if="order.ORDER_CNT > 1"
+                            ><span class="order_cnt_out"> 외</span> {{ order.ORDER_CNT - 1 }} 건</span
+                        >
                     </p>
-                    <p>가격: {{ order.ORDER_PAY }}</p>
+                    <p class="mypage_orderpay">{{ order.ORDER_PAY }}</p>
                     <p>주문 상세</p>
+                    <button v-if="order.ORDER_STATE === '배송완료'" class="confirm-button">구매확정</button>
+                    <button v-if="order.ORDER_STATE === '배송준비'" class="confirm-button">주문취소</button>
                 </div>
 
                 <!-- 구매확정 버튼 -->
-                <button v-if="order.ORDER_STATE === '배송완료'" class="confirm-button">구매확정</button>
             </div>
         </div>
     </div>

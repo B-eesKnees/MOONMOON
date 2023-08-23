@@ -487,11 +487,29 @@
 
 
 .mypage_order_state {
-  border: #000 1px solid;
+  border: #4E4EFF 2px solid;
   display: inline-block;
   padding: 10px 20px;
   border-radius: 25px;
   margin-bottom: 20px;
+  /* background: #ccc; */
+  color: #000;
+}
+
+.mypage_delivery {
+  background: #CACAFB;
+}
+
+.mypage_completed_order {
+  background: #4E4EFF;
+  color: #fff;
+}
+
+.mypage_delivery_cancle {
+  background: #FFCBCB;
+  border: #FF0000 2px solid;
+  color: #ff0000;
+  font-weight: 500;
 }
 
 .book-cover {
@@ -505,8 +523,9 @@
     width: 100%;
 }
 
-.book-info {
-
+.book_info {
+  /* border: #000 1px solid; */
+  width: 100%;
 }
 
 .confirm-button {
@@ -531,4 +550,22 @@
 
 .right_box > img {
   width: 100%;
+}
+
+.mypage_book_title {
+  margin-top: 40px;
+  font-size: 1.3em;
+  width: 80%;
+  line-height: 150%;
+  font-weight: 600;
+}
+
+.mypage_ordercnt {
+  font-size: 0.8em;
+  margin-left: 10px;
+  font-weight: 400;
+}
+
+.mypage_orderpay {
+  font-size: 1.3em;
 }
