@@ -32,10 +32,6 @@ const queries = {
   qnaEditQuery: `update qna
                  set QNA_TITLE = ?, QNA_CON = ?
                  where QNA_ID = ?`,
-
-  qnaDoneCountQuery: `select count(*) as doneCount
-                      from qna
-                      where QNA_USER_EMAIL = ? and QNA_REP = 1;`,
 }
 
 // 데이터베이스 작업 함수
@@ -143,10 +139,10 @@ router.post('/qnaWrite', async (request, res) => {
 router.post('/qnaOriginalData', async (request, res) => {
   
   try {
-    let { QNA_ID } = request.body;
-      QNA_ID = Number(QNA_ID);
+    const QNA_ID = request.body.QNA_ID;
+    console.log("이거",QNA_ID);
 
-      res.send(await req(queries.qnaOriginalQuery, [QNA_ID]));
+      res.send(await req(queries.qnaOriginalDataQuery, QNA_ID));
       console.log(QNA_ID);
   } catch (err) {
     res.status(500).send({
@@ -194,10 +190,10 @@ router.post('/qnaDel', async (request, res) => {
 });
 
 
-// 답변 완료 갯수
+/* // 답변 완료 갯수
 router.get("/qnaDoneCount", async (request, res) => {
   try {
-    const userEmail = request.body.email;
+    const userEmail = request.body.userEmail;
 
     res.send(await req(queries.qnaDoneCountQuery, userEmail));
     console.log(userEmail);
@@ -206,7 +202,7 @@ router.get("/qnaDoneCount", async (request, res) => {
       error:err
     });
   }
-});
+}); */
 
 
 // 문의 답변 작성(admin 계정만) - update로 써야할 듯

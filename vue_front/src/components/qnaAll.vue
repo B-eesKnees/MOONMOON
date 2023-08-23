@@ -59,9 +59,9 @@ export default {
                         <div class="qna_con_btn">
                             <div class="qna-con">{{ all.QNA_CON }}</div>
                             <div class="qna_btn_set" v-if="all.QNA_REP === 0">
-                                <a href="http://localhost:8080/qnaEdit">
+                                <router-link :to="'/qnaEdit/' + all.QNA_ID">
                                     <button class="qna_editbtn" @click="getEditId(all.QNA_ID)">수정</button>
-                                </a>
+                                </router-link>
                                 <button class="qna_delbtn" @click="handleQnaDel(all.QNA_ID)">삭제</button>
                             </div>
                         </div>
