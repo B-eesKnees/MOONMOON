@@ -127,7 +127,7 @@
 
         <!-- Nav Item - Charts -->
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#" >
+            <a class="nav-link collapsed" href="/admin/buyanalyze" >
                 <i class="fa-solid fa-chart-line"></i>
                 <span>구매 분석</span>
             </a>

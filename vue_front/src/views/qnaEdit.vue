@@ -47,8 +47,6 @@ export default {
   },
   created() {
     this.qna.email = localStorage.getItem("userID");
-
-    this.originalData();
   },
   methods: {
     /* async getOriginalQnaCon() {
@@ -99,27 +97,6 @@ export default {
         console.log(err);
       });
     },
-    async getOriginalData() {
-      try {
-        const url = "/qna/qnaEditId";
-
-        const originalData = (await axios({
-          method: 'post',
-          url,
-          data
-        }).catch(error => {
-          console.log(error);
-        })).data;
-
-        if (originalData.length > 0) {
-        this.originalData = originalData;
-
-      }
-      console.log(this.originalData);
-      } catch (error) {
-        console.log(error);
-      }      
-      },
     /* async qnaEdit() {
       const editData = {
         QNA_TITLE: this.qna_title,

@@ -77,7 +77,7 @@
                 <input type="number" v-model="usePoint" />
                 <button @click="applyPoint">사용</button>
                 <div class="user_havePoint">보유 포인트 : &nbsp;</div>
-                <div class="user_point">{{ point }} P</div>
+                <div class="user_point">{{ this.point }} P</div>
             </div>
             <div class="pay_area_ex">
                 <div class="pay_wrap_ex">
@@ -105,6 +105,9 @@
                     <div class="pay_button_wrap">
                         <button class="pay_button_ex" type="button" @click="startPay">결제하러 가기</button>
                     </div>
+                    <div>
+                        <button type="button" @click="goUsedPoint">테스트</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -128,7 +131,8 @@ export default {
             books: [],
             count: "",
             coupons: [],
-            point: "",
+            point: 0,
+            oldPoint: 0,
             nextDay: "",
             month: "",
             selectedCoupon: "",
@@ -145,6 +149,7 @@ export default {
             earnPoint: 0,
             applyCouponPrice: 0,
             applyPointPrice: 0,
+            realTimePoint: 0,
         };
     },
     mounted() {
@@ -244,17 +249,17 @@ export default {
             });
         },
         goUsedCoupon() {
-            useCoupon = {
+            const usedCoupon = {
                 selectedCoupon: this.selectedCoupon,
-                email: this.userEmail,
+                userEmail: this.userEmail,
             };
 
             axios({
                 url: "/pay/usedCouponStatusChange",
                 method: "get",
-                params: useCoupon,
+                params: usedCoupon,
             }).then((res) => {
-                console.log(success);
+                console.log("gocouponsuccess");
             });
         },
         applyCoupon() {
@@ -293,15 +298,31 @@ export default {
                 params: { userEmail: email },
             }).then((res) => {
                 this.point = res.data[0].USER_POINT;
+                this.oldPoint = res.data[0].USER_POINT;
+            });
+        },
+        goUsedPoint() {
+            const usedPoint = {
+                applyPointPrice: this.applyPointPrice,
+                userEmail: this.userEmail,
+            };
+            axios({
+                url: "/pay/delUsedPoint",
+                method: "get",
+                params: usedPoint,
+            }).then((res) => {
+                console.log("gocpointsuccess");
             });
         },
         applyPoint() {
             console.log("usePoint = " + this.usePoint);
 
-            if (this.usePoint > this.point) {
+            if (this.usePoint > this.oldPoint) {
                 alert("보유 포인트보다 많은 포인트를 사용할 수 없습니다.");
             } else {
+                const previouslyUsedPoint = this.applyPointPrice;
                 this.applyPointPrice = this.usePoint;
+                this.point = this.point + previouslyUsedPoint - this.applyPointPrice;
             }
             console.log("applyPointPrice:", this.applyPointPrice);
         },

@@ -32,6 +32,7 @@
                             <h1 class="h3 mb-0 text-gray-800">회원 분석</h1>
                         </div>
 
+
                         <!-- Content Row -->
                         <div class="row d-flex align-items-center justify-content-center">
 
@@ -165,7 +166,7 @@
                                     <div class="card-body">
                                         <div class="chart-area">
                                             <!-- 나이대 파이차트 -->
-                                            <canvas ref="myChart2"></canvas>
+                                            <canvas ref="myChartAge"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -177,17 +178,17 @@
                         <!-- Content Row -->
                         <div class="row d-flex align-items-center justify-content-center">
                             <div class="col-lg-2 col-md-6 mb-4">
-                                <div class="card border-bottom-secondary shadow h-100">
+                                <div class="card border-bottom-warning shadow h-100">
                                     <div class="card-body">
                                         <div class="row no-gutters align-items-center">
                                             <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                                     주간 방문자 수
                                                 </div>
                                                 <div class="row no-gutters align-items-center">
                                                     <div class="col-auto">
                                                         <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                                                            {{ formatNumber(toDayVisit) }}</div>
+                                                            {{ formatNumber(weekVisit) }}</div>
                                                     </div>
                                                     <div class="col">
                                                         <div class="progress progress-sm mr-2">
@@ -220,77 +221,13 @@
                                     <!-- Card Body -->
                                     <div class="card-body">
                                         <div class="chart-area d-flex align-items-center justify-content-center">
-                                            <canvas ref="dailySalesChart" width="1000" height="300"></canvas>
+                                            <canvas ref="dailyVisitChart" width="1000" height="300"></canvas>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- Content Row -->
-                        <div class="row">
 
-                            <!-- Content Column -->
-                            <div class="col-lg-6 mb-4">
-
-                                <!-- Project Card Example -->
-                                <div class="card shadow mb-4">
-                                    <div class="card-header py-3">
-                                        <h6 class="m-0 font-weight-bold text-primary">공지사항</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <h4 class="small font-weight-bold ">10월 23일 페이지 점검 <span
-                                                class="badge bg-danger">필독</span></h4>
-                                        <div class="progress mb-4">
-                                            <div class="progress-bar bg-danger" role="progressbar" style="width: 20%"
-                                                aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                        <h4 class="small font-weight-bold">금일 13:00 ~ 14:00 전기점검으로 인해 정전 예정</h4>
-                                        <div class="progress mb-4">
-                                            <div class="progress-bar bg-warning" role="progressbar" style="width: 40%"
-                                                aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                        <h4 class="small font-weight-bold">곧 종강 <span class="badge bg-danger">필독</span></h4>
-                                        <div class="progress mb-4">
-                                            <div class="progress-bar" role="progressbar" style="width: 60%"
-                                                aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-
-
-                            </div>
-
-                            <div class="col-lg-6 mb-4">
-
-                                <!-- Illustrations -->
-                                <div class="card shadow mb-4">
-                                    <div class="card-header py-3">
-                                        <h6 class="m-0 font-weight-bold text-primary">미완료 주문</h6>
-                                    </div>
-                                    <div class="card-body d-flex flex-column">
-                                        <a href="/admin/ordermanage" v-for="(item, i) in orderData"
-                                            class="small font-weight-bold mb-2">주문번호 : {{ item.ORDER_ID }} - <span
-                                                class="badge bg-danger">미완료</span></a>
-
-                                    </div>
-                                </div>
-
-                                <!-- Approach -->
-                                <div class="card shadow mb-4">
-                                    <div class="card-header py-3">
-                                        <h6 class="m-0 font-weight-bold text-primary">미완료 문의</h6>
-                                    </div>
-                                    <div class="card-body d-flex flex-column">
-                                        <a href="/admin/qnamanage" v-for="(item, i) in qnaData" :key="i"
-                                            class="small font-weight-bold mb-2">{{ item.QNA_TITLE }} - <span
-                                                class="badge bg-danger">미완료</span></a>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
 
                     </div>
                     <!-- /.container-fluid -->
@@ -377,6 +314,9 @@ export default {
             toDayVisit: 0,
             userCount: 0,
 
+            //주간 방문자 수
+            weekVisit: 0,
+
             //미완료 문의
             qnaData: [],
 
@@ -387,13 +327,14 @@ export default {
     setup() {
         const myChart = ref(null);
         const myChartAge = ref(null);
-        const dailySalesChart = ref(null);
+        const dailyVisitChart = ref(null);
 
-        // 데이터를 reactive로 정의
+        // 성별 데이터를 reactive로 정의
         const userSex = reactive({
             female: 0,
             male: 0,
         });
+        // 나이대 데이터를 reactive로 정의
         const ageArangeData = reactive(
             [
                 {
@@ -423,13 +364,43 @@ export default {
             ]
         );
 
+        var weekVisit = reactive([
+            {
+                date: "2023-01-01",
+                count: 0,
+            },
+            {
+                date: "2023-01-01",
+                count: 0,
+            },
+            {
+                date: "2023-01-01",
+                count: 0,
+            },
+            {
+                date: "2023-01-01",
+                count: 0,
+            },
+            {
+                date: "2023-01-01",
+                count: 0,
+            },
+            {
+                date: "2023-01-01",
+                count: 0,
+            },
+            {
+                date: "2023-01-01",
+                count: 0,
+            },
+        ]);
 
-        // 데이터를 업데이트하는 함수 정의
+        //----------------------------------여기부터 서버에서 데이터 불러오는 함수-------------------------------------
+        // 성별&나이대 데이터를 업데이트하는 함수 정의
         const updateUserSex = async () => {
             try {
                 const response = await axios.post('http://localhost:3000/admin/adminUserLatest', {});
                 const data = response.data;
-
 
                 // 회원수를 저장
                 userSex.female = data.filter(item => item.USER_SEX === 'f').length;
@@ -442,6 +413,7 @@ export default {
                 ageArangeData[3].forties = data.filter(item => item.USER_AGEGROUP === "40").length;
                 ageArangeData[4].fifties = data.filter(item => item.USER_AGEGROUP === "50").length;
                 ageArangeData[5].sixties = data.filter(item => item.USER_AGEGROUP === "60").length;
+                console.log(ageArangeData, "나이대 차트 데이터")
                 // 차트를 다시 그리는 함수 호출
                 drawUserChart(); // 성별 차트
                 drawUserArangeChart(); // 나이대 차트
@@ -450,133 +422,30 @@ export default {
             }
         };
 
-        const weekSales = reactive({
-            today: "",
-            yesday: "",
-            twoDayAgo: "",
-            threeDayAgo: "",
-            fourDayAgo: "",
-            fiveDayAgo: "",
-        });
-        // 데이터를 reactive로 정의
-        const dateRange = reactive([]);
-
-        const today = new Date();
-
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(today);
-            date.setDate(today.getDate() - i);
-
-            // 날짜를 'YYYY-MM-DD' 형식의 문자열로 변환
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-
-            const formattedDate = `${year}-${month}-${day}`;
-
-            // dateRange 배열에 reactive 요소로 추가
-            dateRange.push(formattedDate);
-        }
-
-        // 데이터를 업데이트하는 함수 정의
-        const updateSales = async () => {
+        // 주간 방문자 수 데이터를 업데이트하는 함수 정의
+        const updateWeekVisit = async () => {
             try {
-                const response = await axios.post('http://localhost:3000/admin/adminDaySales', {
-                    date_start: dateRange[0] + " 00:00:00",
-                    date_end: dateRange[0] + " 23:59:59",
-                });
-                const res = response.data;
+                const response = await axios.post('http://localhost:3000/admin/getTotalV', {});
+                const data = response.data.slice(0, 7);
 
-                weekSales.today = res[0].daySales;
-                console.log(res, "이거이거")
+                // 데이터를 주간 방문자 수 배열에 할당
+                weekVisit = data.map(item => {
+                    return {
+                        date: item.vc_date,
+                        count: item.vc_count
+                    };
+                });
+
+                console.log(weekVisit, "주간 방문자 수 데이터");
 
                 // 차트를 다시 그리는 함수 호출
-                drawSalesChart();
-            } catch (error) {
-                alert(error);
-            }
-
-            try {
-                const response = await axios.post('http://localhost:3000/admin/adminDaySales', {
-                    date_start: dateRange[1] + " 00:00:00",
-                    date_end: dateRange[1] + " 23:59:59",
-                });
-                const res = response.data;
-
-                weekSales.yesday = res[0].daySales;
-                console.log(res, "이거이거")
-
-                // 차트를 다시 그리는 함수 호출
-                drawSalesChart();
-            } catch (error) {
-                alert(error);
-            }
-
-            try {
-                const response = await axios.post('http://localhost:3000/admin/adminDaySales', {
-                    date_start: dateRange[2] + " 00:00:00",
-                    date_end: dateRange[2] + " 23:59:59",
-                });
-                const res = response.data;
-
-                weekSales.twoDayAgo = res[0].daySales;
-                console.log(res, "이거이거")
-
-                // 차트를 다시 그리는 함수 호출
-                drawSalesChart();
-            } catch (error) {
-                alert(error);
-            }
-
-            try {
-                const response = await axios.post('http://localhost:3000/admin/adminDaySales', {
-                    date_start: dateRange[3] + " 00:00:00",
-                    date_end: dateRange[3] + " 23:59:59",
-                });
-                const res = response.data;
-
-                weekSales.threeDayAgo = res[0].daySales;
-                console.log(res, "이거이거")
-
-                // 차트를 다시 그리는 함수 호출
-                drawSalesChart();
-            } catch (error) {
-                alert(error);
-            }
-
-            try {
-                const response = await axios.post('http://localhost:3000/admin/adminDaySales', {
-                    date_start: dateRange[4] + " 00:00:00",
-                    date_end: dateRange[4] + " 23:59:59",
-                });
-                const res = response.data;
-
-                weekSales.fourDayAgo = res[0].daySales;
-                console.log(res, "이거이거")
-
-                // 차트를 다시 그리는 함수 호출
-                drawSalesChart();
-            } catch (error) {
-                alert(error);
-            }
-
-            try {
-                const response = await axios.post('http://localhost:3000/admin/adminDaySales', {
-                    date_start: dateRange[5] + " 00:00:00",
-                    date_end: dateRange[5] + " 23:59:59",
-                });
-                const res = response.data;
-
-                weekSales.fiveDayAgo = res[0].daySales;
-                console.log(res, "이거이거")
-
-                // 차트를 다시 그리는 함수 호출
-                drawSalesChart();// 매출 차트
+                drawWeekVisitChart();
             } catch (error) {
                 alert(error);
             }
         };
 
+        //----------------------------------여기부터 차트 함수-------------------------------------
         // 성별 회원 차트를 그리는 함수 정의
         const drawUserChart = () => {
             // 이전 차트 인스턴스 제거
@@ -624,29 +493,33 @@ export default {
         // 나이대 차트를 그리는 함수 정의
         const drawUserArangeChart = () => {
             // 이전 차트 인스턴스 제거
-            if (myChart2.value && myChart2.value.chart) {
-                myChart2.value.chart.destroy();
+            if (myChartAge.value && myChartAge.value.chart) {
+                myChartAge.value.chart.destroy();
             }
 
 
-            if (myChart2.value) {
-                const ctx = myChart2.value.getContext('2d');
-                myChart2.value.chart = new Chart(ctx, {
-                    type: 'doughnut',
+            if (myChartAge.value) {
+                const ctx = myChartAge.value.getContext('2d');
+                myChartAge.value.chart = new Chart(ctx, {
+                    type: 'pie', // 차트 종류를 'pie'로 설정
                     data: {
-                        labels: ['남성', '여성'],
+                        labels: ['10대', '20대', '30대', '40대', '50대', '60대'],
                         datasets: [
                             {
-                                data: ["3", "3"],
-                                backgroundColor: ['#4e73df', '#e74a3b'],
+                                data: [ageArangeData[0].teenagers,
+                                ageArangeData[1].twenties,
+                                ageArangeData[2].thirties,
+                                ageArangeData[3].forties,
+                                ageArangeData[4].fifties,
+                                ageArangeData[5].sixties
+                                ], // 남성과 여성의 데이터를 배열로 설정
+                                backgroundColor: ['#E74A3B', '#858796', '#F6C23E', '#4E73DF', '#36B9CC', '#1CC88A'],
                             },
                         ],
                     },
                     options: {
                         maintainAspectRatio: false,
-                        aspectRatio: 2,
-                        cutout: 100,
-                        radius: '100%',
+                        aspectRatio: 1, // 파이 차트는 보통 1:1의 비율을 가집니다.
                         plugins: {
                             legend: {
                                 labels: {
@@ -665,40 +538,53 @@ export default {
             }
         };
 
-        const drawSalesChart = () => {
+        const drawWeekVisitChart = () => {
+            // 일별 방문자데이터들의 최대값 가져오기
+            const maxCount = Math.max(...weekVisit.map(item => item.count));
+
             // 이전 차트 인스턴스 제거
-            if (dailySalesChart.value && dailySalesChart.value.chart) {
-                dailySalesChart.value.chart.destroy();
+            if (dailyVisitChart.value && dailyVisitChart.value.chart) {
+                dailyVisitChart.value.chart.destroy();
             }
 
-            if (dailySalesChart) {
-                const ctx = dailySalesChart.value.getContext('2d');
-                dailySalesChart.value.chart = new Chart(ctx, {
-                    type: 'line',
+            if (dailyVisitChart) {
+                const ctx = dailyVisitChart.value.getContext('2d');
+                dailyVisitChart.value.chart = new Chart(ctx, {
+                    type: 'bar',
                     data: {
                         labels: [
-                            dateRange[5],
-                            dateRange[4],
-                            dateRange[3],
-                            dateRange[2],
-                            dateRange[1],
-                            dateRange[0],
+                            weekVisit[6].date,
+                            weekVisit[5].date,
+                            weekVisit[4].date,
+                            weekVisit[3].date,
+                            weekVisit[2].date,
+                            weekVisit[1].date,
+                            weekVisit[0].date,
                         ],
                         datasets: [
                             {
-                                label: '금액', // Add dataset label
-                                data: [weekSales.fiveDayAgo, weekSales.fourDayAgo, weekSales.threeDayAgo, weekSales.twoDayAgo, weekSales.yesday, weekSales.today],
-                                backgroundColor: 'rgba(231, 74, 59, 0.1)', // 반투명 배경색 설정
-                                borderColor: '#e74a3b', // 선 색상 설정
-                                borderWidth: 2, // 선 두께 설정
+                                label: '방문자 수', // Add dataset label
+                                data: [weekVisit[0].count, weekVisit[1].count, weekVisit[2].count, weekVisit[3].count, weekVisit[4].count, weekVisit[5].count, weekVisit[6].count],
+                                backgroundColor: '#F6C23E', // 반투명 배경색 설정
+                                borderColor: '#F6C23E', // 선 색상 설정
                                 hoverOffset: 1,
-                                tension: 0.3, // 곡선의 강도 설정 (0에서 1 사이의 값)
                                 fill: true,
                             },
                         ],
                     },
                     options: {
                         responsive: false,
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false, // 배경 세로 선 숨기기
+                                },
+                            },
+                            y: {
+                                beginAtZero: true, // y 축의 값이 0부터 시작하도록 설정
+
+                            },
+                        },
                         plugins: {
                             tooltip: {
                                 padding: 10,
@@ -711,7 +597,7 @@ export default {
 
         onMounted(() => {
             updateUserSex();
-            updateSales();
+            updateWeekVisit();
 
 
 
@@ -720,12 +606,14 @@ export default {
 
         return {
             myChart,
-            dailySalesChart,
+            myChartAge,
+            dailyVisitChart,
             userSex, // 이렇게 userSex를 반환 객체에 추가
         };
     },
     mounted() {
         this.getUserData();
+        this.updateWeekVisit();
     },
     methods: {
         async getUserData() {
@@ -756,6 +644,25 @@ export default {
                     this.userSex.female = femaleMembers.length;
                     this.userSex.male = maleMembers.length;
                     console.log(this.userSex, "회원데이터")
+                })
+                .catch((err) => {
+                    alert(err);
+                });
+        },
+        // 주간 방문자수 데이터 받기
+        async updateWeekVisit() {
+            await axios({
+                url: "http://localhost:3000/admin/getTotalV",
+                method: "POST",
+                data: {
+                },
+            })
+                .then((res) => {
+                    const data = res.data.slice(0, 7);
+
+                    //이전 1주일간 매일 방문자수를 저장
+                    data.map(item => this.weekVisit += item.vc_count);
+                    console.log(this.weekVisit, "주간방문자수 데이터")
                 })
                 .catch((err) => {
                     alert(err);
