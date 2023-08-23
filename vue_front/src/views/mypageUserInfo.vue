@@ -22,6 +22,7 @@
                     <input type="password" id="password" v-model="originalData.password" @click="openPasswordModal" />
                 </div>
 
+<<<<<<< HEAD
                 <!-- 모달 요소 -->
                 <div v-if="passwordModal" class="modal">
                     <div class="modal-content">
@@ -58,6 +59,56 @@
             <div class="input-item">
                 <label for="add2">상세주소</label>
                 <input type="text" id="add2" v-model="updatedFields.add2" />
+=======
+                <div>
+                    <div class="input-item">
+                        <label for="password">비밀번호</label>
+                        <input type="password" id="password" v-model="originalData.password" @click="openPasswordModal" />
+                    </div>
+
+                    <!-- 모달 요소 -->
+                    <div v-if="passwordModal" class="modal">
+                        <div class="modal-content">
+                            <h3>비밀번호 변경</h3>
+                            <label for="newPassword" class="password-label">새 비밀번호</label>
+                            <input type="password" id="newPassword" v-model="newPassword" @input="checkNewPassword" />
+                            <span v-if="passwordValidationMessage" class="validation-message">{{ passwordValidationMessage }}</span>
+                            <label for="confirmPassword" class="password-label">비밀번호 확인</label>
+                            <input type="password" id="confirmPassword" v-model="confirmPassword" @click="clearPasswordMatchMessage" />
+                            <span v-if="passwordMatchMessage" class="validation-message">{{ passwordMatchMessage }}</span>
+                            <div class="button-group-center">
+                                <button @click="changePassword">비밀번호 변경</button>
+                                <button @click="closePasswordModal">취소</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-item">
+                    <label for="sex">성별</label>
+                    <input type="text" id="sex" :value="convertGender(originalData.sex)" :readonly="true" />
+                </div>
+                <div class="input-item">
+                    <label for="age">나이대</label>
+                    <input type="number" id="age" :value="convertAgeRange(originalData.age)" :readonly="true" />
+                </div>
+                <div class="input-item">
+                    <label for="add1">주소</label>
+                    <input type="text" id="add1" v-model="originalData.add1" @click="openAddressSearch" />
+                </div>
+                <div class="input-item">
+                    <label for="add2">상세주소</label>
+                    <input type="text" id="add2" v-model="originalData.add2" />
+                </div>
+                <div class="input-item">
+                    <label for="zipcode">우편번호</label>
+                    <input type="text" id="zipcode" v-model="originalData.zipcode" />
+                </div>
+                <div class="input-item">
+                    <label for="phone_num">전화번호</label>
+                    <input type="text" id="phone_num" v-model="originalData.phone_num" @input="onPhoneNumChange" />
+                    <span v-if="phone_check" class="validation-message">유효하지 않은 전화번호입니다.</span>
+                </div>
+>>>>>>> origin/minKyeong
             </div>
 
             <div class="input-item">
@@ -136,6 +187,7 @@ export default {
                 console.error("기존 회원정보 불러오기 오류:", error);
             }
         },
+<<<<<<< HEAD
         async updateUserInfo() {
             console.log("!");
             const email = localStorage.getItem("userID");
@@ -166,6 +218,9 @@ export default {
                 this.message = "회원정보 수정에 실패했습니다.";
             }
         },
+=======
+
+>>>>>>> origin/minKyeong
         convertGender(genderCode) {
             if (genderCode === "f") {
                 return "여자";
@@ -228,15 +283,106 @@ export default {
                         },
                     };
 
+<<<<<<< HEAD
                     const response = await axios.post("/mypage/updateUserPw", requestData);
                     this.message = response.data;
+=======
+                    const response = await axios.post("mypage/updateUserInfo", requestData);
+                    this.message = response.data.message;
+>>>>>>> origin/minKyeong
 
                     this.closePasswordModal();
+
+                    //this.originalData.password = this.newPassword;
+
+                    // 모달을 닫는 함수 호출
+                    //this.closePasswordModal();
+
+                    // newPassword와 confirmPassword 초기화
+                    this.newPassword = "";
+                    this.confirmPassword = "";
                 } catch (error) {
                     console.error("비밀번호 변경 오류:", error);
                 }
             } else {
                 console.error("비밀번호가 일치하지 않습니다.");
+                this.passwordMatchMessage = "비밀번호가 일치하지 않습니다.";
+            }
+        },
+        clearPasswordMatchMessage() {
+            // 비밀번호 입력 input을 클릭했을 때 메시지 초기화
+            this.passwordMatchMessage = "";
+        },
+        checkphone() {
+            const validatephone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+
+            if (this.originalData.phone_num === "" || !validatephone.test(this.originalData.phone_num)) {
+                this.phone_check = true;
+                this.error_border_check = true;
+            } else {
+                this.phone_check = false;
+                this.error_border_check = false;
+            }
+        },
+
+        formatPhoneNumber() {
+            // 숫자 이외의 문자 제거
+            this.originalData.phone_num = this.originalData.phone_num.replace(/[^\d]/g, "");
+
+            const phoneNumberLength = this.originalData.phone_num.length;
+
+            // 전화번호 길이가 10 또는 11인 경우에만 처리
+            if (phoneNumberLength === 10 || phoneNumberLength === 11) {
+                let pattern = "";
+                if (phoneNumberLength === 10) {
+                    pattern = /^01([0|1|6|7|8|9])(\d{3})(\d{4})$/;
+                } else if (phoneNumberLength === 11) {
+                    pattern = /^01([0|1|6|7|8|9])(\d{4})(\d{4})$/;
+                }
+
+                if (pattern.test(this.originalData.phone_num)) {
+                    this.originalData.phone_num = this.originalData.phone_num.replace(pattern, "01$1-$2-$3");
+                }
+            }
+
+            // 최대 입력 가능한 자리수 제한 (11자리)
+            if (phoneNumberLength > 11) {
+                this.originalData.phone_num = this.originalData.phone_num.slice(0, 11);
+            }
+        },
+
+        // ... 기존 메소드 ...
+
+        onPhoneNumChange() {
+            this.formatPhoneNumber();
+            this.checkphone();
+        },
+        async updateUserInfo() {
+            const email = localStorage.getItem("userID");
+
+            // POST 요청을 보내기 위한 데이터 구성
+            const updatedFields = {
+                email: email,
+                updatedFields: {
+                    add1: this.updatedFields.add1,
+                    add2: this.updatedFields.add2,
+                    zipcode: this.updatedFields.zipcode,
+                    phone_num: this.updatedFields.phone_num,
+                    password: this.originalData.password,
+                },
+            };
+
+            const requestData = {
+                email: email,
+                updatedFields: updatedFields,
+            };
+
+            try {
+                const response = await axios.post("mypage/updateUserInfo", requestData);
+                this.message = response.data.message;
+            } catch (error) {
+                console.error("회원정보 수정 오류:", error);
+                this.message = "회원정보 수정에 실패했습니다.";
             }
         },
         formatPhoneNumber() {
@@ -362,7 +508,7 @@ export default {
 
 .modal button {
     padding: 8px 15px;
-    background-color: #007bff;
+    background-color: #003cff9f;
     color: white;
     border: none;
     border-radius: 4px;
@@ -371,5 +517,30 @@ export default {
 
 .modal button + button {
     margin-left: 10px;
+}
+.button-group-center {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.button-group-center button {
+    padding: 5px 10px;
+    font-size: 16px;
+}
+.password-label {
+    margin-top: 30px; /* 필요에 따라 이 값을 조정해보세요 */
+}
+
+.validation-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+.input-item input[type="password"] {
+    -webkit-text-security: disc;
+    -moz-text-security: disc;
+    text-security: disc;
 }
 </style>

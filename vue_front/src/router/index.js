@@ -38,6 +38,7 @@ import AdminBuyAnalyze from "../components/adminBuyAnalyze.vue";
 
 import mypageOrderInfo from "../views/mypageOrderInfo.vue";
 import mypageUserInfo from "../views/mypageUserInfo.vue";
+import mypageReview from "../views/mypageReview.vue";
 import mypageGrade from "@/views/mypageGrade.vue";
 
 const requireLogin = () => (to, from, next) => {
@@ -252,11 +253,11 @@ const routes = [
         name: "mypage",
         component: mypage,
     },
-    // {
-    //     path: "/mypageReview",
-    //     name: "mypageReview",
-    //     component: mypageReview,
-    // },
+    {
+        path: "/mypagereview",
+        name: "mypageReview",
+        component: mypageReview,
+    },
     {
         path: "/mypageorderinfo",
         name: "mypageOrderInfo",
