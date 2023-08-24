@@ -37,18 +37,14 @@
             <div v-for="order in filteredOrders" :key="order.ORDER_ID" class="order-box">
                 <!-- 왼쪽에 배송 상태 및 결제일 -->
                 <div class="order_status">
-                    <div
-                        :class="{
-                            mypage_completed_order: order.ORDER_STATE === '배송완료',
-                            mypage_delivery: order.ORDER_STATE === '배송중',
-                            mypage_delivery_cancle: order.ORDER_STATE === '주문취소',
-                        }"
-                        class="mypage_order_state"
-                        @click="
-                            setSelectedStatus(order.ORDER_STATE);
-                            fetchOrdersByStatus();
-                        "
-                    >
+                    <div :class="{
+                        mypage_completed_order: order.ORDER_STATE === '배송완료',
+                        mypage_delivery: order.ORDER_STATE === '배송중',
+                        mypage_delivery_cancle: order.ORDER_STATE === '주문취소',
+                    }" class="mypage_order_state" @click="
+    setSelectedStatus(order.ORDER_STATE);
+fetchOrdersByStatus();
+">
                         {{ order.ORDER_STATE }}
                     </div>
                     <div class="book-cover">
@@ -61,11 +57,10 @@
                     <div>{{ order.ORDER_PAYDATE }}</div>
                     <p class="mypage_book_title">
                         {{ order.items[0].BOOK_TITLE }}
-                        <span class="mypage_ordercnt" v-if="order.ORDER_CNT > 1"
-                            ><span class="order_cnt_out"> 외</span> {{ order.ORDER_CNT - 1 }} 건</span
-                        >
+                        <span class="mypage_ordercnt" v-if="order.ORDER_CNT > 1"><span class="order_cnt_out"> 외</span> {{
+                            order.ORDER_CNT - 1 }} 건</span>
                     </p>
-                    <p class="mypage_orderpay">{{ order.ORDER_PAY }}</p>
+                    <p class="mypage_orderpay">{{ formatNumber(order.ORDER_PAY) }}원</p>
                     <p>주문 상세</p>
                     <button v-if="order.ORDER_STATE === '배송완료'" class="confirm-button">구매확정</button>
                     <button v-if="order.ORDER_STATE === '배송준비'" class="confirm-button">주문취소</button>
@@ -177,6 +172,10 @@ export default {
                 .catch((error) => {
                     console.error("주문내역 가져오기 오류:", error);
                 });
+        },
+        formatNumber(number) {
+            // 숫자를 천 단위마다 쉼표가 있는 형식으로 변환
+            return new Intl.NumberFormat().format(number);
         },
     },
 };

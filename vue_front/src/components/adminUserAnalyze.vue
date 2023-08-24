@@ -221,7 +221,7 @@
                                     <!-- Card Body -->
                                     <div class="card-body">
                                         <div class="chart-area d-flex align-items-center justify-content-center">
-                                            <canvas ref="dailyVisitChart" width="1000" height="300"></canvas>
+                                            <canvas ref="dailyVisitChart" width="900" height="300"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -459,11 +459,11 @@ export default {
                 myChart.value.chart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['남성', '여성'],
+                        labels: ['여성', '남성'],
                         datasets: [
                             {
                                 data: [userSex.female, userSex.male],
-                                backgroundColor: ['#4e73df', '#e74a3b'],
+                                backgroundColor: ['#e74a3b', '#4e73df'],
                             },
                         ],
                     },

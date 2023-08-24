@@ -168,6 +168,7 @@ export default {
                 const response = await axios.post("mypage/updateUserInfo", requestData);
                 this.message = response.data.message;
                 this.fetchUserInfo(localStorage.getItem("userID"));
+                alert("수정되었습니다.");
             } catch (error) {
                 console.error("회원정보 수정 오류:", error);
                 this.message = "회원정보 수정에 실패했습니다.";
