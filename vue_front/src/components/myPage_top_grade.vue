@@ -47,13 +47,15 @@
                     <div v-if="check == true" class="next_grade_db">{{ nextGrade }}</div>
                     <div v-if="check == false" class="next_grade_db">{{ couponGrade }}</div>
                 </div>
-                <div class="grade_info_second">
-                    <div class="next_grade_s">{{ nextGrade }}</div>
-                    <div class="next_grade_t">등급 혜택을 받으려면?</div>
-                </div>
-                <div class="grade_info_under">
-                    <div class="next_grade_u">추가 구매금액 :</div>
-                    <div class="ext_grade_u2">{{ nextPayCost }} 원</div>
+                <div class="grade_under">
+                    <div class="grade_info_second">
+                        <div class="next_grade_s">{{ nextGrade }}</div>
+                        <div class="next_grade_t">등급 혜택을 받으려면?</div>
+                    </div>
+                    <div class="grade_info_under">
+                        <div class="next_grade_u">추가 구매금액 :</div>
+                        <div class="ext_grade_u2">{{ nextPayCost }} 원</div>
+                    </div>
                 </div>
             </div>
         </div>
