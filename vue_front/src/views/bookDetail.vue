@@ -25,13 +25,13 @@
             <div class="price_point_set_1">
                 <div class="price_point_title_1">판매가</div>
                 <div class="price_point_detail_1">
-                    {{ bookDetailData.BOOK_PRICE }}
+                    {{ formatCurrency(bookDetailData.BOOK_PRICE) }}
                     <div class="won">원</div>
                 </div>
             </div>
             <div class="price_point_set_2">
                 <div class="price_point_title_2">포인트</div>
-                <div class="price_point_detail_2">{{ bookDetailData.BOOK_POINT }}</div>
+                <div class="price_point_detail_2">{{ bookDetailData.BOOK_POINT }}P</div>
             </div>
             <div class="price_point_set_3">
                 <div class="price_point_title_3">배송비</div>
@@ -54,7 +54,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="payment_price">{{ paymentPrice }}</div>
+                <div class="payment_price">{{ formatCurrency(paymentPrice) }}</div>
                 <div class="won_4">원</div>
             </div>
             <div id="likeButton" class="pay_cart_like">
@@ -225,7 +225,7 @@ export default {
     },
     computed: {
         paymentPrice() {
-            return this.bookDetailData.BOOK_PRICE * this.countNum;
+            return this.countNum * this.bookDetailData.BOOK_PRICE;
         },
         // formattedAverageRating() {
         //     return this.reviewAverageData ? this.reviewAverageData.toFixed(1) : "0.0";
@@ -550,6 +550,12 @@ export default {
                 .catch((error) => {
                     console.error("Error goToPay :", error);
                 });
+        },
+        formatCurrency(value) {
+            if (typeof value !== "number") {
+                return "";
+            }
+            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         },
     },
 };

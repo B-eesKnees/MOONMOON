@@ -783,6 +783,34 @@ router.put("/updatebuycheck/:userEmail/:orderId", (req, res) => {
     });
 });
 
+//BUYCHCEK가져오는
+router.get("/getbuycheck", (req, res) => {
+    const orderId = req.query.orderId;
+    const userEmail = req.query.userEmail;
+
+    // 데이터베이스에서 주문 상세 정보 및 구매확정 상태를 조회하는 쿼리
+    const query = `
+        SELECT oi.ORDERITEM_BUYCHECK
+        FROM ORDERITEM oi
+        JOIN \`ORDER\` o ON oi.ORDERITEM_ORDER_ID = o.ORDER_ID
+        WHERE oi.ORDERITEM_ORDER_ID = ? AND o.ORDER_USER_EMAIL = ?;
+    `;
+
+    db.query(query, [orderId, userEmail], (err, results) => {
+        if (err) {
+            console.error("구매확정 상태 조회 중 오류:", err);
+            res.status(500).json({ message: "내부 서버 오류" });
+        } else {
+            if (results.length === 0) {
+                res.status(404).json({ message: "주문의 구매확정 상태를 찾을 수 없습니다." });
+            } else {
+                const buyCheckStatus = results[0].ORDERITEM_BUYCHECK;
+                res.json({ buyCheckStatus });
+            }
+        }
+    });
+});
+
 //신간 책 가져오기
 router.post(`/getNew`, async (req, res) => {
     db.query(
