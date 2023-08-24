@@ -67,8 +67,21 @@
                     </p>
                     <p class="mypage_orderpay">{{ order.ORDER_PAY }}</p>
                     <p>주문 상세</p>
-                    <button v-if="order.ORDER_STATE === '배송완료'" class="confirm-button">구매확정</button>
-                    <button v-if="order.ORDER_STATE === '배송준비'" class="confirm-button">주문취소</button>
+                    <button
+                        v-if="order.ORDER_STATE === '배송완료' && !order.buyConfirmed"
+                        class="confirm-button"
+                        @click="showConfirmationAlert(order.ORDER_ID)"
+                    >
+                        구매확정
+                    </button>
+                    <button v-else-if="order.ORDER_STATE === '배송완료' && order.buyConfirmed" class="confirm-button" disabled>구매확정 완료</button>
+                    <button
+                        v-if="order.ORDER_STATE === '배송준비' && !order.buyConfirmed"
+                        class="confirm-button"
+                        @click="showCancellationAlert(order.ORDER_ID)"
+                    >
+                        주문취소
+                    </button>
                 </div>
 
                 <!-- 구매확정 버튼 -->
@@ -176,6 +189,78 @@ export default {
                 })
                 .catch((error) => {
                     console.error("주문내역 가져오기 오류:", error);
+                });
+        },
+
+        showConfirmationAlert(orderId) {
+            const confirmed = window.confirm("구매확정 시 교환 및 환불이 불가능합니다. 진행하시겠습니까?");
+            if (confirmed) {
+                this.confirmPurchase(orderId);
+            } else {
+                console.log("구매확정이 취소되었습니다.");
+            }
+        },
+
+        showCancellationAlert(orderId) {
+            const confirmed = window.confirm("주문을 취소하시겠습니까?");
+            if (confirmed) {
+                this.cancelOrder(orderId);
+            } else {
+                console.log("주문 취소가 취소되었습니다.");
+            }
+        },
+
+        cancelOrder(orderId) {
+            axios
+                .post("http://localhost:3000/mypage/ordercancel", {
+                    orderId: orderId,
+                    userEmail: this.email,
+                })
+                .then((response) => {
+                    console.log(response.data); //
+                    // 주문 취소 성공 시 다시 주문 목록을 가져옵니다.
+                    this.fetchOrdersByStatus();
+                })
+                .catch((error) => {
+                    console.error("주문 취소 오류:", error);
+                });
+        },
+
+        isBuyConfirmed(order) {
+            const orderItems = order.items;
+            // orderItems 배열을 순회하며 각 아이템의 ORDERITEM_BUYCHECK 값을 확인
+            for (const item of orderItems) {
+                if (item.ORDERITEM_BUYCHECK !== 1) {
+                    return false; // 하나라도 구매확정이 아닌 아이템이 있다면 false 반환
+                }
+            }
+            return true; // 모든 아이템이 구매확정이라면 true 반환
+        },
+
+        confirmPurchase(orderId) {
+            axios
+                .put(`http://localhost:3000/mypage/updatebuycheck/${this.email}/${orderId}`)
+                .then((response) => {
+                    console.log(response.data);
+                    // 주문목록의 해당 주문의 BUY_CHECK 값을 업데이트합니다.
+                    const orderIndex = this.orderList.findIndex((order) => order.ORDER_ID === orderId);
+                    if (orderIndex !== -1) {
+                        // 아래와 같이 Vue.set()을 사용하거나 객체 스프레드 연산자로 아이템을 갱신합니다.
+                        // Vue.set(this.orderList, orderIndex, { ...this.orderList[orderIndex], BUY_CHECK: true });
+                        this.orderList[orderIndex].BUY_CHECK = true;
+
+                        // 구매확정 처리 이후 버튼 상태를 확인하도록 수정
+                        this.$nextTick(() => {
+                            const updatedOrder = this.orderList[orderIndex];
+                            if (updatedOrder.ORDER_STATE === "배송완료" && this.isBuyConfirmed(updatedOrder)) {
+                                // 구매확정이 완료되었으므로 해당 버튼을 disabled 처리
+                                updatedOrder.buyConfirmed = true;
+                            }
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error("구매확정 처리 오류:", error);
                 });
         },
     },
