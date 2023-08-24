@@ -1,5 +1,4 @@
 <template>
-    <GnbBar />
     <myPage_top />
     <div class="mypage_menu">
         <myPageSide />
@@ -11,7 +10,7 @@
                 <TabItem title="작성가능한 리뷰">
                     <div>
                         <div v-for="(review, index) in reviewList" :key="index" class="review-info">
-                            <div class="book_cover">
+                            <div class="info-item book-cover">
                                 <img :src="review.book_cover" alt="북커버 이미지" class="info-content" />
                             </div>
                             <div class="info-item1">
@@ -44,8 +43,8 @@
                     <div>
                         <!-- 작성한 리뷰 데이터를 순회하며 표시 -->
                         <div v-for="(review, index) in writtenReview" :key="index" class="review-info">
-                            <div class="book_cover" style="justify-content: flex-start">
-                                <img :src="review.book_cover" alt="북커버 이미지" />
+                            <div class="info-item book-cover" style="justify-content: flex-start">
+                                <img :src="review.book_cover" alt="북커버 이미지" class="info-content" />
                             </div>
                             <div class="info-item1">
                                 <div class="info-title book-title">{{ review.book_title }}</div>
@@ -77,7 +76,6 @@ import myPageSide from "../components/myPageSide.vue";
 import myPage_top from "../components/myPage_top.vue";
 import TabsWrapper from "../components/TabsWrapper.vue";
 import TabItem from "../components/TabItem.vue";
-import GnbBar from "../components/gnbBar.vue";
 
 // Format the date in YY-MM-DD format
 const formattedDate = (date) => {
@@ -88,7 +86,7 @@ const formattedDate = (date) => {
 };
 
 export default {
-    components: { myPageSide, myPage_top, TabsWrapper, TabItem, GnbBar },
+    components: { myPageSide, myPage_top, TabsWrapper, TabItem },
     data() {
         return {
             reviewList: [],
@@ -179,4 +177,58 @@ export default {
     },
 };
 </script>
-<style scoped></style>
+<style scoped>
+.review-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    height: 200px;
+    border-bottom: 1px solid rgba(199, 195, 195, 0.267); /* 아래쪽에만 border 추가 */
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.info-title {
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.review-button {
+    background-color: #5552f7;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: #f0f0f0;
+    border: none;
+    cursor: pointer;
+}
+
+.pagination button:hover {
+    background-color: #ddd;
+}
+
+.info-content {
+    width: 100px; /* 이미지의 가로 너비를 원하는 크기로 조절해보세요 */
+    height: auto; /* 높이를 자동으로 조절하여 비율을 유지하도록 설정 */
+    max-width: 100%; /* 부모 요소 너비에 맞게 이미지 크기 조절 */
+    max-height: 100%; /* 부모 요소 높이에 맞게 이미지 크기 조절 */
+}
+</style>

@@ -79,7 +79,7 @@
             </div>
         </div>
 
-        <div class="button-group">
+        <div class="button_group">
             <button type="button" @click="cancelUpdate">취소</button>
             <button type="button" @click="updateUserInfo">수정</button>
         </div>
@@ -144,8 +144,9 @@ export default {
             }
         },
         async updateUserInfo() {
-            console.log("!");
+            // console.log("!");
             const email = localStorage.getItem("userID");
+            alert("수정이 완료되었습니다");
 
             // POST 요청을 보내기 위한 데이터 구성
             const updatedFields = {
@@ -200,6 +201,7 @@ export default {
             // 수정 취소 시 원래 데이터로 초기화
             this.updatedFields = { ...this.originalData };
             this.message = ""; // 메시지 초기화
+            window.location.href = "/mypage";
         },
 
         openPasswordModal() {
@@ -269,146 +271,4 @@ export default {
     },
 };
 </script>
-<style scoped>
-.userUpdateTitle {
-    font-weight: bold;
-    font-size: 30px;
-}
-/* ... 기존 스타일 ... */
-
-.input-group {
-    display: flex;
-    flex-direction: column;
-
-    gap: 15px;
-}
-
-.input-item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-.input-item label {
-    display: inline-block;
-    width: 120px; /* 레이블의 너비 조정 */
-    text-align: left;
-}
-.input-item input {
-    flex: 1; /* 입력 필드 너비 조정 */
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    width: 100px; /* 너비를 2/5로 조절 */
-    /* readonly 상태일 때의 배경색과 글자색 설정 */
-    background-color: #f5f5f5; /* 배경색 */
-    color: #999; /* 글자색 */
-    pointer-events: none;
-}
-.input-item input:not([readonly]) {
-    /* readonly가 아닌 input에는 배경색과 글자색을 설정하지 않음 */
-    background-color: white;
-    color: black;
-    pointer-events: auto;
-}
-.button-group {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    gap: 20px;
-}
-
-.button-group button {
-    padding: 5px 10px; /* 버튼의 내부 여백을 조절하여 크기를 조정 */
-    font-size: 16px; /* 버튼의 폰트 크기를 조정 */
-}
-
-.status-message {
-    margin-top: 10px;
-    font-weight: bold;
-}
-.section-divider {
-    margin-top: 40px;
-    margin-bottom: 40px;
-}
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-}
-
-.modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    width: 400px;
-}
-
-.modal h3 {
-    font-size: 20px;
-    margin-bottom: 10px;
-}
-
-.modal label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.modal input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.modal span {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
-    display: block;
-}
-
-.modal button {
-    padding: 8px 15px;
-    background-color: #003cff9f;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.modal button + button {
-    margin-left: 10px;
-}
-.button-group-center {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.button-group-center button {
-    padding: 5px 10px;
-    font-size: 16px;
-}
-.password-label {
-    margin-top: 30px; /* 필요에 따라 이 값을 조정해보세요 */
-}
-
-.validation-message {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
-    display: block;
-}
-</style>
+<style scoped></style>
