@@ -58,7 +58,7 @@
 
                 <!-- 오른쪽에 책 정보 -->
                 <div class="book_info">
-                    <div class="order-date-right">{{ order.ORDER_PAYDATE }}</div>
+                    <div class="order-date-right">{{ order.ORDER_PAYDATE }} 구매</div>
                     <p class="mypage_book_title">
                         {{ order.items[0].BOOK_TITLE }}
                         <span class="mypage_ordercnt" v-if="order.ORDER_CNT > 1"
