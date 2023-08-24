@@ -75,6 +75,10 @@
             </TabsWrapper>
         </section>
     </div>
+    <!-- 플로팅-->
+    <Floating />
+    <!-- 스크롤 TOP -->
+    <ScrollTop />
 </template>
 
 <script>
@@ -85,6 +89,8 @@ import TabsWrapper from "../components/TabsWrapper.vue";
 import TabItem from "../components/TabItem.vue";
 import GnbBar from "../components/gnbBar.vue";
 import StarIcon from "../components/star.vue"; // 별점 아이콘 컴포넌트의 경로를 수정해주세요.
+import Floating from "../components/floating.vue";
+import ScrollTop from "@/components/scrollTop.vue";
 
 // Format the date in YY-MM-DD format
 const formattedDate = (date) => {
@@ -95,7 +101,7 @@ const formattedDate = (date) => {
 };
 
 export default {
-    components: { myPageSide, myPage_top, TabsWrapper, TabItem, GnbBar, StarIcon },
+    components: { myPageSide, myPage_top, TabsWrapper, TabItem, Floating, ScrollTop, GnbBar, StarIcon },
     data() {
         return {
             reviewList: [],

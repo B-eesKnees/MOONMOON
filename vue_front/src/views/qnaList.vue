@@ -75,6 +75,11 @@
             </section>
         </div>
     </div>
+    <!-- 플로팅-->
+    <Floating />
+    <!-- 스크롤 TOP -->
+    <ScrollTop />
+
 </template>
 <script>
 import axios from "axios";
@@ -89,6 +94,9 @@ import qnaWait from "../components/qnaWait.vue";
 import qnaDone from "../components/qnaDone.vue";
 import myPageSide from "@/components/myPageSide.vue";
 import myPage_top from "@/components/myPage_top.vue";
+import Floating from "../components/floating.vue";
+import ScrollTop from "@/components/scrollTop.vue";
+
 
 export default {
     components: {
@@ -99,7 +107,9 @@ export default {
         qnaWait,
         qnaDone,
         myPage_top,
-        myPageSide,
+        myPageSide, 
+        Floating, 
+        ScrollTop
     },
     name: "qnaList",
     data() {
