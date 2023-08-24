@@ -9,7 +9,7 @@
         <div class="goods_items">
             <div v-for="goods_inside in goods" class="goods_item">
                 <div class="goods_item_img">
-                    <a href=""><img src="../assets/img/book4.jpg" alt="" /></a>
+                    <a href=""><img :src="require(`../assets/img/${goods_inside.BOOK_COVER}`)" alt="" /></a>
                 </div>
                 <div class="goods_item_info">
                     <h2 class="best_item_info_title">
@@ -47,7 +47,12 @@ export default {
     components: { GnbBar },
     data() {
         return {
-            goods: [],
+            goods: [
+                { BOOK_TITLE: "텀블러", BOOK_PRICE: 16500, BOOK_COVER: "a (2).png" },
+                { BOOK_TITLE: "노트", BOOK_PRICE: 12000, BOOK_COVER: "a (3).png" },
+                { BOOK_TITLE: "에코백", BOOK_PRICE: 11500, BOOK_COVER: "a (1).png" },
+                { BOOK_TITLE: "책갈피", BOOK_PRICE: 2000, BOOK_COVER: "a (3).png" },
+            ],
             nextDay: "",
             month: "",
         };
@@ -56,7 +61,7 @@ export default {
     setup() {},
     created() {},
     mounted() {
-        this.getGoods();
+        // this.getGoods();
         this.getNextDate();
     },
     unmounted() {},
@@ -64,15 +69,15 @@ export default {
         comma(num) {
             return String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         },
-        getGoods() {
-            axios({
-                url: "/goods",
-                method: "POST",
-                data: {},
-            }).then((res) => {
-                this.goods = res.data;
-            });
-        },
+        // getGoods() {
+        //     axios({
+        //         url: "/goods",
+        //         method: "POST",
+        //         data: {},
+        //     }).then((res) => {
+        //         this.goods = res.data;
+        //     });
+        // },
         getNextDate() {
             //내일 배송일로 나오게 하는 함수
             const today = new Date();
