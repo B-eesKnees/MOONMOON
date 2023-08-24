@@ -97,8 +97,7 @@
 }
 
 .mypage_like:hover {
-    background: #7a7aff;
-    color: #fff;
+   cursor: default;
 }
 
 .like_recent_point_cou_text {
