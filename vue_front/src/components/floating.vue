@@ -130,6 +130,7 @@ export default {
         openFloating() {
             const floatdiv = this.$refs.float.classList;
             floatdiv.toggle("display_none");
+            
         },
         closeFloating() {
             const floatdiv = this.$refs.float.classList;

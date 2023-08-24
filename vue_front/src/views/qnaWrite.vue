@@ -3,7 +3,9 @@
   <div>
     <GnbBar />
 
-    <div class="mypage_menu"></div>
+    <div class="mypage_menu">
+      <myPageSide />
+    </div>
     <div class="right_box">
       <h1 class="qna_title_big">1:1 문의 접수</h1>
       <div class="write_box">
@@ -22,6 +24,10 @@
       </div>
     </div>
   </div>
+  <!-- 플로팅-->
+  <Floating />
+  <!-- 스크롤 TOP -->
+  <ScrollTop />
 
 </template>
 
@@ -29,10 +35,15 @@
 import axios from 'axios';
 
 import GnbBar from '../components/gnbBar.vue'
+import Floating from "../components/floating.vue";
+import myPageSide from "../components/myPageSide.vue";
+
 
 export default {
   components: { 
-    GnbBar 
+    GnbBar, 
+    Floating,
+    myPageSide
   },
   data() {
     return {

@@ -87,6 +87,11 @@
             </div>
         </div>
     </div>
+    <!-- 플로팅-->
+    <Floating />
+    <!-- 스크롤 TOP -->
+    <ScrollTop />
+
 </template>
 <script>
 import axios from "axios";
@@ -94,10 +99,14 @@ import "@/assets/css/myPage.css";
 import GnbBar from "../components/gnbBar.vue";
 import myPage_top from "../components/myPage_top.vue";
 import myPageSide from "../components/myPageSide.vue";
+import Floating from "../components/floating.vue";
+import ScrollTop from "@/components/scrollTop.vue";
+
+
 
 export default {
     name: "",
-    components: { GnbBar, myPage_top, myPageSide },
+    components: { GnbBar, myPage_top, myPageSide, Floating, ScrollTop },
     data() {
         return {
             startDate: null,

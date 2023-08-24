@@ -68,6 +68,11 @@
             </TabsWrapper>
         </section>
     </div>
+    <!-- 플로팅-->
+    <Floating />
+    <!-- 스크롤 TOP -->
+    <ScrollTop />
+
 </template>
 
 <script>
@@ -76,6 +81,9 @@ import myPageSide from "../components/myPageSide.vue";
 import myPage_top from "../components/myPage_top.vue";
 import TabsWrapper from "../components/TabsWrapper.vue";
 import TabItem from "../components/TabItem.vue";
+import Floating from "../components/floating.vue";
+import ScrollTop from "@/components/scrollTop.vue";
+
 
 // Format the date in YY-MM-DD format
 const formattedDate = (date) => {
@@ -86,7 +94,7 @@ const formattedDate = (date) => {
 };
 
 export default {
-    components: { myPageSide, myPage_top, TabsWrapper, TabItem },
+    components: { myPageSide, myPage_top, TabsWrapper, TabItem, Floating, ScrollTop },
     data() {
         return {
             reviewList: [],

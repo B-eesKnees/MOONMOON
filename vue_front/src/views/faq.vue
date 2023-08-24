@@ -184,6 +184,11 @@
           </section>
       </div>
   </div>
+  <!-- 플로팅-->
+  <Floating />
+  <!-- 스크롤 TOP -->
+  <ScrollTop />
+
 </template>
 <script>
 import axios from "axios";
@@ -195,6 +200,9 @@ import TabsWrapper from "../components/TabsWrapper.vue";
 import TabItem from "../components/TabItem.vue";
 import myPageSide from "@/components/myPageSide.vue";
 import myPage_top from "@/components/myPage_top.vue";
+import Floating from "../components/floating.vue";
+import ScrollTop from "@/components/scrollTop.vue";
+
 
 export default {
   components: {
@@ -202,7 +210,9 @@ export default {
       TabsWrapper,
       TabItem,
       myPage_top,
-      myPageSide,
+      myPageSide, 
+      Floating, 
+      ScrollTop
   },
   data() {
       return {

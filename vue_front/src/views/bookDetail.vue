@@ -183,6 +183,11 @@
             경우
         </div>
     </div>
+    <!-- 플로팅-->
+    <Floating />
+    <!-- 스크롤 TOP -->
+    <ScrollTop />
+
 </template>
 
 <script>
@@ -191,10 +196,16 @@ import "../assets/css/bookDetail.css";
 import GnbBar from "../components/gnbBar.vue";
 import star from "@/components/star.vue";
 
+import Floating from "../components/floating.vue";
+import ScrollTop from "@/components/scrollTop.vue";
+
+
 export default {
     components: {
         GnbBar,
-        star,
+        star, 
+        Floating, 
+        ScrollTop
     },
     data() {
         return {

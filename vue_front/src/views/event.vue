@@ -164,6 +164,11 @@
             </section>
         </div>
     </div>
+    <!-- 플로팅-->
+    <Floating />
+    <!-- 스크롤 TOP -->
+    <ScrollTop />
+
 </template>
 <script>
 import axios from "axios";
@@ -174,6 +179,10 @@ import TabsWrapper from "../components/TabsWrapper.vue";
 import TabItem from "../components/TabItem.vue";
 import myPageSide from "../components/myPageSide.vue";
 import myPage_top from "@/components/myPage_top.vue";
+import Floating from "../components/floating.vue";
+import ScrollTop from "@/components/scrollTop.vue";
+
+
 axios.defaults.baseURL = "http://localhost:3000";
 axios.defaults.headers.post["Content-Type"] = "application/json;charset=utf-8";
 axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
@@ -185,6 +194,8 @@ export default {
         TabItem,
         myPageSide,
         myPage_top,
+        Floating, 
+        ScrollTop,
     },
     data() {
         return {
