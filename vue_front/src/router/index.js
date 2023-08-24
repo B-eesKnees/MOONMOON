@@ -69,6 +69,19 @@ const requireSurvey = () => (to, from, next) => {
             console.log(err);
         });
 };
+const getQna = () => (to, from, next) => {
+    axios({
+        url: "http://localhost:3000/qna/getCountQna",
+        method: "post",
+    }).then((res) => {
+        // const qnaCount = res.data[0].count;
+        console.log(res.data.allC);
+        sessionStorage.setItem("qnaCount", res.data.allC);
+        sessionStorage.setItem("qnaW", res.data.WC);
+        sessionStorage.setItem("qnaF", res.data.FC);
+        return next();
+    });
+};
 // beforeEnter: requireLogin(),  <<로그인한 사람만 들어갈 수 있는 페이지 component아래에 붙여넣으면됨
 const routes = [
     {
@@ -169,6 +182,7 @@ const routes = [
         path: "/qna",
         name: "qnaList",
         component: qnaList,
+        beforeEnter: getQna(),
     },
     {
         path: "/qnaWrite",
