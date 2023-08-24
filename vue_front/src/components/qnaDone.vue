@@ -6,12 +6,12 @@ export default {
         showQnaDoneContent: {
             type: Array,
             default: () => [],
+        },
         toggleContent3: Function,
         qnaDoneList: Array,
         conOpenBotton: String,
         conCloseBotton: String,
         },
-    },
     methods: {
         async toggleContent3(index) {
             this.showQnaDoneContent[index] = !this.showQnaDoneContent[index];
