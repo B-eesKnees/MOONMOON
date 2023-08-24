@@ -808,3 +808,71 @@
   background: #4E4EFF;
   color: #fff;
 }
+
+
+
+
+
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* 등급 탑 마이페이지 grade */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+
+
+.mypage_top_second_right {
+    width: 100%;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.grade_info_wrap {
+    border: 1px solid #4e4eff;
+    width: 80%;
+    height: 60%;
+    margin: 4% 4% 4.6% 4%;
+    margin-top: 200px;
+    /* margin-top: ; */
+    border-radius: 13px;
+    background-color: white;
+    padding: 30px;
+}
+.grade_info_top {
+    display: flex;
+    float: right;
+    /* margin: 5% 5% 0 0; */
+}
+.next_grade {
+    font-size: large;
+    color: #a0a0a0;
+}
+.next_grade_db {
+    font-size: large;
+}
+
+.grade_under {
+    margin-top: 60px;
+    line-height: 300%;
+}
+
+
+.grade_info_second {
+    display: flex;
+    /* margin: 20% 4% 4% 4%; */
+}
+.grade_info_under {
+    display: flex;
+}
+.next_grade_s {
+    font-size: 1.5em;
+    color: #4E4EFF;
+    font-weight: 600;
+}
+.grade_info_under {
+    /* margin: 0% 4% 4% 4%; */
+}
+
+.ext_grade_u2 {
+    font-size: 1.4em;
+}
