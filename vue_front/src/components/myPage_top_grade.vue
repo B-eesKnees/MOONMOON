@@ -18,26 +18,26 @@
                     <div class="like_recent_point_cou_text">
                         <div class="like_recent_point_cou_title">찜</div>
                         <div class="like_recent_point_cou_num">{{ likeCountData }}</div>
-                    </div></a
-                >
+                    </div>
+                </a>
                 <a href="#" class="mypage_like">
                     <div class="like_recent_point_cou_text">
                         <div class="like_recent_point_cou_title">최근 본</div>
                         <div class="like_recent_point_cou_num">{{ recentCountData }}</div>
-                    </div></a
-                >
+                    </div>
+                </a>
                 <a href="#" class="mypage_like">
                     <div class="like_recent_point_cou_text">
                         <div class="like_recent_point_cou_title">포인트</div>
                         <div class="like_recent_point_cou_num">{{ getUserData.USER_POINT }}<span>p</span></div>
-                    </div></a
-                >
+                    </div>
+                </a>
                 <a href="#" class="mypage_like">
                     <div class="like_recent_point_cou_text">
                         <div class="like_recent_point_cou_title">쿠폰</div>
                         <div class="like_recent_point_cou_num">{{ getCouCountData }}</div>
-                    </div></a
-                >
+                    </div>
+                </a>
             </div>
         </div>
         <div class="mypage_top_second_right">
@@ -54,7 +54,7 @@
                     </div>
                     <div v-if="couponGrade != '플래티넘'" class="grade_info_under">
                         <div class="next_grade_u">추가 구매금액 :&nbsp;</div>
-                        <div class="ext_grade_u2">{{ nextPayCost }} <span class="won">원</span></div>
+                        <div class="ext_grade_u2">{{ nextPayCost1 }} <span class="won">원</span></div>
                     </div>
                 </div>
             </div>
@@ -89,6 +89,7 @@ export default {
             check: true,
             reqP: 0,
             okGo: false,
+            nextPayCost1: ''
         };
     },
     created() {
@@ -101,6 +102,7 @@ export default {
         this.getGraInfo();
         this.getGraUp();
         this.getNextGra();
+        this.nextPayCost();
     },
     methods: {
         getUser() {
@@ -236,19 +238,23 @@ export default {
                 // }
             });
         },
-    },
-    computed: {
         nextPayCost() {
             let result;
             if (this.nextPay - this.reqP < 0) {
                 this.check = true;
-                result = 0;
+                this.nextPayCost1 = 0;
+                return;
+
             } else {
                 this.check = false;
-                result = this.nextPay - this.reqP;
+                this.nextPayCost1 = this.nextPay - this.reqP;
                 return result;
+                return;
             }
         },
+    },
+    computed: {
+
     },
 };
 </script>
