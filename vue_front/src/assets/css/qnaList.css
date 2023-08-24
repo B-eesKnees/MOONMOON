@@ -233,10 +233,21 @@
   line-height: 150%;
 }
 
+.qna-reply {
+  display: flex;
+}
+
 .reply_s {
   margin-left: 20px;
   margin-right: 20px;
+  display: inline-block;
 }
+
+.qna_reply_text {
+  line-height: 150%;
+}
+
+
 
 .qna_btn_set {
   display: flex;
