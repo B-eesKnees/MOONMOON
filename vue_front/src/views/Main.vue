@@ -127,20 +127,20 @@
             </div>
             <div class="main_item_wrap">
                 <div class="recommend_item">
-                    <img class="goods_img" src="../assets/img/mockup_book.png" alt="mockup_book" />
-                    <div class="goods_ball">여긴뭘까</div>
+                    <img class="goods_img" src="../assets/img/mockup_tum.png" alt="mockup_book" />
+                    <div class="goods_ball">텀블러</div>
                 </div>
                 <div class="recommend_item">
-                    <img class="goods_img" src="../assets/img/goods1.png" alt="" />
-                    <div class="goods_ball">여긴뭘까</div>
+                    <img class="goods_img" src="../assets/img/mockup_book.png" alt="" />
+                    <div class="goods_ball">노트</div>
                 </div>
                 <div class="recommend_item">
-                    <img class="goods_img" src="../assets/img/goods1.png" alt="" />
-                    <div class="goods_ball">여긴뭘까</div>
+                    <img class="goods_img" src="../assets/img/mockup_eco.png" alt="" />
+                    <div class="goods_ball">에코백</div>
                 </div>
                 <div class="recommend_item">
-                    <img class="goods_img" src="../assets/img/goods1.png" alt="" />
-                    <div class="goods_ball">여긴뭘까</div>
+                    <img class="goods_img" src="../assets/img/mockup_bookmark.png" alt="" />
+                    <div class="goods_ball">책갈피</div>
                 </div>
             </div>
         </div>

@@ -691,11 +691,14 @@
     width: 100%;
 }
 
-.modal span {
+.passwordValidationMessage {
   color: red;
   font-size: 12px;
   margin-top: 5px;
   display: block;
+  width: 85%;
+  margin-left: 20px;
+  line-height: 150%;
 }
 .info-content {
     width: 100%; /* 이미지의 가로 너비를 원하는 크기로 조절해보세요 */

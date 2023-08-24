@@ -49,9 +49,9 @@ export default {
         return {
             goods: [
                 { BOOK_TITLE: "텀블러", BOOK_PRICE: 16500, BOOK_COVER: "mockup_tum.png" },
-                { BOOK_TITLE: "노트", BOOK_PRICE: 12000, BOOK_COVER: "mockup_bookmark.png" },
+                { BOOK_TITLE: "노트", BOOK_PRICE: 12000, BOOK_COVER: "mockup_book.png" },
                 { BOOK_TITLE: "에코백", BOOK_PRICE: 11500, BOOK_COVER: "mockup_eco.png" },
-                { BOOK_TITLE: "책갈피", BOOK_PRICE: 2000, BOOK_COVER: "mockup_book.png" },
+                { BOOK_TITLE: "책갈피", BOOK_PRICE: 2000, BOOK_COVER: "mockup_bookmark.png" },
             ],
             nextDay: "",
             month: "",

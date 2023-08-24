@@ -35,7 +35,7 @@
                         <div class="mypage_new_pw">
                             <label for="newPassword">새 비밀번호</label>
                             <input type="password" id="newPassword" v-model="newPassword" @input="checkNewPassword" />
-                            <span v-if="passwordValidationMessage">{{ passwordValidationMessage }}</span>
+                            <span class="passwordValidationMessage" v-if="passwordValidationMessage">{{ passwordValidationMessage }}</span>
                         </div>
                         <div class="mypage_new_pw">
                             <label for="confirmPassword">비밀번호 확인</label>
