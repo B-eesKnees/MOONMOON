@@ -972,6 +972,9 @@ router.post("/getNextGra", async (req, res) => {
     });
 });
 
+// 구매확정 여부 받아오는 코드
+
+
 //-----------------------------------------------------------
 
 module.exports = router;
