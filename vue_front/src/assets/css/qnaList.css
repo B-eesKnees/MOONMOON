@@ -10,6 +10,9 @@
 
 /* qnaList ----------------------------------------------------- */
 
+.nodata {
+  margin: 0 auto;
+}
 
 .qna_title_big {  
   font-size: 23pt;
