@@ -29,17 +29,21 @@
                 </div>
 
                 <!-- 모달 요소 -->
-                <div v-if="passwordModal" class="modal">
-                    <div class="modal-content">
+                <div v-if="passwordModal" class="password_modal">
+                    <div class="pass_modal_content">
                         <h3>비밀번호 변경</h3>
-                        <label for="newPassword">새 비밀번호</label>
-                        <input type="password" id="newPassword" v-model="newPassword" @input="checkNewPassword" />
-                        <span v-if="passwordValidationMessage">{{ passwordValidationMessage }}</span>
-                        <label for="confirmPassword">비밀번호 확인</label>
-                        <input type="password" id="confirmPassword" v-model="confirmPassword" />
-                        <span v-if="passwordMatchMessage">{{ passwordMatchMessage }}</span>
+                        <div class="mypage_new_pw">
+                            <label for="newPassword">새 비밀번호</label>
+                            <input type="password" id="newPassword" v-model="newPassword" @input="checkNewPassword" />
+                            <span v-if="passwordValidationMessage">{{ passwordValidationMessage }}</span>
+                        </div>
+                        <div class="mypage_new_pw">
+                            <label for="confirmPassword">비밀번호 확인</label>
+                            <input type="password" id="confirmPassword" v-model="confirmPassword" />
+                            <span v-if="passwordMatchMessage">{{ passwordMatchMessage }}</span>
+                        </div>
                         <div class="button-group-center">
-                            <button @click="changePassword">비밀번호 변경</button>
+                            <button class="mypage_group_first" @click="changePassword">비밀번호 변경</button>
                             <button @click="closePasswordModal">취소</button>
                         </div>
                     </div>

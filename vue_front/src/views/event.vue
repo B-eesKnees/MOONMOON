@@ -1,4 +1,4 @@
-<style src="../assets/css/qnaList.css"></style>
+<!-- <style src="../assets/css/qnaList.css"></style> -->
 <template>
     <div>
         <GnbBar />
