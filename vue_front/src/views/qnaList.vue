@@ -10,7 +10,7 @@
             <!-- 탭시작 -->
             <section class="tabWrap">
                 <TabsWrapper>
-                    <TabItem title="답변 전체">
+                    <TabItem :title="`답변 전체 (${count1})`">
                         <a href="http://localhost:8080/qnaWrite">
                             <div class="qna-btn" v-if="!nodata">1:1 문의하기</div>
                         </a>
@@ -30,7 +30,7 @@
                             :getEditQnaId="getEditId"
                         ></qnaAll>
                     </TabItem>
-                    <TabItem title="답변 대기">
+                    <TabItem :title="`답변 대기 (${count2})`">
                         <a href="http://localhost:8080/qnaWrite">
                             <div class="qna-btn" v-if="!nodata">1:1 문의하기</div>
                         </a>
@@ -51,7 +51,7 @@
                             ></qnaWait>
                         </div>
                     </TabItem>
-                    <TabItem title="답변 완료">
+                    <TabItem :title="`답변 완료 (${count3})`">
                         <a href="http://localhost:8080/qnaWrite">
                             <div class="qna-btn" v-if="!nodata">1:1 문의하기</div>
                         </a>
@@ -117,6 +117,9 @@ export default {
             qnaAllList: [],
             qnaWaitList: [],
             qnaDoneList: [],
+            count1: sessionStorage.getItem("qnaCount"),
+            count2: sessionStorage.getItem("qnaW"),
+            count3: sessionStorage.getItem("qnaF"),
         };
     },
     created() {
@@ -208,7 +211,7 @@ export default {
         },
         getEditId(qna_id) {
             this.$router.push({ name: "qnaEdit", params: { id: qna_id } });
-        },        
+        },
     },
 };
 </script>
