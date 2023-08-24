@@ -11,7 +11,9 @@
 /* qnaList ----------------------------------------------------- */
 
 .nodata {
+  padding: 200px;
   margin: 0 auto;
+  text-align: center;
 }
 
 .qna_title_big {  
@@ -29,6 +31,7 @@
 
 .qna-con {
   width: 90%;
+  line-height: 170%;
   /* border: #000 1px solid; */
 }
 
@@ -247,7 +250,7 @@
 }
 
 .qna_reply_text {
-  line-height: 150%;
+  line-height: 170%;
 }
 
 

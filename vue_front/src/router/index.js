@@ -22,6 +22,8 @@ import pay from "../views/pay.vue";
 import qnaList from "../views/qnaList.vue";
 import qnaWrite from "../views/qnaWrite.vue";
 import qnaEdit from "../views/qnaEdit.vue";
+import faq from "../views/faq.vue";
+
 import eventPage from "../views/event.vue";
 import attendance from "../views/attendance.vue";
 import mypage from "../views/mypage.vue";
@@ -164,7 +166,7 @@ const routes = [
         component: resultpage,
     },
     //-------------------------------------------------------------
-    //QNA
+    //QNA, faq
     {
         path: "/qna",
         name: "qnaList",
@@ -180,6 +182,11 @@ const routes = [
         name: "qnaEdit",
         component: qnaEdit,
         props: true,
+    },
+    {
+        path: "/faq",
+        name: "faq",
+        component: faq,
     },
     //-------------------------------------------------------------
     //룰렛, 쿠폰주는 화면

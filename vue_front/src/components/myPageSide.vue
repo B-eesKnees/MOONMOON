@@ -61,7 +61,7 @@
                 <a href="/qna">
                     <div @click="activeElement = 'userInquiry'" :class="{ sideList: true, activeText: isActiveText('userInquiry') }">1:1문의</div></a
                 >
-                <a href="#">
+                <a href="/faq">
                     <div @click="activeElement = 'userFaq'" :class="{ sideList: true, activeText: isActiveText('userFaq') }">자주묻는질문 FAQ</div></a
                 >
             </div>
