@@ -31,28 +31,29 @@ export default {
             <!-- 문의 제목/날짜 -->
             <div class="qna-date">{{ done.QNA_DATE }}</div>
             <div class="qna_title_rep">
-            <div class="qna-title">{{ done.QNA_TITLE }}</div>
-              <div class="younju" v-if="showQnaDoneContent[i]">
-                <div class="qna_con_btn">
-                    <div class="qna-con">{{ done.QNA_CON }}</div>                              
-                </div>
+                    <div class="qna-title">{{ done.QNA_TITLE }}</div>
+                    <div class="younju" v-if="showQnaDoneContent[i]">
+                        <div class="qna_con_btn">
+                            <div class="qna-con">{{ done.QNA_CON }}</div>                              
+                        </div>
 
-                <div class="qna-reply">
-                  <hr class="on_reply"/>
-                    <svg
-                        class="reply_s"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="17"
-                        viewBox="0 0 16 17"
-                        fill="none"
-                    >
-                        <line x1="0.5" x2="0.5" y2="16" stroke="black" />
-                        <line x1="16" y1="16.5" x2="-4.37114e-08" y2="16.5" stroke="black" />
-                    </svg>
-                  {{ done.QNA_REPLY }}
-                </div>
-              </div>                                
+                        <div class="qna-reply">
+                        <hr class="on_reply" v-if="done.QNA_REPLY"/>
+                            <svg
+                                v-if="done.QNA_REPLY"
+                                class="reply_s"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="17"
+                                viewBox="0 0 16 17"
+                                fill="none"
+                            >
+                                <line x1="0.5" x2="0.5" y2="16" stroke="black" />
+                                <line x1="16" y1="16.5" x2="-4.37114e-08" y2="16.5" stroke="black" />
+                            </svg>
+                        {{ done.QNA_REPLY }}
+                        </div>
+                    </div>                                
             </div>
             <!-- 버튼 토글-문의 내용/답변 -->
             <button @click="toggleContent3(i)" class="con-open_close">
