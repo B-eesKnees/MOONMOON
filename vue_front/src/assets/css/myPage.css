@@ -83,17 +83,17 @@
 }
 
 .mypage_like {
-    border: #7a7aff 1px solid;
-    background: #cacafb;
-    /* display: flex; */
-    border-radius: 10px;
-    padding: 20px 10px;
-    width: 160px;
-    height: 120px;
-    word-wrap: break-word;
-    line-height: 150%;
-    margin-right: 20px;
-    margin-bottom: 20px;
+  border: #7A7AFF 1px solid;
+  background: #CACAFB;
+  /* display: flex; */
+  border-radius: 10px;
+  padding: 20px 10px;
+  width: 160px;
+  height: 100px;
+  word-wrap: break-word;
+  line-height: 150%;
+  margin-right: 20px;
+  margin-bottom: 20px;
 }
 
 .mypage_like:hover {

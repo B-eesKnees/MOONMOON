@@ -8,11 +8,11 @@
             <h1 class="qna_title_big">1:1 문의 접수</h1>
             <div class="write_box">
                 <div class="title_write">
-                    <h2 class="title_text">제목</h2>
+                    <h2 class="title_text qna-title-width">제목</h2>
                     <input class="title_input" type="text" v-model="qna.qna_title" maxlength="20" />
                 </div>
                 <div class="con_write">
-                    <h2 class="con_text">내용</h2>
+                    <h2 class="con_text qna-title-width">내용</h2>
                     <textarea class="con_input" type="text" v-model="qna.qna_con" maxlength="500" />
                 </div>
             </div>

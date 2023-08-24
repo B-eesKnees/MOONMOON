@@ -88,7 +88,7 @@
                                     <!-- Card Header - Dropdown -->
                                     <div
                                         class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                        <h6 class="m-0 font-weight-bold text-primary">많이 구매한 책의 장르</h6>
+                                        <h6 class="m-0 font-weight-bold text-primary">많이 구매한 책 장르</h6>
 
                                     </div>
                                     <!-- Card Body -->

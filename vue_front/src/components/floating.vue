@@ -81,10 +81,12 @@
                             </div>
                         </div>
                         <div class="floating_modal_item_control">
-                            <img v-if="item.isLiked == true" @click="likeToggle(item.BOOK_ID)"
+                            <img @click="likeToggle(item.BOOK_ID)"
+                                src="../assets/img/heartFill.png" alt="Heart Filled" />
+                            <!-- <img v-if="item.isLiked == true" @click="likeToggle(item.BOOK_ID)"
                                 src="../assets/img/heartFill.png" alt="Heart Filled" />
                             <img v-else-if="item.isLiked == false" @click="likeToggle(item.BOOK_ID)"
-                                src="../assets/img/heart.png" alt="Heart" />
+                                src="../assets/img/heart.png" alt="Heart" /> -->
                         </div>
                     </div>
                 </div>

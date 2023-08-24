@@ -143,7 +143,7 @@
                                     <!-- Card Body -->
                                     <div class="card-body">
                                         <div class="chart-area d-flex align-items-center justify-content-center">
-                                            <canvas ref="dailySalesChart" width="1000" height="300"></canvas>
+                                            <canvas ref="dailySalesChart" width="900" height="300"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -190,7 +190,7 @@
                                             <div class="progress-bar bg-warning" role="progressbar" style="width: 40%"
                                                 aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
                                         </div>
-                                        <h4 class="small font-weight-bold">곧 종강 <span class="badge bg-danger">필독</span></h4>
+                                        <h4 class="small font-weight-bold">고객문의 관련 안내<span class="badge bg-danger">필독</span></h4>
                                         <div class="progress mb-4">
                                             <div class="progress-bar" role="progressbar" style="width: 60%"
                                                 aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
@@ -503,11 +503,11 @@ export default {
                 myChart.value.chart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['남성', '여성'],
+                        labels: ['여성', '남성'],
                         datasets: [
                             {
                                 data: [userSex.female, userSex.male],
-                                backgroundColor: ['#4e73df', '#e74a3b'],
+                                backgroundColor: ['#e74a3b', '#4e73df'],
                             },
                         ],
                     },

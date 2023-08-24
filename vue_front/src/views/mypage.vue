@@ -287,6 +287,10 @@ export default {
             // 화폐 기호(₩)와 공백을 제거한 후 반환
             return currencyString.replace("₩", "").replace(/\s/g, "");
         },
+        formatNumber(number) {
+            // 숫자를 천 단위마다 쉼표가 있는 형식으로 변환
+            return new Intl.NumberFormat().format(number);
+        },
     },
 };
 </script>

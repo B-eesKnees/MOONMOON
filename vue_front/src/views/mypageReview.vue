@@ -14,22 +14,27 @@
                                 <img :src="review.book_cover" alt="북커버 이미지" class="info-content" />
                             </div>
                             <div class="info-item1">
-                                <div class="info-title.confirm">구매확정 {{ formattedDate(review.ORDERITEM_CONFIRMED_AT) }}</div>
+                                <div class="info-title.confirm info-title-row">
+                                    구매확정 <span>{{ formattedDate(review.ORDERITEM_CONFIRMED_AT) }}</span>
+                                </div>
 
-                                <div class="info-title.book-title">{{ review.book_title }}</div>
+                                <div class="info-title.book-title info-title-row">{{ review.book_title }}</div>
 
-                                <div class="info-title.book-author">{{ review.book_author }}</div>
+                                <div class="info-title.book-author info-title-row">{{ review.book_author }}</div>
                             </div>
 
                             <div class="info-item2">
                                 <router-link :to="`/detail/${review.ORDERITEM_BOOK_ID}`"
                                     ><button class="review-button">리뷰 쓰기</button></router-link
                                 >
-
-                                <div class="info-title.deadline">작성기한</div>
-                                <div class="info-content.deadline">{{ calculateDeadline(review.ORDERITEM_CONFIRMED_AT) }}</div>
-                                <div class="info-title.point">포인트</div>
-                                <div class="info-content.point">300P</div>
+                                <div class="info-item2-column">
+                                    <div class="info-title.deadline info-content-first">작성기한</div>
+                                    <div class="info-content.deadline info-content-bold">{{ calculateDeadline(review.ORDERITEM_CONFIRMED_AT) }}</div>
+                                </div>
+                                <div class="info-item2-column">
+                                    <div class="info-title.point info-content-first">포인트</div>
+                                    <div class="info-content.point info-content-bold">300P</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -50,11 +55,13 @@
                                 <div class="info-title book-title">{{ review.book_title }}</div>
                                 <div class="info-title book-author">{{ review.book_author }}</div>
 
-                                <div class="info-title review-comment">리뷰: {{ review.rev_comment }}</div>
+                                <div class="info-title review-comment">{{ review.rev_comment }}</div>
                             </div>
                             <div class="info-item2">
-                                <div class="info-title review-created-at">작성일: {{ review.rev_created_at }}</div>
-                                <div class="info-title review-rating">별점: {{ review.rev_rating }} 점</div>
+                                <div class="info-title review-created-at">{{ review.rev_created_at }}</div>
+                                <div class="info-title review-rating">
+                                    <StarIcon :rating="convertRatingToHalfStars(review.rev_rating)" />
+                                </div>
                             </div>
                         </div>
                         <!-- 페이지네이션 버튼 -->
@@ -76,6 +83,8 @@ import myPageSide from "../components/myPageSide.vue";
 import myPage_top from "../components/myPage_top.vue";
 import TabsWrapper from "../components/TabsWrapper.vue";
 import TabItem from "../components/TabItem.vue";
+import GnbBar from "../components/gnbBar.vue";
+import StarIcon from "../components/star.vue"; // 별점 아이콘 컴포넌트의 경로를 수정해주세요.
 
 // Format the date in YY-MM-DD format
 const formattedDate = (date) => {
@@ -86,7 +95,7 @@ const formattedDate = (date) => {
 };
 
 export default {
-    components: { myPageSide, myPage_top, TabsWrapper, TabItem },
+    components: { myPageSide, myPage_top, TabsWrapper, TabItem, GnbBar, StarIcon },
     data() {
         return {
             reviewList: [],
@@ -136,7 +145,7 @@ export default {
                         book_cover: review.BOOK_COVER,
                         book_title: review.BOOK_TITLE,
                         book_author: review.BOOK_AUTHOR,
-                        rev_rating: review.REV_RATING,
+                        rev_rating: review.REV_RATING / 2,
                         rev_comment: review.REV_COMMENT,
                         rev_created_at: formattedDate(rev_created_at),
                     };
@@ -147,6 +156,7 @@ export default {
         } catch (error) {
             console.error("Error fetching data:", error);
         }
+        console.log(this.writtenReview[0].rev_created_at, "리뷰날짜");
     },
 
     computed: {
@@ -171,6 +181,25 @@ export default {
             const orderConfirmedDate = new Date(confirmDate);
             return formattedDate(new Date(orderConfirmedDate.getTime() + 30 * 24 * 60 * 60 * 1000));
         },
+        //입력된 숫자를 주어진 범위에 따라 적절한 별점으로 변환
+        convertRatingToHalfStars(number) {
+            if (Number.isInteger(number)) {
+                if (number >= 1 && number <= 5) {
+                    return number;
+                } else {
+                    return 0; // 범위를 벗어나는 경우
+                }
+            } else {
+                const integerPart = Math.floor(number);
+                const decimalPart = number - integerPart;
+
+                if (decimalPart < 0.5) {
+                    return integerPart;
+                } else {
+                    return integerPart + 0.5;
+                }
+            }
+        },
     },
     changePage(pageNumber) {
         this.currentPage = pageNumber;
@@ -184,7 +213,9 @@ export default {
     justify-content: space-between;
     padding: 10px;
     height: 200px;
-    border-bottom: 1px solid rgba(199, 195, 195, 0.267); /* 아래쪽에만 border 추가 */
+    width: 100%;
+    border-bottom: 1px solid rgba(199, 195, 195, 0.267);
+    /* 아래쪽에만 border 추가 */
 }
 
 .info-item {
@@ -194,9 +225,67 @@ export default {
     text-align: center;
 }
 
+.book-cover {
+    border: none;
+    flex: none;
+    width: 10%;
+}
+
+.info-item1 {
+    width: 70%;
+}
+
+.info-title-row {
+    margin-bottom: 10px;
+}
+.info-title-row:first-child {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+}
+.info-title-row:nth-child(2) {
+    font-weight: bold;
+}
+.info-title-row:last-child {
+    font-size: small;
+}
+.info-title-row span {
+    font-weight: bold;
+}
+
+.book-author {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    font-size: small;
+}
+
+.info-item2 {
+    width: 20%;
+    margin-bottom: 7%;
+    margin-left: 5%;
+}
+
+.review-comment {
+    color: #575757;
+    padding-top: 10px;
+}
+
+.info-item2-column {
+    display: flex;
+    width: 100%;
+    margin-top: 5%;
+}
+
+.info-content-bold {
+    font-weight: bold;
+}
+
+.info-content-first {
+    width: 40%;
+}
+
 .info-title {
     font-weight: bold;
-    margin-bottom: 20px;
+    padding-bottom: 10px;
 }
 
 .review-button {
@@ -207,6 +296,7 @@ export default {
     border-radius: 5px;
     cursor: pointer;
 }
+
 .pagination {
     display: flex;
     justify-content: center;
@@ -226,9 +316,13 @@ export default {
 }
 
 .info-content {
-    width: 100px; /* 이미지의 가로 너비를 원하는 크기로 조절해보세요 */
-    height: auto; /* 높이를 자동으로 조절하여 비율을 유지하도록 설정 */
-    max-width: 100%; /* 부모 요소 너비에 맞게 이미지 크기 조절 */
-    max-height: 100%; /* 부모 요소 높이에 맞게 이미지 크기 조절 */
+    width: 100px;
+    /* 이미지의 가로 너비를 원하는 크기로 조절해보세요 */
+    height: auto;
+    /* 높이를 자동으로 조절하여 비율을 유지하도록 설정 */
+    max-width: 100%;
+    /* 부모 요소 너비에 맞게 이미지 크기 조절 */
+    max-height: 100%;
+    /* 부모 요소 높이에 맞게 이미지 크기 조절 */
 }
 </style>
