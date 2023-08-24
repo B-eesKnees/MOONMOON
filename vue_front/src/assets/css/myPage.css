@@ -567,3 +567,79 @@
 .mypage_orderpay {
   font-size: 1.3em;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.review-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  height: 200px;
+  border-bottom: 1px solid rgba(199, 195, 195, 0.267); /* 아래쪽에만 border 추가 */
+}
+
+.book_cover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100px;
+  border: #000 1px solid;
+}
+
+.book_cover > img {
+  width: 100%;
+}
+
+.info-content {
+  width: 100%; /* 이미지의 가로 너비를 원하는 크기로 조절해보세요 */
+  /* height: auto; 높이를 자동으로 조절하여 비율을 유지하도록 설정 */
+  /* max-width: 100%;  부모 요소 너비에 맞게 이미지 크기 조절 */
+  /* max-height: 100%; 부모 요소 높이에 맞게 이미지 크기 조절 */
+}
+
+
+.info-title {
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.review-button {
+  background-color: #5552f7;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  background-color: #f0f0f0;
+  border: none;
+  cursor: pointer;
+}
+
+.pagination button:hover {
+  background-color: #ddd;
+}
+
+
