@@ -66,8 +66,8 @@ export default {
                             </div>
                         </div>
 
+                        <hr class="on_reply" v-if="all.QNA_REPLY" />
                         <div class="qna-reply">
-                            <hr class="on_reply" v-if="all.QNA_REPLY" />
                             <svg
                                 v-if="all.QNA_REPLY"
                                 class="reply_s"
@@ -80,7 +80,7 @@ export default {
                                 <line x1="0.5" x2="0.5" y2="16" stroke="black" />
                                 <line x1="16" y1="16.5" x2="-4.37114e-08" y2="16.5" stroke="black" />
                             </svg>
-                            {{ all.QNA_REPLY }}
+                            <div class="qna_reply_text">{{ all.QNA_REPLY }}</div>
                         </div>
                     </div>
                 </div>

@@ -527,7 +527,7 @@ router.get("/orderdelivery", (req, res) => {
     o.ORDER_STATE,
     o.ORDER_PAY,
     o.ORDER_USER_EMAIL,
-    SUM(oi.ORDERITEM_CNT) AS order_cnt,
+    SUM(oi.ORDERITEM_CNT) AS ORDER_CNT,
     MAX(b.BOOK_TITLE) AS BOOK_TITLE,
     MAX(b.BOOK_COVER) AS BOOK_COVER
 FROM
@@ -567,7 +567,7 @@ GROUP BY
                 ORDER_STATE: result.ORDER_STATE,
                 ORDER_PAY: result.ORDER_PAY,
                 ORDER_USER_EMAIL: result.ORDER_USER_EMAIL,
-                order_cnt: result.order_cnt, // 주문 수량 정보 추가
+                ORDER_CNT: result.ORDER_CNT, // 주문 수량 정보 추가
                 items: [],
             };
 
