@@ -408,6 +408,7 @@ router.get("/orderHistory", async (req, res) => {
     const userEmail = req.query.userEmail; // 사용자 이메일 파라미터 받아오기
 
     const query = `
+
     SELECT
       o.ORDER_ID,
       o.ORDER_PAYDATE,
@@ -417,11 +418,12 @@ router.get("/orderHistory", async (req, res) => {
       SUM(oi.ORDERITEM_CNT) AS ORDER_CNT,
       b.BOOK_TITLE,
       b.BOOK_AUTHOR,
-      b.BOOK_COVER
+      b.BOOK_COVER,
+      oi.ORDERITEM_BOOK_ID
     FROM \`order\` o
     JOIN orderitem oi ON o.ORDER_ID = oi.ORDERITEM_ORDER_ID
     JOIN book b ON oi.ORDERITEM_BOOK_ID = b.BOOK_ID
-    WHERE o.ORDER_USER_EMAIL = ?
+    WHERE o.ORDER_USER_EMAIL = 'whitemk49@naver.com'
     GROUP BY
       o.ORDER_ID,
       o.ORDER_PAYDATE,
@@ -430,7 +432,11 @@ router.get("/orderHistory", async (req, res) => {
       o.ORDER_USER_EMAIL,
       b.BOOK_TITLE,
       b.BOOK_AUTHOR,
-      b.BOOK_COVER;
+      b.BOOK_COVER,
+      oi.ORDERITEM_BOOK_ID
+
+      ORDER BY
+       oi.ORDERITEM_BOOK_ID;
   `;
 
     db.query(query, [userEmail], (err, results) => {
@@ -529,7 +535,8 @@ router.get("/orderdelivery", (req, res) => {
     o.ORDER_USER_EMAIL,
     SUM(oi.ORDERITEM_CNT) AS ORDER_CNT,
     MAX(b.BOOK_TITLE) AS BOOK_TITLE,
-    MAX(b.BOOK_COVER) AS BOOK_COVER
+    MAX(b.BOOK_COVER) AS BOOK_COVER,
+    oi.ORDERITEM_BOOK_ID
 FROM
     \`order\` AS o
 JOIN
@@ -544,7 +551,10 @@ GROUP BY
     o.ORDER_PAYDATE,
     o.ORDER_STATE,
     o.ORDER_PAY,
-    o.ORDER_USER_EMAIL
+    o.ORDER_USER_EMAIL,
+    oi.ORDERITEM_BOOK_ID
+ORDER BY
+    oi.ORDERITEM_BOOK_ID;
     `;
 
     db.query(query, [userEmail, orderState], (err, results) => {
@@ -1001,7 +1011,6 @@ router.post("/getNextGra", async (req, res) => {
 });
 
 // 구매확정 여부 받아오는 코드
-
 
 //-----------------------------------------------------------
 
