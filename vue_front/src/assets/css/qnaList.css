@@ -55,7 +55,7 @@
 /* qnaAll ------------------------------------------------ */
 .qna-all {
   /* border: 1px solid #000; */
-  border-top: 1px solid #000;
+  border-top: 0.5px solid #d8d8d8;
   /* background-color: aquamarine; */
   margin-top: 115px;
   width: 100%;
@@ -260,6 +260,9 @@
   /* border: #000 1px solid; */
   /* margin-left: 10vw; */
   /* position: absolute; */
+  height: 25px;
+  /* border: #000 1px solid; */
+
 }
 
 .qna_editbtn, .qna_delbtn {

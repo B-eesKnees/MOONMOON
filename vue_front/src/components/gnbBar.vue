@@ -19,7 +19,7 @@
     <div class="gnb_bar_header_wrap">
         <div class="gnb_bar_header">
             <div class="gnb_bar_header_logo">
-                <a href="/"><img src="../assets/img/logo.png" alt="" /></a>
+                <a href="/"><img src="../assets/img/logolong4.png" alt="" /></a>
             </div>
             <div class="gnb_bar_header_search" ref="search_box">
                 <input
