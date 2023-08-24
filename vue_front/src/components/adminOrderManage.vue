@@ -45,7 +45,7 @@
                                         <option class="dropdown-item btn cursor-pointer" value="배송준비">배송준비</option>
                                         <option class="dropdown-item btn cursor-pointer" value="배송중">배송중</option>
                                         <option class="dropdown-item btn cursor-pointer" value="배송완료">배송완료</option>
-                                        <option class="dropdown-item btn cursor-pointer" value="배송취소">배송취소</option>
+                                        <option class="dropdown-item btn cursor-pointer" value="주문취소">주문취소</option>
                                     </select>
                                 </div>
                             </div>
@@ -361,7 +361,7 @@ export default {
                     .catch((err) => {
                         alert(err);
                     });
-            } else if (this.filterValue === "배송취소") {
+            } else if (this.filterValue === "주문취소") {
                 await axios({
                     url: "http://localhost:3000/admin/adminOrderList",
                     method: "POST",
@@ -369,7 +369,7 @@ export default {
                     },
                 })
                     .then((res) => {
-                        this.orderData = res.data.filter(item => item.ORDER_STATE === "배송취소");
+                        this.orderData = res.data.filter(item => item.ORDER_STATE === "주문취소");
                         console.log(this.orderData,"배송준비 데이터")
                     })
                     .catch((err) => {

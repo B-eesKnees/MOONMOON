@@ -103,7 +103,7 @@
                         <div class="border border-secondary mb-5"></div>
 
                         <div class="row d-flex align-items-center justify-content-center">
-                            <div v-for="i in 6" :key="i" class="mb-4" style="width: 9%;">
+                            <div v-for="i in 6" :key="i" class="mb-4" style="width: 10%;">
                                 <div class="card shadow h-100 mb-5" :class="{
                                     'cardshadow h-100 mb-5 border-bottom-danger': i === 1,
                                     'cardshadow h-100 mb-5 border-bottom-secondary': i === 2,
