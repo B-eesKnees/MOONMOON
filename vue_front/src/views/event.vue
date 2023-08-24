@@ -239,7 +239,10 @@ export default {
         },
 
         handleRouletteResponse(response) {
-            console.log(response.data.message);
+            if (!localStorage.getItem("userID")) {
+                alert("로그인해주세요");
+                return;
+            }
             if (response.data.message === "참여불가") {
                 // 이미 참여한 경우 모달 표시
                 this.setNum = null;

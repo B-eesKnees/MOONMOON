@@ -15,13 +15,13 @@
             </div>
 
             <div class="order-search">
-                <label>주문 검색:</label>
+                <label>주문 검색</label>
                 <input class="mypage_book_search" type="text" v-model="orderKeyword" placeholder="책 이름 검색" />
                 <button class="orderinfo_btn" @click="searchOrders">검색</button>
             </div>
 
             <div class="status-filter">
-                <label>배송 상태별 조회:</label>
+                <label>배송 상태별 조회</label>
                 <select v-model="selectedStatus">
                     <option value="전체">전체</option>
                     <option value="배송준비">배송준비</option>
@@ -58,33 +58,32 @@
 
                 <!-- 오른쪽에 책 정보 -->
                 <div class="book_info">
-                    <div>{{ order.ORDER_PAYDATE }}</div>
+                    <div class="order-date-right">{{ order.ORDER_PAYDATE }}</div>
                     <p class="mypage_book_title">
                         {{ order.items[0].BOOK_TITLE }}
                         <span class="mypage_ordercnt" v-if="order.ORDER_CNT > 1"
                             ><span class="order_cnt_out"> 외</span> {{ order.ORDER_CNT - 1 }} 건</span
                         >
                     </p>
-                    <p class="mypage_orderpay">{{ order.ORDER_PAY }}</p>
+                    <p class="mypage_orderpay">{{ formatCurrency(order.ORDER_PAY) }}원</p>
                     <p>주문 상세</p>
+
                     <button
-                        v-if="order.ORDER_STATE === '배송완료' && !order.buyConfirmed"
+                        v-if="order.ORDER_STATE === '배송완료' && !isBuyConfirmed(order) && !order.items[0].BUY_CHECK"
                         class="confirm-button"
                         @click="showConfirmationAlert(order.ORDER_ID)"
                     >
                         구매확정
                     </button>
-                    <button v-else-if="order.ORDER_STATE === '배송완료' && order.buyConfirmed" class="confirm-button" disabled>구매확정 완료</button>
                     <button
-                        v-if="order.ORDER_STATE === '배송준비' && !order.buyConfirmed"
-                        class="confirm-button"
-                        @click="showCancellationAlert(order.ORDER_ID)"
+                        v-else-if="order.ORDER_STATE === '배송완료' && (isBuyConfirmed(order) || order.items[0].BUY_CHECK)"
+                        class="confirm-button-complete"
+                        :disabled="order.items[0].BUY_CHECK"
                     >
-                        주문취소
+                        구매확정
                     </button>
+                    <!-- 구매확정 버튼 -->
                 </div>
-
-                <!-- 구매확정 버튼 -->
             </div>
         </div>
     </div>
@@ -107,6 +106,7 @@ export default {
             selectedStatus: "전체",
             orderList: [],
             orderState: "",
+            buyConfirmed: false,
         };
     },
     created() {
@@ -184,8 +184,39 @@ export default {
                 },
             })
                 .then((response) => {
-                    console.log(response.data); // 가져온 데이터 확인
-                    this.orderList = response.data; // 수정된 부분
+                    console.log(response.data);
+                    this.orderList = response.data;
+
+                    // 각 주문 아이템의 BUYCHECK 값을 가져와서 저장합니다.
+                    // Promise.all을 사용하여 병렬로 API 요청을 수행합니다.
+                    const promises = this.orderList.map((order) => {
+                        return Promise.all(
+                            order.items.map((item) => {
+                                return axios({
+                                    url: "http://localhost:3000/mypage/getbuycheck", // 정확한 URL로 수정
+                                    method: "get",
+                                    params: {
+                                        orderId: order.ORDER_ID, // 주문 ID를 전달
+                                        userEmail: this.email,
+                                    },
+                                });
+                            })
+                        );
+                    });
+
+                    // 모든 API 요청이 완료되면 각 아이템의 BUY_CHECK 값을 설정합니다.
+                    Promise.all(promises)
+                        .then((responses) => {
+                            responses.forEach((itemResponses, orderIndex) => {
+                                itemResponses.forEach((response, itemIndex) => {
+                                    const buyCheckStatus = response.data.buyCheckStatus;
+                                    this.orderList[orderIndex].items[itemIndex].BUY_CHECK = buyCheckStatus === 1;
+                                });
+                            });
+                        })
+                        .catch((error) => {
+                            console.error("BUYCHECK 가져오기 오류:", error);
+                        });
                 })
                 .catch((error) => {
                     console.error("주문내역 가져오기 오류:", error);
@@ -196,6 +227,7 @@ export default {
             const confirmed = window.confirm("구매확정 시 교환 및 환불이 불가능합니다. 진행하시겠습니까?");
             if (confirmed) {
                 this.confirmPurchase(orderId);
+                window.location.reload();
             } else {
                 console.log("구매확정이 취소되었습니다.");
             }
@@ -226,15 +258,8 @@ export default {
                 });
         },
 
-        isBuyConfirmed(order) {
-            const orderItems = order.items;
-            // orderItems 배열을 순회하며 각 아이템의 ORDERITEM_BUYCHECK 값을 확인
-            for (const item of orderItems) {
-                if (item.ORDERITEM_BUYCHECK !== 1) {
-                    return false; // 하나라도 구매확정이 아닌 아이템이 있다면 false 반환
-                }
-            }
-            return true; // 모든 아이템이 구매확정이라면 true 반환
+        isBuyConfirmed(item) {
+            return item.BUY_CHECK; // BUYCHECK 값이 1이면 true, 0이면 false를 반환합니다.
         },
 
         confirmPurchase(orderId) {
@@ -242,26 +267,25 @@ export default {
                 .put(`http://localhost:3000/mypage/updatebuycheck/${this.email}/${orderId}`)
                 .then((response) => {
                     console.log(response.data);
-                    // 주문목록의 해당 주문의 BUY_CHECK 값을 업데이트합니다.
                     const orderIndex = this.orderList.findIndex((order) => order.ORDER_ID === orderId);
                     if (orderIndex !== -1) {
-                        // 아래와 같이 Vue.set()을 사용하거나 객체 스프레드 연산자로 아이템을 갱신합니다.
-                        // Vue.set(this.orderList, orderIndex, { ...this.orderList[orderIndex], BUY_CHECK: true });
                         this.orderList[orderIndex].BUY_CHECK = true;
 
-                        // 구매확정 처리 이후 버튼 상태를 확인하도록 수정
-                        this.$nextTick(() => {
-                            const updatedOrder = this.orderList[orderIndex];
-                            if (updatedOrder.ORDER_STATE === "배송완료" && this.isBuyConfirmed(updatedOrder)) {
-                                // 구매확정이 완료되었으므로 해당 버튼을 disabled 처리
-                                updatedOrder.buyConfirmed = true;
-                            }
-                        });
+                        // buyConfirmed 값을 변경합니다.
+                        this.buyConfirmed = true;
                     }
                 })
                 .catch((error) => {
                     console.error("구매확정 처리 오류:", error);
                 });
+        },
+
+        formatCurrency(amount) {
+            // 숫자를 통화 형식으로 변환하여 반환
+            const currencyString = amount.toLocaleString("ko-KR");
+
+            // 화폐 기호(₩)와 공백을 제거한 후 반환
+            return currencyString.replace("₩", "").replace(/\s/g, "");
         },
     },
 };
