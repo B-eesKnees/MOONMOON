@@ -30,16 +30,16 @@
 
                         <!-- Page Heading -->
                         <div class="d-flex align-items-center justify-content-between mb-3">
-                            <h1 class="h3 mb-2 text-gray-800 col-4">책 조회/삭제</h1>
+                            <h1 class="h3 mb-2 text-gray-800 col-9">책 조회/삭제</h1>
 
-                            <div class="input-group col-3">
+                            <div class="input-group">
                                 <input @input="getSearchKeyword($event)" type="text"
-                                    class="w-10 form-control bg-#ccc border-0 small" placeholder="키워드를 입력하세요.">
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary" type="button">
-                                        <i class="fas fa-search fa-sm"></i>
-                                    </button>
-                                </div>
+                                    class="w-100 form-control bg-#ccc border-0 small" placeholder="키워드를 입력하세요.">
+                            </div>
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
                             </div>
                         </div>
 
@@ -61,6 +61,7 @@
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
+                                                <th>책 ID</th>
                                                 <th>책 제목</th>
                                                 <th>지은이</th>
                                                 <th>장르</th>
@@ -70,6 +71,7 @@
                                         </thead>
                                         <tfoot>
                                             <tr>
+                                                <th>책 ID</th>
                                                 <th>책 제목</th>
                                                 <th>지은이</th>
                                                 <th>장르</th>
@@ -79,7 +81,9 @@
                                         </tfoot>
                                         <tbody>
                                             <tr v-for="(item, i) in displayedPosts" :key="i">
-                                                <td class="col-5 align-middle" style="font-size: small;">{{ item.BOOK_TITLE
+                                                <td class="align-middle" style="font-size: small; width: 4%;">{{ item.BOOK_ID
+                                                }}</td>
+                                                <td class="col-4 align-middle" style="font-size: small;">{{ item.BOOK_TITLE
                                                 }}</td>
                                                 <td class="col-2 align-middle" style="font-size: small;">{{ item.BOOK_AUTHOR
                                                 }}</td>
