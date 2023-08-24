@@ -6,7 +6,7 @@
     </div>
     <div class="right_box">
         <h1 class="qna_title_big">회원등급</h1>
-        <button>쿠폰받기</button>
+        <button class="insert_cou" @click="insert_coupon">쿠폰받기</button>
         <img src="../assets/img/grade_img.png" alt="grade_img" />
     </div>
 </template>
@@ -18,5 +18,8 @@ import myPageSide from "@/components/myPageSide.vue";
 
 export default {
     components: { GnbBar, myPage_top, myPageSide },
+    methods: {
+        insert_coupon() {},
+    },
 };
 </script>
