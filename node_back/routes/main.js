@@ -49,8 +49,7 @@ router.post("/getRecBook", async (req, res) => {
             } else {
                 console.log(2);
                 db.query(
-                    `select BOOK_ID, BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, '%Y.%m.%d') as PUBDATE, BOOK_PRICE, BOOK_DESCRIPTION, BOOK_COVER, BOOK_PUBLISHER 
-                    from book where BOOK_CATEGORYNAME = (SELECT BOOK_CATEGORYNAME
+                    `SELECT BOOK_CATEGORYNAME
                     FROM book
                     WHERE BOOK_ID IN (
                         SELECT ORDERITEM_BOOK_ID
@@ -60,13 +59,10 @@ router.post("/getRecBook", async (req, res) => {
                     )
                     GROUP BY BOOK_CATEGORYNAME
                     ORDER BY COUNT(*) DESC
-                    limit 1)
-                    order by book_salespoint desc
-                    limit 8;`,
+                    limit 1`,
                     email,
                     (err, results2) => {
                         if (err) {
-                            console.log("전송 67");
                             res.status(200).send(err);
                         } else {
                             console.log(2);
@@ -103,7 +99,27 @@ router.post("/getRecBook", async (req, res) => {
                                     }
                                 });
                             } else {
-                                res.send(results2);
+                                // res.send(results2);
+                                // console.log(results2[0].BOOK_CATEGORYNAME);
+                                const text = results2[0].BOOK_CATEGORYNAME;
+                                const splitText = text.split(">");
+
+                                const splitText2 = splitText.slice(0, 3).join(">");
+                                console.log(splitText2);
+                                db.query(
+                                    `select BOOK_ID, BOOK_TITLE, BOOK_AUTHOR, date_format(BOOK_PUBDATE, '%Y.%m.%d') as PUBDATE, BOOK_PRICE, BOOK_DESCRIPTION, BOOK_COVER, BOOK_PUBLISHER 
+                                from book where BOOK_CATEGORYNAME like '%${splitText2}%' 
+                                order by book_salespoint desc
+                                limit 8;`,
+                                    (err, result5) => {
+                                        if (err) {
+                                            res.send(err);
+                                        } else {
+                                            console.log(result5);
+                                            res.send(result5);
+                                        }
+                                    }
+                                );
                             }
                         }
                     }

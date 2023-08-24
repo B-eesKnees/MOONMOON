@@ -43,9 +43,7 @@ router.post("/getRecList", async (req, res) => {
                 });
             } else {
                 db.query(
-                    `select distinct b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, date_format(b.BOOK_PUBDATE, '%Y.%m.%d') as BOOK_PUBDATE, b.BOOK_PRICE, b.BOOK_DESCRIPTION, b.BOOK_COVER, b.BOOK_PUBLISHER, (select COALESCE(ROUND(AVG(r2.REV_RATING), 1), 0) from review r2 where r2.REV_ORDERITEM_BOOK = b.BOOK_ID) AS reviewpoint, b.book_salespoint
-                    from book b left join review r on b.BOOK_ID = r.REV_ORDERITEM_BOOK
-                    where BOOK_CATEGORYNAME = (SELECT BOOK_CATEGORYNAME
+                    `SELECT BOOK_CATEGORYNAME
                     FROM book
                     WHERE BOOK_ID IN (
                         SELECT ORDERITEM_BOOK_ID
@@ -55,8 +53,7 @@ router.post("/getRecList", async (req, res) => {
                     )
                     GROUP BY BOOK_CATEGORYNAME
                     ORDER BY COUNT(*) DESC
-                    limit 1)
-                    order by b.book_salespoint desc;`,
+                    limit 1`,
                     email,
                     (err, results2) => {
                         if (err) {
@@ -94,7 +91,26 @@ router.post("/getRecList", async (req, res) => {
                                     }
                                 });
                             } else {
-                                res.status(200).send(results2);
+                                const text = results2[0].BOOK_CATEGORYNAME;
+                                const splitText = text.split(">");
+
+                                const splitText2 = splitText.slice(0, 3).join(">");
+                                console.log(splitText2);
+                                db.query(
+                                    `select distinct b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, date_format(b.BOOK_PUBDATE, '%Y.%m.%d') as BOOK_PUBDATE, b.BOOK_PRICE, b.BOOK_DESCRIPTION, b.BOOK_COVER, b.BOOK_PUBLISHER, (select COALESCE(ROUND(AVG(r2.REV_RATING), 1), 0) from review r2 where r2.REV_ORDERITEM_BOOK = b.BOOK_ID) AS reviewpoint, b.book_salespoint
+                                    from book b left join review r on b.BOOK_ID = r.REV_ORDERITEM_BOOK
+                                    where BOOK_CATEGORYNAME like '%${splitText2}%' 
+                                    order by b.book_salespoint desc;
+                                `,
+                                    (err, result5) => {
+                                        if (err) {
+                                            res.send(err);
+                                        } else {
+                                            console.log(result5);
+                                            res.send(result5);
+                                        }
+                                    }
+                                );
                             }
                         }
                     }

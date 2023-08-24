@@ -48,11 +48,11 @@
                     <div v-if="check == false" class="next_grade_db">{{ couponGrade }}</div>
                 </div>
                 <div class="grade_under">
-                    <div class="grade_info_second">
+                    <div v-if="couponGrade != '플래티넘'" class="grade_info_second">
                         <div class="next_grade_s">{{ nextGrade }}</div>
                         <div class="next_grade_t">&nbsp;등급 혜택을 받으려면?</div>
                     </div>
-                    <div class="grade_info_under">
+                    <div v-if="couponGrade != '플래티넘'" class="grade_info_under">
                         <div class="next_grade_u">추가 구매금액 :&nbsp;</div>
                         <div class="ext_grade_u2">{{ nextPayCost }} <span class="won">원</span></div>
                     </div>
@@ -88,6 +88,7 @@ export default {
             nextPay: "",
             check: true,
             reqP: 0,
+            okGo: false,
         };
     },
     created() {
@@ -200,6 +201,9 @@ export default {
             });
         },
         setNextGra() {
+            if (this.okGo) {
+            }
+
             if (this.couponGrade === "프렌즈") {
                 this.nextGrade = "실버";
                 return;
@@ -225,11 +229,11 @@ export default {
                 this.reqP = res.data[0].totalPayment;
                 console.log(this.reqP);
 
-                if (this.nextPay > this.reqP) {
-                    this.check = false;
-                } else {
-                    this.check = true;
-                }
+                // if (this.nextPay > this.reqP) {
+                //     this.check = false;
+                // } else {
+                //     this.check = true;
+                // }
             });
         },
     },
@@ -237,8 +241,10 @@ export default {
         nextPayCost() {
             let result;
             if (this.nextPay - this.reqP < 0) {
+                this.check = true;
                 result = 0;
             } else {
+                this.check = false;
                 result = this.nextPay - this.reqP;
                 return result;
             }

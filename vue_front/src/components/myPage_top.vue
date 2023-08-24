@@ -7,7 +7,7 @@
                 </div>
                 <div class="mypage_profile_right">
                     <div class="name_grade">
-                        <div class="mypage_grade">프렌즈</div>
+                        <div class="mypage_grade">{{ couponGrade }}</div>
                         <div class="mypage_name">{{ getUserData.USER_NAME }}<span>님</span></div>
                     </div>
                     <div class="mypage_email">{{ getUserData.USER_EMAIL }}</div>
@@ -81,6 +81,7 @@ export default {
             recentCountData: 0,
             getCouCountData: 0,
             recListData: [],
+            couponGrade: "",
         };
     },
     created() {
@@ -90,8 +91,20 @@ export default {
         this.getRecentCount();
         this.getRecList();
         this.getCouCount();
+        this.getGraInfo();
     },
     methods: {
+        getGraInfo() {
+            const userEmail = localStorage.getItem("userID");
+
+            axios({
+                url: `/mypage/coupongrade/${userEmail}`,
+                method: "GET",
+            }).then((res) => {
+                console.log(res.data);
+                this.couponGrade = res.data.userGrade;
+            });
+        },
         getUser() {
             axios({
                 url: "http://localhost:3000/mypage/getuser",
