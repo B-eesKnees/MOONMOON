@@ -1,4 +1,5 @@
 <template>
+    <GnbBar />
     <myPage_top />
     <div class="mypage_menu">
         <myPageSide />
@@ -76,6 +77,7 @@ import myPageSide from "../components/myPageSide.vue";
 import myPage_top from "../components/myPage_top.vue";
 import TabsWrapper from "../components/TabsWrapper.vue";
 import TabItem from "../components/TabItem.vue";
+import GnbBar from "../components/gnbBar.vue";
 
 // Format the date in YY-MM-DD format
 const formattedDate = (date) => {
@@ -86,7 +88,7 @@ const formattedDate = (date) => {
 };
 
 export default {
-    components: { myPageSide, myPage_top, TabsWrapper, TabItem },
+    components: { myPageSide, myPage_top, TabsWrapper, TabItem, GnbBar },
     data() {
         return {
             reviewList: [],

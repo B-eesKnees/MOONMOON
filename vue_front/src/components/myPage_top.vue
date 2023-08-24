@@ -29,13 +29,13 @@
                 <a href="#" class="mypage_like">
                     <div class="like_recent_point_cou_text">
                         <div class="like_recent_point_cou_title">포인트</div>
-                        <div class="like_recent_point_cou_num">{{ getUserData.USER_POINT }}<span>p</span></div>
+                        <div class="like_recent_point_cou_num">{{ formatNumber(getUserData.USER_POINT) }}<span>p</span></div>
                     </div></a
                 >
                 <a href="#" class="mypage_like">
                     <div class="like_recent_point_cou_text">
                         <div class="like_recent_point_cou_title">쿠폰</div>
-                        <div class="like_recent_point_cou_num">{{ getCouCountData }}</div>
+                        <div class="like_recent_point_cou_num">{{ formatNumber(getCouCountData) }}</div>
                     </div></a
                 >
             </div>
@@ -163,6 +163,10 @@ export default {
                     console.error(error);
                 }
             }
+        },
+        formatNumber(number) {
+            // 숫자를 천 단위마다 쉼표가 있는 형식으로 변환
+            return new Intl.NumberFormat().format(number);
         },
     },
 };

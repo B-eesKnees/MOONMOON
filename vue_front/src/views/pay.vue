@@ -65,7 +65,7 @@
                 <div class="coupon_text">할인 쿠폰</div>
                 <select v-model="selectedCoupon" class="choice_coupon">
                     <option disabled value="">쿠폰을 선택하세요</option>
-                    <option v-for="coupon in coupons" :key="coupon.name" :value="coupon.name">
+                    <option v-for="coupon in coupons" :key="coupon.name" :value="coupon.ratio">
                         {{ coupon.name }}
                     </option>
                 </select>
@@ -265,19 +265,19 @@ export default {
             this.useCoupon = true;
             console.log(this.useCoupon);
 
-            if (this.selectedCoupon.indexOf("5%") !== -1) {
+            if (this.selectedCoupon === 5) {
                 const selectedCouponRatio = 0.05;
                 this.applyCouponPrice = this.originalPrice * selectedCouponRatio;
-            } else if (this.selectedCoupon.indexOf("10%") !== -1) {
+            } else if (this.selectedCoupon === 10) {
                 const selectedCouponRatio = 0.1;
                 this.applyCouponPrice = this.originalPrice * selectedCouponRatio;
-            } else if (this.selectedCoupon.indexOf("15%") !== -1) {
+            } else if (this.selectedCoupon === 15) {
                 const selectedCouponRatio = 0.15;
                 this.applyCouponPrice = this.originalPrice * selectedCouponRatio;
-            } else if (this.selectedCoupon.indexOf("20%") !== -1) {
+            } else if (this.selectedCoupon === 20) {
                 const selectedCouponRatio = 0.2;
                 this.applyCouponPrice = this.originalPrice * selectedCouponRatio;
-            } else if (this.selectedCoupon.indexOf("무료배송") !== -1) {
+            } else if (this.selectedCoupon === 0) {
                 const selectedCouponRatio = 0;
                 this.deliveryFee = 0;
                 this.applyCouponPrice = this.originalPrice * selectedCouponRatio;

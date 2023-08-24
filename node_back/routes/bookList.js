@@ -195,6 +195,8 @@ router.post("/newCate", async (req, res) => {
 
 router.post("/bestCate", async (req, res) => {
     const category = req.body.category;
+    const trimCate = category.trim();
+    console.log(trimCate);
 
     db.query(
         `select b.BOOK_COVER, b.BOOK_ID, b.BOOK_TITLE, b.BOOK_AUTHOR, date_format(b.BOOK_PUBDATE, '%Y.%m.%d') as BOOK_PUBDATE, b.BOOK_PRICE, b.BOOK_DESCRIPTION, COALESCE(ROUND(AVG(r.REV_RATING), 1), 0) AS reviewpoint
@@ -202,7 +204,7 @@ router.post("/bestCate", async (req, res) => {
             where b.BOOK_CATEGORYNAME like ?
             group by b.BOOK_ID
             order by b.BOOK_SALESPOINT desc;`,
-        `%${category}%`,
+        `%${trimCate}%`,
         (err, results) => {
             if (err) {
                 res.status(200).send(err);
