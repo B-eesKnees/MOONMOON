@@ -40,15 +40,15 @@ const queries = {
                         from \`order\`
                         where ORDER_STATE = '배송준비' or ORDER_STATE = '배송중' or ORDER_STATE = '배송완료' or ORDER_STATE = '주문취소'`,
 
-  adminOrderDetailQuery: `select ORDER_ID, ORDER_USER_EMAIL, date_format(ORDER_PAYDATE, '%Y-%m-%d') as ORDER_DATE, ORDER_NAME, ORDER_TEL, ORDER_ZIPCODE, ORDER_ADD, ORDER_ADDDETAIL, ORDER_REQ, ORDER_CNT, ORDER_PAY, ORDER_COST, ORDER_COUPON, ORDER_USEPOINT, ORDER_ADDPOINT, ORDER_PAYMETHOD, ORDER_STATE
-                          from \`order\`
-                          where (ORDER_STATE = '배송준비' or ORDER_STATE = '배송중' or ORDER_STATE = '배송완료' or ORDER_STATE = '주문취소') and ORDER_ID = ?`,
+  adminOrderDetailQuery: `select o.ORDER_ID, o.ORDER_USER_EMAIL, date_format(o.ORDER_PAYDATE, '%Y-%m-%d') as ORDER_DATE, u.USER_NAME as ORDER_NAME, u.USER_PHONE as ORDER_TEL, u.USER_ZIPCODE as ORDER_ZIPCODE, u.USER_ADD1 as ORDER_ADD, u.USER_ADD2  as ORDER_ADDDETAIL, o.ORDER_CNT, o.ORDER_PAY, o.ORDER_COST, o.ORDER_COUPON, o.ORDER_USEPOINT, o.ORDER_ADDPOINT, o.ORDER_PAYMETHOD, o.ORDER_STATE
+                        from moonmoon.order o join user u on o.ORDER_USER_EMAIL = u.USER_EMAIL
+                        where (ORDER_STATE = '배송준비' or ORDER_STATE = '배송중' or ORDER_STATE = '배송완료' or ORDER_STATE = '주문취소') and ORDER_ID = ?`,
 
   adminOrderItemDetailQuery: `select oi.ORDERITEM_BOOK_ID, oi.ORDERITEM_PRICE, oi.ORDERITEM_CNT
                               from orderitem oi
                               join \`order\` o on oi.ORDERITEM_ORDER_ID = o.ORDER_ID
                               where (o.ORDER_STATE = '배송준비' or o.ORDER_STATE = '배송중' or o.ORDER_STATE = '배송완료' or o.ORDER_STATE = '주문취소') and oi.ORDERITEM_ORDER_ID = ?`,
-  
+
   adminStatusChangeQuery: `update \`order\`
                            set ORDER_STATE = '배송중'
                            where ORDER_STATE = '배송준비' and ORDER_ID in (?)`,
@@ -99,7 +99,7 @@ router.post('/adminBookLatest', async (request, res) => {
     res.send(await req(queries.adminBookLatestQuery, undefined));
   } catch (err) {
     res.status(500).send({
-      error:err
+      error: err
     });
   }
 });
@@ -110,7 +110,7 @@ router.post('/adminBookSalesPoint', async (request, res) => {
     res.send(await req(queries.adminBookSalesPointQuery, undefined));
   } catch (err) {
     res.status(500).send({
-      error:err
+      error: err
     });
   }
 });
@@ -118,16 +118,16 @@ router.post('/adminBookSalesPoint', async (request, res) => {
 router.post('/adminBookDel', async (request, res) => {
 
   try {
-   let BOOK_ID = request.body.book_id;
-   BOOK_ID = Number(BOOK_ID);
+    let BOOK_ID = request.body.book_id;
+    BOOK_ID = Number(BOOK_ID);
 
-     res.send(await req(queries.adminBookDelQuery, BOOK_ID));
-     console.log(BOOK_ID);
+    res.send(await req(queries.adminBookDelQuery, BOOK_ID));
+    console.log(BOOK_ID);
   } catch (err) {
-   res.status(500).send({
-     error: err
-   });
-  }  
+    res.status(500).send({
+      error: err
+    });
+  }
 });
 
 
@@ -139,7 +139,7 @@ router.post('/adminUserLatest', async (request, res) => {
     res.send(await req(queries.adminUserLatestQuery));
   } catch (err) {
     res.status(500).send({
-      error:err
+      error: err
     });
   }
 });
@@ -149,15 +149,15 @@ router.post('/adminUserLatest', async (request, res) => {
 router.post('/adminUserDel', async (request, res) => {
 
   try {
-   const USER_EMAIL = request.body.userEmail;
+    const USER_EMAIL = request.body.userEmail;
 
-     res.send(await req(queries.adminUserDelQuery, USER_EMAIL));
-     console.log(USER_EMAIL);
+    res.send(await req(queries.adminUserDelQuery, USER_EMAIL));
+    console.log(USER_EMAIL);
   } catch (err) {
-   res.status(500).send({
-     error: err
-   });
-  }  
+    res.status(500).send({
+      error: err
+    });
+  }
 });
 
 
@@ -169,7 +169,7 @@ router.post('/adminQnaWait', async (request, res) => {
     res.send(await req(queries.adminQnaWaitQuery));
   } catch (err) {
     res.status(500).send({
-      error:err
+      error: err
     });
   }
 });
@@ -180,13 +180,13 @@ router.post('/adminQnaDone', async (request, res) => {
     res.send(await req(queries.adminQnaDoneQuery));
   } catch (err) {
     res.status(500).send({
-      error:err
+      error: err
     });
   }
 });
 // 답변  --ok
 router.post('/adminQnaReply', async (request, res) => {
-  
+
   try {
     const QNA_REPLY = request.body.qna_reply;
 
@@ -198,7 +198,7 @@ router.post('/adminQnaReply', async (request, res) => {
   } catch (err) {
     res.status(500).send({
       error: err
-  });
+    });
   }
 });
 
@@ -212,7 +212,7 @@ router.post('/adminOrderList', async (request, res) => {
     res.send(await req(queries.adminOrderListQuery));
   } catch (err) {
     res.status(500).send({
-      error:err
+      error: err
     });
   }
 });
@@ -226,7 +226,7 @@ router.post("/adminOrderDetail", async (request, res) => {
     console.log(ORDER_ID);
   } catch (err) {
     res.status(500).send({
-      error:err
+      error: err
     });
   }
 });
@@ -240,13 +240,13 @@ router.post("/adminOrderItemDetail", async (request, res) => {
     console.log(ORDER_ID);
   } catch (err) {
     res.status(500).send({
-      error:err
+      error: err
     });
   }
 });
 // 주문 상태 변경_배송준비 > 배송중  --ok
 router.post('/adminStatusChange', async (request, res) => {
-  
+
   try {
     const ORDER_ID = request.body.order_id;
 
@@ -255,7 +255,7 @@ router.post('/adminStatusChange', async (request, res) => {
   } catch (err) {
     res.status(500).send({
       error: err
-  });
+    });
   }
 });
 
@@ -264,7 +264,7 @@ router.post('/adminStatusChange', async (request, res) => {
 // 일매출 계산  --ok
 // -혹시 하다가 당일/전일 계산 따로 필요하면 노션에 써줘
 router.post('/adminDaySales', async (request, res) => {
-  
+
   try {
     const dateStart = request.body.date_start;
     // '2023-08-17 00:00:00' 이런식으로 원하는 날짜에 00:00:00 붙여서 보내줘야됨
@@ -277,7 +277,7 @@ router.post('/adminDaySales', async (request, res) => {
   } catch (err) {
     res.status(500).send({
       error: err
-  });
+    });
   }
 });
 
@@ -288,7 +288,7 @@ router.post('/userSexRatio', async (request, res) => {
     res.send(await req(queries.userSexRatioQuery));
   } catch (err) {
     res.status(500).send({
-      error:err
+      error: err
     });
   }
 });
@@ -308,7 +308,7 @@ router.post('/bestCategory', async (request, res) => {
     res.send(await req(queries.bestCategoryQuery));
   } catch (err) {
     res.status(500).send({
-      error:err
+      error: err
     });
   }
 });
@@ -334,21 +334,21 @@ router.post(`/getTodayV`, async (request, res) => {
   console.log(today);
 
   db.query(`select vc_count from viewcount where vc_date = ?`, today, (err, results) => {
-      if (err) {
-          res.status(200).send(err);
-      } else {
-          res.status(200).json(results);
-      }
+    if (err) {
+      res.status(200).send(err);
+    } else {
+      res.status(200).json(results);
+    }
   });
 });
 //날자별 방문자 수
 router.post("/getTotalV", async (request, res) => {
   db.query(`select vc_count, vc_date from viewcount`, (err, results) => {
-      if (err) {
-          res.status(200).send(err);
-      } else {
-          res.status(200).json(results);
-      }
+    if (err) {
+      res.status(200).send(err);
+    } else {
+      res.status(200).json(results);
+    }
   });
 });
 

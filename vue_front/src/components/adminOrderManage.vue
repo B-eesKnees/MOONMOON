@@ -403,7 +403,7 @@ export default {
                     alert(err);
                 });
         },
-        async getBookDetailData(orderId) {
+        async getBookDetailData(orderId) { // 주문정보(책번호, 가격)
             await axios({
                 url: "http://localhost:3000/admin/adminOrderItemDetail",
                 method: "POST",
@@ -412,6 +412,7 @@ export default {
                 },
             })
                 .then((res) => {
+                    
                     this.orderDetailData.bookId = res.data[0].ORDERITEM_BOOK_ID;
                     this.orderDetailData.bookPrice = res.data[0].ORDERITEM_PRICE;
                     console.log(this.orderDetailData, "이거이거")

@@ -30,8 +30,10 @@
 
 .join_header_logo {
     margin: 24px 0;
-    font-size: x-large;
-    font-weight: bold;
+    width: 10%;
+}
+.join_header_logo img {
+    width: 80%;
 }
 
 
