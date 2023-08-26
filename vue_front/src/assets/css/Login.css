@@ -20,8 +20,10 @@
 
 .login_header_logo {
     margin-top: 2%;
-    font-size: x-large;
-    font-weight: bold;
+    width: 10%;
+}
+.login_header_logo img {
+    width: 80%;
 }
 
 .info-bar {

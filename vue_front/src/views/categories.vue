@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="search_items">
-            <div v-for="item in displayedPosts" :key="item.BOOK_ID" class="search_item">
+            <div v-for="(item, i) in displayedPosts" :key="i" class="search_item">
                 <div class="search_item_img">
                     <a :href="`/detail/${item.BOOK_ID}`"><img :src="item.BOOK_COVER" alt="" /></a>
                 </div>

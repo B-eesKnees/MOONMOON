@@ -45,7 +45,7 @@
                                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                                     남성 회원수</div>
                                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                    {{ formatNumber(userSex.female) }}명</div>
+                                                    {{ formatNumber(userSex.male) }}명</div>
                                             </div>
                                             <div class="col-auto">
                                                 <i class="fa-solid fa-user fa-2x text-gray-300"></i>
@@ -64,7 +64,7 @@
                                                 <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                                     여성 회원수</div>
                                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                    {{ formatNumber(userSex.male) }}명
+                                                    {{ formatNumber(userSex.female) }}명
                                                 </div>
                                             </div>
                                             <div class="col-auto">
